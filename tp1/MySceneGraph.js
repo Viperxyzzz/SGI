@@ -471,6 +471,8 @@ export class MySceneGraph {
 
             var transfMatrix = mat4.create();
 
+            console.log("DEBUG ", grandChildren);
+
             for (var j = 0; j < grandChildren.length; j++) {
                 switch (grandChildren[j].nodeName) {
                     case 'translate':
@@ -480,11 +482,21 @@ export class MySceneGraph {
 
                         transfMatrix = mat4.translate(transfMatrix, transfMatrix, coordinates);
                         break;
-                    case 'scale':                        
-                        this.onXMLMinorError("To do: Parse scale transformations.");
+                    case 'scale':
+                        var coordinates = this.parseCoordinates3D(grandChildren[j],"scale transformation for ID " + transformationID);
+                        if(!Array.isArray(coordinates))
+                            return coordinates;
+                        transfMatrix = mat4.scale(transfMatrix,transfMatrix,coordinates);
                         break;
                     case 'rotate':
-                        // angle
+                        var axis = this.reader.getString(grandChildren[j],"axis");
+                        console.log("AXIS ", axis);
+                        var angle = this.reader.getFloat(grandChildren[j],"angle");
+                        console.log("ANGLE ", angle);
+                        var x = (axis == "x") ? 1 : 0;
+                        var y = (axis == "y") ? 1 : 0;
+                        var z = (axis == "z") ? 1 : 0;
+                        transfMatrix = mat4.rotate(transfMatrix,transfMatrix,DEGREE_TO_RAD * angle,[x,y,z])
                         this.onXMLMinorError("To do: Parse rotate transformations.");
                         break;
                 }
@@ -786,8 +798,10 @@ export class MySceneGraph {
 
         //To test the parsing/creation of the primitives, call the display function directly
         for (let i = 0; i < this.components.length; i++){
-            console.log(this.components[i]);
+            this.scene.pushMatrix();
+            this.scene.multMatrix(this.transformations["demoTransform"]);
             this.primitives[this.components[i]].display();
+            this.scene.popMatrix();
         }
 
 
