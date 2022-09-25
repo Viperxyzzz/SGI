@@ -1,6 +1,7 @@
 import { CGFXMLreader } from '../lib/CGF.js';
 import { MyRectangle } from './MyRectangle.js';
 import { MyTriangle } from './MyTriangle.js';
+import {MySphere} from './MySphere.js'
 
 var DEGREE_TO_RAD = Math.PI / 180;
 
@@ -610,6 +611,25 @@ export class MySceneGraph {
                 var trig = new MyTriangle(this.scene,primitiveId,x1,x2,y1,y2,x3,y3);
 
                 this.primitives[primitiveId] = trig;
+            }
+            else if (primitiveType == 'sphere'){
+                // radius
+                var radius = this.reader.getFloat(grandChildren[0], 'radius');
+                if (!(radius != null && !isNaN(radius)))
+                    return "unable to parse radius of the primitive coordinates for ID = " + primitiveId;
+                // slices
+                var slices = this.reader.getFloat(grandChildren[0], 'slices');
+                if (!(slices != null && !isNaN(slices)))
+                    return "unable to parse slices of the primitive coordinates for ID = " + primitiveId;
+
+                // stacks
+                var stacks = this.reader.getFloat(grandChildren[0], 'stacks');
+                if (!(stacks != null && !isNaN(stacks)))
+                    return "unable to parse stacks of the primitive coordinates for ID = " + primitiveId;
+
+                var sphere = new MySphere(this.scene, radius, slices, stacks);
+
+                this.primitives[primitiveId] = sphere;
             }
             else {
                 console.warn("To do: Parse other primitives.");
