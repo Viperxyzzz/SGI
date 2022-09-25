@@ -614,7 +614,6 @@ export class MySceneGraph {
    */
     parseComponents(componentsNode) {
         var children = componentsNode.children;
-
         this.components = [];
 
         var grandChildren = [];
@@ -628,9 +627,10 @@ export class MySceneGraph {
                 this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
                 continue;
             }
-
+            
             // Get id of the current component.
             var componentID = this.reader.getString(children[i], 'id');
+            
             if (componentID == null)
                 return "no ID defined for componentID";
 
@@ -658,6 +658,11 @@ export class MySceneGraph {
             // Texture
 
             // Children
+            var childrenNodes = grandChildren[childrenIndex].children;
+            for (var j = 0; j < childrenNodes.length; j++){
+                var childrenID = this.reader.getString(childrenNodes[j], 'id')
+                this.components.push(childrenID);
+            }
         }
     }
 
@@ -780,6 +785,11 @@ export class MySceneGraph {
         //To do: Create display loop for transversing the scene graph
 
         //To test the parsing/creation of the primitives, call the display function directly
-        this.primitives['demoRectangle'].display();
+        for (let i = 0; i < this.components.length; i++){
+            console.log(this.components[i]);
+            this.primitives[this.components[i]].display();
+        }
+
+
     }
 }
