@@ -2,6 +2,7 @@ import { CGFXMLreader } from '../lib/CGF.js';
 import { MyRectangle } from './MyRectangle.js';
 import { MyTriangle } from './MyTriangle.js';
 import {MySphere} from './MySphere.js'
+import { MyCylinder } from './MyCylinder.js';
 
 var DEGREE_TO_RAD = Math.PI / 180;
 
@@ -630,6 +631,37 @@ export class MySceneGraph {
                 var sphere = new MySphere(this.scene, radius, slices, stacks);
 
                 this.primitives[primitiveId] = sphere;
+            }
+            else if (primitiveType == 'cylinder'){
+
+                // height
+                var height = this.reader.getFloat(grandChildren[0], 'height');
+                if (!(height != null && !isNaN(height)))
+                    return "unable to parse height of the primitive coordinates for ID = " + primitiveId;
+
+                // top
+                var top = this.reader.getFloat(grandChildren[0], 'topRadius');
+                if (!(top != null && !isNaN(top)))
+                    return "unable to parse top radius of the primitive coordinates for ID = " + primitiveId;
+
+                // bot
+                var bot = this.reader.getFloat(grandChildren[0], 'bottomRadius');
+                if (!(bot != null && !isNaN(bot)))
+                    return "unable to parse bottom radius of the primitive coordinates for ID = " + primitiveId;
+
+                // stacks
+                var stacks = this.reader.getFloat(grandChildren[0], 'stacks');
+                if (!(stacks != null && !isNaN(stacks)))
+                    return "unable to parse stacks of the primitive coordinates for ID = " + primitiveId;
+                
+                // slices
+                var slices = this.reader.getFloat(grandChildren[0], 'slices');
+                if (!(slices != null && !isNaN(slices)))
+                    return "unable to parse slices of the primitive coordinates for ID = " + primitiveId;
+
+                var cylinder = new MyCylinder(this.scene, slices, stacks, bot, top, height);
+
+                this.primitives[primitiveId] = cylinder;
             }
             else {
                 console.warn("To do: Parse other primitives.");
