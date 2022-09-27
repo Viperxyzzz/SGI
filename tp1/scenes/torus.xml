@@ -37,51 +37,23 @@
 
     <transformations>
         <transformation id="demoTransform">
-            <scale x="1" y="1" z="2" />
-            <rotate axis="x" angle="-45" />
-            <rotate axis="z" angle="-45" />
-            <translate x="0" y="0" z="1" /> 
-        </transformation>
-        <transformation id="theOtherDemoTransform">
-            <translate x="2" y="0" z="1" /> 
         </transformation>
     </transformations>
 
     <primitives>
-        <primitive id="demoRectangle">
-            <rectangle x1="-0.5" y1="-1" x2="0.5" y2="1" />
-        </primitive>
-        <primitive id="demoTriangle">
-            <triangle x1="3" y1="2" x2="0" y2="4" x3="0" y3="0"/>
-        </primitive>
-        <primitive id="demoSphere">
-            <sphere radius="0.5" slices="50" stacks="50"/>
-        </primitive>
-        <primitive id="demoCylinder">
-            <cylinder height="7" topRadius="0.35" bottomRadius="0.35" stacks="8" slices="16"/>
-        </primitive>
         <primitive id="demoTorus">
             <torus inner="0.3" outer="0.7" slices="50" loops="50" />
         </primitive>
     </primitives>
 
     <components>
-        <component id="demoRoot">
-            <transformation>
-                <transformationref id="demoTransform" />
-                <translate x="0" y="0" z="1" />
-                <scale x="2" y="1" z="1" />
-            </transformation>
+        <component id="torus">
             <materials>
                 <material id="demoMaterial" />
             </materials>
             <texture id="demoTexture"/>
             <children>
-                <primitiveref id="demoRectangle" />
-                <primitiveref id="demoTriangle"  />
-                <primitiveref id="demoSphere" />
-                <primitiveref id="demoCylinder"/>
-                <primitiveref id="demoTorus"/>
+                <primitiveref id="demoTorus" />
             </children>
         </component>
     </components>

@@ -3,8 +3,7 @@ import {CGFobject} from '../lib/CGF.js';
 
 export class MyCylinder extends CGFobject {
 
-    constructor(scene, slices, stacks, bottomRadius, topRadius, height) {
-
+    constructor(scene, bottomRadius, topRadius, height, slices, stacks) {
         super(scene);
         this.height = height;
         this.bottomRadius = bottomRadius;
@@ -58,37 +57,7 @@ export class MyCylinder extends CGFobject {
                 this.indices.push(index, index + this.slices + 2, index + this.slices + 1);
             }
         }
-        
-        let pivot = this.vertices.length / 3;
-        phi = 0;
-
-        for(let i = 0; i <= this.slices; i++){
-            this.vertices.push(Math.cos(phi) * this.topRadius, Math.sin(phi) * this.topRadius, this.height);
-            if(i != 0){
-                this.indices.push(pivot, pivot + i - 1, pivot + i);
-            }
-
-            this.normals.push(0, 0, 1);
-            this.texCoords.push((Math.cos(phi) + 1) / 2, (Math.sin(phi) + 1) / 2);
-            phi += alphaAng;
-        }
-
-        pivot = this.vertices.length / 3;
-        phi = 0;
-
-        for(let i = 0; i <= this.slices; i++){
-            this.vertices.push(Math.cos(phi) * this.bottomRadius, Math.sin(phi) * this.bottomRadius, 0);
-            if(i != 0){
-                this.indices.push(pivot + i, pivot + i - 1, pivot);
-            }
-
-            this.normals.push(0, 0, -1);
-            this.texCoords.push((Math.cos(phi) + 1) / 2, (Math.sin(phi) + 1) / 2);
-            phi += alphaAng;
-        }
-
-
-
+    
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
     }
