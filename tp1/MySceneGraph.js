@@ -1,4 +1,4 @@
-import { CGFXMLreader } from '../lib/CGF.js';
+import { CGFappearance, CGFXMLreader } from '../lib/CGF.js';
 import { MyRectangle } from './MyRectangle.js';
 import { MyTriangle } from './MyTriangle.js';
 import { MySphere } from './MySphere.js'
@@ -411,10 +411,13 @@ export class MySceneGraph {
     parseMaterials(materialsNode) {
         var children = materialsNode.children;
 
+
         this.materials = [];
 
         var grandChildren = [];
         var nodeNames = [];
+
+        var mat = new CGFappearance(this.scene);
 
         // Any number of materials.
         for (var i = 0; i < children.length; i++) {
@@ -426,12 +429,128 @@ export class MySceneGraph {
 
             // Get id of the current material.
             var materialID = this.reader.getString(children[i], 'id');
+            var shininess = this.reader.getFloat(children[i], 'shininess');
+
             if (materialID == null)
                 return "no ID defined for material";
 
             // Checks for repeated IDs.
             if (this.materials[materialID] != null)
                 return "ID must be unique for each light (conflict: ID = " + materialID + ")";
+                
+            grandChildren = children[i].children;
+
+            for(var i = 0; i < grandChildren.length; i++){
+                nodeNames.push(grandChildren[i].nodeName);
+            }
+
+            let emIndex = nodeNames.indexOf("emission");
+            let ambIndex = nodeNames.indexOf("ambient");
+            let diffIndex = nodeNames.indexOf("diffuse");
+            let specIndex = nodeNames.indexOf("specular");
+
+            var ambComponent, specComponent, diffComponent, emComponent;
+
+            if(emIndex == -1){
+                this.onXMLError("No value for emission in material " + materialID);
+                emComponent = [0, 0, 0, 1];
+            }
+            else {
+                emComponent = this.parseColor(grandChildren[emIndex], "emission component of the material " + materialID);
+            }
+
+            if(ambIndex == -1){
+                this.onXMLError("No value for ambient in material " + materialID);
+                ambComponent = [0.2, 0.2, 0.2, 1.0];
+            }
+            else {
+                ambComponent = this.parseColor(grandChildren[ambIndex], "ambient component of the material " + materialID);
+            }
+                
+            if(diffIndex == -1){
+                this.onXMLError("No value for diffuse in material " + materialID);
+                diffComponent = [0.5, 0.5, 0.5, 1.0];
+            }
+            else {
+                diffComponent = this.parseColor(grandChildren[diffIndex], "diffuse component of the material " + materialID);
+            }
+
+            if(specIndex == -1){
+                this.onXMLError("No value for specular in material " + materialID);
+                specComponent = [0.5, 0.5, 0.5, 1.0];
+            }
+            else {
+                specComponent = this.parseColor(grandChildren[specIndex], "emission component of the material " + materialID);
+            }
+
+            if(shininess < 0 || shininess === undefined){
+                this.onXMLError("No value for shininess in material " + materialID + " using default value (10)");
+            }
+
+            mat.setShininess(shininess);
+            mat.setAmbient(...ambComponent);
+            mat.setEmission(...emComponent);
+            mat.setDiffuse(...diffComponent);
+            mat.setSpecular(...specComponent);
+
+            this.materials[materialID] = mat;
+
+            grandChildren = children[i].children;
+
+            for(var i = 0; i < grandChildren.length; i++){
+                nodeNames.push(grandChildren[i].nodeName);
+            }
+
+            let emIndex = nodeNames.indexOf("emission");
+            let ambIndex = nodeNames.indexOf("ambient");
+            let diffIndex = nodeNames.indexOf("diffuse");
+            let specIndex = nodeNames.indexOf("specular");
+
+            var ambComponent, specComponent, diffComponent, emComponent;
+
+            if(emIndex == -1){
+                this.onXMLError("No value for emission in material " + materialID);
+                emComponent = [0, 0, 0, 1];
+            }
+            else {
+                emComponent = this.parseColor(grandChildren[emIndex], "emission component of the material " + materialID);
+            }
+
+            if(ambIndex == -1){
+                this.onXMLError("No value for ambient in material " + materialID);
+                ambComponent = [0.2, 0.2, 0.2, 1.0];
+            }
+            else {
+                ambComponent = this.parseColor(grandChildren[ambIndex], "ambient component of the material " + materialID);
+            }
+                
+            if(diffIndex == -1){
+                this.onXMLError("No value for diffuse in material " + materialID);
+                diffComponent = [0.5, 0.5, 0.5, 1.0];
+            }
+            else {
+                diffComponent = this.parseColor(grandChildren[diffIndex], "diffuse component of the material " + materialID);
+            }
+
+            if(specIndex == -1){
+                this.onXMLError("No value for specular in material " + materialID);
+                specComponent = [0.5, 0.5, 0.5, 1.0];
+            }
+            else {
+                specComponent = this.parseColor(grandChildren[specIndex], "emission component of the material " + materialID);
+            }
+
+            if(shininess < 0 || shininess === undefined){
+                this.onXMLError("No value for shininess in material " + materialID + " using default value (10)");
+            }
+
+            mat.setShininess(shininess);
+            mat.setAmbient(...ambComponent);
+            mat.setEmission(...emComponent);
+            mat.setDiffuse(...diffComponent);
+            mat.setSpecular(...specComponent);
+
+            this.materials[materialID] = mat;
 
             //Continue here
             this.onXMLMinorError("To do: Parse materials.");
