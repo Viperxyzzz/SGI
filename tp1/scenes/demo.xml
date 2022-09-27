@@ -66,7 +66,7 @@
         <component id="demoRoot">
             <transformation>
                 <transformationref id="demoTransform" />
-                <translate x="0" y="0" z="1" />
+                <translate x="0" y="0" z="3" />
                 <scale x="2" y="1" z="1" />
             </transformation>
             <materials>
@@ -77,6 +77,16 @@
                 <primitiveref id="demoRectangle" />
                 <primitiveref id="demoTriangle"  />
                 <primitiveref id="demoSphere" />
+            </children>
+        </component>
+        <component id="nigga">
+            <transformation>
+            </transformation>
+            <materials>
+                <material id="demoMaterial" />
+            </materials>
+            <texture id="demoTexture"/>
+            <children>
                 <primitiveref id="demoCylinder"/>
             </children>
         </component>
