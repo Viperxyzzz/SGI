@@ -834,9 +834,24 @@ export class MySceneGraph {
 
             // Children
             var childrenNodes = grandChildren[childrenIndex].children;
+            console.log(childrenNodes);
             for (var j = 0; j < childrenNodes.length; j++) {
                 var childrenID = this.reader.getString(childrenNodes[j], 'id')
-                grandgrandChildren.push(this.primitives[childrenID]);
+                var tag = childrenNodes[j].nodeName;
+                if(tag == "primitiveref"){
+                    grandgrandChildren.push(this.primitives[childrenID]);
+                }
+                else if (tag == "componentref"){
+                    for(let i = 0; i < this.components.length; i++){
+                        if(this.components[i].id == childrenID){
+                            grandgrandChildren.push(this.components[i]);
+                        }
+                    }
+
+                }
+                else{
+                    consolee.log("ERROR INVALID TAG - ", tag, " IGNORING IT");  
+                }
             }
             component.transformation = transfMatrix;
             console.log(component.id, " - ",  grandgrandChildren);
