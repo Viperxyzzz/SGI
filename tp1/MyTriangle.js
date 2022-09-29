@@ -7,7 +7,7 @@ import { CGFobject } from '../lib/CGF.js';
  * @param y - Scale of rectangle in Y
  */
 export class MyTriangle extends CGFobject {
-	constructor(scene, id, x1, x2, y1, y2,x3,y3) {
+	constructor(scene, id, x1, x2, y1, y2,x3,y3,z1,z2,z3) {
 		super(scene);
 		this.x1 = x1;
 		this.x2 = x2;
@@ -15,6 +15,9 @@ export class MyTriangle extends CGFobject {
 		this.y1 = y1;
 		this.y2 = y2;
         this.y3 = y3;
+		this.z1 = z1;
+		this.z2 = z2;
+		this.z3 = z3;
         this.id = id;
         
 
@@ -23,9 +26,9 @@ export class MyTriangle extends CGFobject {
 	
 	initBuffers() {
 		this.vertices = [
-            this.x1,this.y1,0, // 0 
-            this.x2,this.y2,0, // 1 
-            this.x3,this.y3,0  // 2
+            this.x1,this.y1,this.z1, // 0 
+            this.x2,this.y2,this.z2, // 1 
+            this.x3,this.y3,this.z3  // 2
 		];
 
 		//Counter-clockwise reference of vertices
@@ -33,11 +36,25 @@ export class MyTriangle extends CGFobject {
 			0, 1, 2
 		];
 
+		//A = p2 - p1
+		//B = p3 - p1
+
+		var ax = this.x2 - this.x1;
+		var ay = this.y2 - this.y1;
+		var az = this.z2 - this.z1;
+		var bx = this.x3 - this.x1;
+		var by = this.y3 - this.y1;
+		var bz = this.z3 - this.z1;
+		var nx = ay * bz - az * by;
+		var ny = az * bx - ax * bz;
+		var nz = ax * by - ay * bx;
+		
+
 		//Facing Z positive
 		this.normals = [
-			0, 0, 1,
-			0, 0, 1,
-			0, 0, 1,
+			nx, 0, 0,
+			0, ny, 0,
+			0, 0, nz,
 		];
 		
 		/*
