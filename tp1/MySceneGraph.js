@@ -856,6 +856,24 @@ export class MySceneGraph {
 
 
             // Materials
+            var materialsNodes = grandChildren[materialsIndex].children;
+            
+            for(let i = 0; i < materialsNodes.length; i++){
+                console.log("ENTREI", materialsNodes[i]);
+
+                var materialID = this.reader.getString(materialsNodes[i], "id");
+
+                if (materialID == null)
+                return "no ID defined for material";
+
+
+                console.log("Material", this.materials[materialID]);
+                // Checks for repeated IDs.
+                if (this.materials[materialID] != null)
+                    component.material = this.materials[materialID];
+            
+            }
+            
 
             // Texture
 
