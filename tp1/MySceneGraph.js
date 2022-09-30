@@ -1015,6 +1015,9 @@ export class MySceneGraph {
         //To test the parsing/creation of the primitives, call the display function directly
         for (let i = 0; i < this.components.length; i++) {
             var component = this.components[i];
+            if(component.id != this.idRoot){
+                continue;
+            }
             var componentPrimitives = component.getPrimitives();
             var componentChildren = component.getChildren();
             for(let j = 0; j < componentPrimitives.length; j++){

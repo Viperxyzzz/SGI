@@ -130,6 +130,7 @@
                 <translate x="3" y="1.2" z="-3" />
                 <scale x="3" y="3" z="3" />
                 <rotate angle="-90" axis="z" />
+                <rotate angle="180" axis="x" />
             </transformation>
             <materials>
                 <material id="demoMaterial" />
@@ -161,7 +162,7 @@
             <transformation>
                 <translate x="6" y="1.2" z="0" />
                 <scale x="3" y="3" z="3" />
-                <rotate angle="-90" axis="y" />
+                <rotate angle="90" axis="y" />
                 <rotate angle="90" axis="z"/>
             </transformation>
             <materials>
@@ -193,7 +194,7 @@
             <transformation>
                 <translate x="3" y="-0.3" z="0" />
                 <scale x="3" y="1" z="6" />
-                <rotate angle="-90" axis="x" />
+                <rotate angle="90" axis="x" />
                 <rotate angle="-90" axis="z" />
             </transformation>
             <materials>
