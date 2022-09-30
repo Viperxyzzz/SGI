@@ -2,20 +2,30 @@ export class MyComponent {
     constructor(scene){
         this.scene = scene;
         this.id = "";
-        this.transformation = null;
+        this.transformation = mat4.create();
         this.material = null;
         this.texture = null;
+        this.primitives = []
         this.children = [];
     }
 
-    display(){
-        for(var i = 0; i < this.children.length; i++){
-        
-            this.scene.pushMatrix();
-            this.scene.multMatrix(this.transformation);
-            this.children[i].display();
-            this.scene.popMatrix();
-        
-        }
+    addPrimitive(primitive){
+        this.primitives.push(primitive);
+    }
+    
+    addChildren(child){
+        this.children.push(child);
+    }
+
+    getMaterial(){
+        return this.material;
+    }
+
+    getPrimitives(){
+        return this.primitives;
+    }
+
+    getChildren(){
+        return this.children;
     }
 }

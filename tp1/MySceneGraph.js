@@ -895,32 +895,24 @@ export class MySceneGraph {
 
             // Children
             var childrenNodes = grandChildren[childrenIndex].children;
-            console.log(childrenNodes);
+            console.log("CHILDREN NODES ", childrenNodes);
             for (var j = 0; j < childrenNodes.length; j++) {
-                var childrenID = this.reader.getString(childrenNodes[j], 'id')
+                var currID = this.reader.getString(childrenNodes[j], 'id')
                 var tag = childrenNodes[j].nodeName;
-                if(tag == "primitiveref"){
-                    grandgrandChildren.push(this.primitives[childrenID]);
-                }
-                else if (tag == "componentref"){
-                    for(let i = 0; i < this.components.length; i++){
-                        if(this.components[i].id == childrenID){
-                            grandgrandChildren.push(this.components[i]);
-                        }
-                    }
 
+                if(tag == "primitiveref"){
+                    console.log("currID ", currID);
+                    component.addPrimitive(currID);
                 }
                 else{
-                    consolee.log("ERROR INVALID TAG - ", tag, " IGNORING IT");  
+                    component.addChildren(currID);
                 }
+
             }
             component.transformation = transfMatrix;
-            console.log(component.id, " - ",  grandgrandChildren);
-            component.children = grandgrandChildren;
             component.id = componentID;
 
             this.components.push(component);
-            grandgrandChildren = [];
         }
     }
 
@@ -1048,10 +1040,54 @@ export class MySceneGraph {
             this.scene.pushMatrix();
             console.log(this.transformations);
             this.scene.multMatrix(this.transformations["demoTransform"]);*/
-            this.components[i].display();
             //this.scene.popMatrix();
+            var component = this.components[i];
+            var componentPrimitives = component.getPrimitives();
+            var componentChildren = component.getChildren();
+            for(let j = 0; j < componentPrimitives.length; j++){
+                var id = componentPrimitives[j];
+                this.scene.pushMatrix();
+                this.scene.multMatrix(component.transformation);
+                this.primitives[id].display();
+                this.scene.popMatrix();
+            }
+            
+            for(let j = 0; j < componentChildren.length; j++){
+
+                for(let k = 0; k < this.components.length; k++){
+                    if(this.components[k].id == componentChildren[j]){
+                        this.displaySceneRecursive(this.components[k],{transformation : component.transformation});
+                        break;
+                    }
+                }
+            }
         }
 
+        //displaySceneRecursive(this.idRoot,context);
+    }
 
+    displaySceneRecursive(component,context){
+        var componentPrimitives = component.getPrimitives();
+        var componentChildren = component.getChildren();
+
+        var currTransf = mat4.create();
+        mat4.multiply(currTransf,component.transformation,context.transformation);
+        
+        for(let j = 0; j < componentPrimitives.length; j++){
+            var id = componentPrimitives[j];
+            this.scene.pushMatrix();
+            this.scene.multMatrix(currTransf);
+            this.primitives[id].display();
+            this.scene.popMatrix();
+        }
+        for(let j = 0; j < componentChildren.length; j++){
+
+            for(let k = 0; k < this.components.length; k++){
+                if(this.components[k].id == componentChildren[j]){
+                    this.displaySceneRecursive(this.components[k],{transformation : currTransf});
+                    break;
+                }
+            }
+        }
     }
 }
