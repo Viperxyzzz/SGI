@@ -173,7 +173,6 @@ export class MySceneGraph {
         else {
             if (index != TRANSFORMATIONS_INDEX)
                 this.onXMLMinorError("tag <transformations> out of order");
-            console.log(nodes);
             //Parse transformations block
             if ((error = this.parseTransformations(nodes[index])) != null)
                 return error;
@@ -418,10 +417,10 @@ export class MySceneGraph {
         var grandChildren = [];
         var nodeNames = [];
 
-        var mat = new CGFappearance(this.scene);
 
         // Any number of materials.
         for (var i = 0; i < children.length; i++) {
+            var mat = new CGFappearance(this.scene);
             if (children[i].nodeName != "material") {
                 this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
                 continue;
@@ -430,7 +429,6 @@ export class MySceneGraph {
             // Get id of the current material.
             var materialID = this.reader.getString(children[i], 'id');
             var shininess = this.reader.getFloat(children[i], 'shininess');
-
             if (materialID == null)
                 return "no ID defined for material";
 
@@ -486,15 +484,16 @@ export class MySceneGraph {
             if(shininess < 0 || shininess === undefined){
                 this.onXMLError("No value for shininess in material " + materialID + " using default value (10)");
             }
-
             mat.setShininess(shininess);
             mat.setAmbient(...ambComponent);
             mat.setEmission(...emComponent);
             mat.setDiffuse(...diffComponent);
             mat.setSpecular(...specComponent);
-
+            
             this.materials[materialID] = mat;
+            nodeNames = [];
         }
+
         return null;
     }
 
@@ -531,8 +530,6 @@ export class MySceneGraph {
             // Specifications for the current transformation.
 
             var transfMatrix = mat4.create();
-
-            console.log("DEBUG ", grandChildren);
 
             for (var j = 0; j < grandChildren.length; j++) {
                 switch (grandChildren[j].nodeName) {
@@ -767,7 +764,6 @@ export class MySceneGraph {
                 console.warn("To do: Parse other primitives.");
             }
         }
-        console.log("PRIMITIVAS ", this.primitives);
         this.log("Parsed primitives");
         return null;
     }
@@ -822,24 +818,17 @@ export class MySceneGraph {
             this.onXMLMinorError("To do: Parse components.");
             // Transformations
             var transformationNodes = grandChildren[transformationIndex].children;
-            console.log("Nodes for ", componentID, "are ", transformationNodes);
             var transfMatrix = mat4.create();
 
             //process the transformation
-            console.log(transformationNodes);
             for (var j = 0; j < transformationNodes.length; j++) {
-                console.log(transformationNodes[j].nodeName);
-                console.log(transformationNodes[j]);
                 switch (transformationNodes[j].nodeName) {
                     case 'transformationref':
                         var id = this.reader.getString(transformationNodes[j], 'id');
-                        console.log("XD ", this.transformations[id]);
                         component.transformation = (this.transformations[id]);
                         break;
                     case 'translate':
                         var coordinates = this.parseCoordinates3D(transformationNodes[j], "translate transformation");
-                        console.log("here");
-                        console.log(coordinates);
                         if (!Array.isArray(coordinates))
                             return coordinates;
                         transfMatrix = mat4.translate(transfMatrix, transfMatrix, coordinates);
@@ -851,7 +840,6 @@ export class MySceneGraph {
                         transfMatrix = mat4.scale(transfMatrix, transfMatrix, coordinates);
                         break;
                     case 'rotate':
-                        console.log("uh?");
                         var axis = this.reader.getString(transformationNodes[j], "axis");
                         var angle = this.reader.getFloat(transformationNodes[j], "angle");
 
@@ -867,21 +855,19 @@ export class MySceneGraph {
 
             // Materials
             var materialsNodes = grandChildren[materialsIndex].children;
-            
             for(let i = 0; i < materialsNodes.length; i++){
-                console.log("ENTREI", materialsNodes[i]);
 
                 var materialID = this.reader.getString(materialsNodes[i], "id");
-
+                
                 if (materialID == null)
                     return "no ID defined for material";
 
-
-                console.log("Material", this.materials[materialID]);
                 // Checks for repeated IDs.
                 if (this.materials[materialID] != null){
+                    console.log("ID - ",materialID, " : ", this.materials[materialID])
                     component.material = this.materials[materialID];
                 }
+                
             
             }
             
@@ -890,13 +876,11 @@ export class MySceneGraph {
 
             // Children
             var childrenNodes = grandChildren[childrenIndex].children;
-            console.log("CHILDREN NODES ", childrenNodes);
             for (var j = 0; j < childrenNodes.length; j++) {
                 var currID = this.reader.getString(childrenNodes[j], 'id')
                 var tag = childrenNodes[j].nodeName;
 
                 if(tag == "primitiveref"){
-                    console.log("currID ", currID);
                     component.addPrimitive(currID);
                 }
                 else{
@@ -1028,7 +1012,6 @@ export class MySceneGraph {
      */
     displayScene() {
         //To do: Create display loop for transversing the scene graph
-        console.log("MATERIAIS ", this.materials);
         //To test the parsing/creation of the primitives, call the display function directly
         for (let i = 0; i < this.components.length; i++) {
             var component = this.components[i];
