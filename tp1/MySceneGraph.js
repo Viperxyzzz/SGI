@@ -422,7 +422,6 @@ export class MySceneGraph {
 
         // Any number of materials.
         for (var i = 0; i < children.length; i++) {
-
             if (children[i].nodeName != "material") {
                 this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
                 continue;
@@ -441,8 +440,8 @@ export class MySceneGraph {
                 
             grandChildren = children[i].children;
 
-            for(var i = 0; i < grandChildren.length; i++){
-                nodeNames.push(grandChildren[i].nodeName);
+            for(var j = 0; j < grandChildren.length; j++){
+                nodeNames.push(grandChildren[j].nodeName);
             }
 
             let emIndex = nodeNames.indexOf("emission");
@@ -495,12 +494,7 @@ export class MySceneGraph {
             mat.setSpecular(...specComponent);
 
             this.materials[materialID] = mat;
-
-            //Continue here
-            this.onXMLMinorError("To do: Parse materials.");
         }
-
-        //this.log("Parsed materials");
         return null;
     }
 
@@ -880,13 +874,14 @@ export class MySceneGraph {
                 var materialID = this.reader.getString(materialsNodes[i], "id");
 
                 if (materialID == null)
-                return "no ID defined for material";
+                    return "no ID defined for material";
 
 
                 console.log("Material", this.materials[materialID]);
                 // Checks for repeated IDs.
-                if (this.materials[materialID] != null)
+                if (this.materials[materialID] != null){
                     component.material = this.materials[materialID];
+                }
             
             }
             
@@ -1033,14 +1028,9 @@ export class MySceneGraph {
      */
     displayScene() {
         //To do: Create display loop for transversing the scene graph
-
+        console.log("MATERIAIS ", this.materials);
         //To test the parsing/creation of the primitives, call the display function directly
         for (let i = 0; i < this.components.length; i++) {
-            /*console.log("THIS COMPONENTES", this.components);
-            this.scene.pushMatrix();
-            console.log(this.transformations);
-            this.scene.multMatrix(this.transformations["demoTransform"]);*/
-            //this.scene.popMatrix();
             var component = this.components[i];
             var componentPrimitives = component.getPrimitives();
             var componentChildren = component.getChildren();
@@ -1048,6 +1038,7 @@ export class MySceneGraph {
                 var id = componentPrimitives[j];
                 this.scene.pushMatrix();
                 this.scene.multMatrix(component.transformation);
+                component.material.apply();
                 this.primitives[id].display();
                 this.scene.popMatrix();
             }
@@ -1056,7 +1047,7 @@ export class MySceneGraph {
 
                 for(let k = 0; k < this.components.length; k++){
                     if(this.components[k].id == componentChildren[j]){
-                        this.displaySceneRecursive(this.components[k],{transformation : component.transformation});
+                        this.displaySceneRecursive(this.components[k],{transformation : component.transformation, material : component.material});
                         break;
                     }
                 }
@@ -1070,6 +1061,7 @@ export class MySceneGraph {
         var componentPrimitives = component.getPrimitives();
         var componentChildren = component.getChildren();
 
+
         var currTransf = mat4.create();
         mat4.multiply(currTransf,component.transformation,context.transformation);
         
@@ -1077,6 +1069,7 @@ export class MySceneGraph {
             var id = componentPrimitives[j];
             this.scene.pushMatrix();
             this.scene.multMatrix(currTransf);
+            component.material.apply();
             this.primitives[id].display();
             this.scene.popMatrix();
         }
