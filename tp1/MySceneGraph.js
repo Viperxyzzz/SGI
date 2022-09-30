@@ -711,12 +711,12 @@ export class MySceneGraph {
                     return "unable to parse height of the primitive coordinates for ID = " + primitiveId;
 
                 // top
-                var top = this.reader.getFloat(grandChildren[0], 'topRadius');
+                var top = this.reader.getFloat(grandChildren[0], 'top');
                 if (!(top != null && !isNaN(top)))
                     return "unable to parse top radius of the primitive coordinates for ID = " + primitiveId;
 
                 // bot
-                var bot = this.reader.getFloat(grandChildren[0], 'bottomRadius');
+                var bot = this.reader.getFloat(grandChildren[0], 'base');
                 if (!(bot != null && !isNaN(bot)))
                     return "unable to parse bottom radius of the primitive coordinates for ID = " + primitiveId;
 
