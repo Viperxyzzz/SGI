@@ -862,12 +862,15 @@ export class MySceneGraph {
                 if (materialID == null)
                     return "no ID defined for material";
 
-                // Checks for repeated IDs.
-                if (this.materials[materialID] != null){
-                    console.log("ID - ",materialID, " : ", this.materials[materialID])
-                    component.material = this.materials[materialID];
+                //Checks if the material is created
+                if (materialID != "inherit" && this.materials[materialID] == null) {
+                    return "No material with ID " + materialID;
                 }
-                
+                //First root cannot inherit materials
+                if (componentID == this.idRoot && materialID == "inherit") {
+                    return "Initial Root cannot inherit materials";
+                }
+                component.materialID = materialID;
             
             }
             
@@ -891,7 +894,7 @@ export class MySceneGraph {
             component.transformation = transfMatrix;
             component.id = componentID;
 
-            this.components.push(component);
+            this.components[componentID] = component;
         }
     }
 
@@ -1010,63 +1013,48 @@ export class MySceneGraph {
     /**
      * Displays the scene, processing each node, starting in the root node.
      */
-    displayScene() {
-        //To do: Create display loop for transversing the scene graph
-        //To test the parsing/creation of the primitives, call the display function directly
-        for (let i = 0; i < this.components.length; i++) {
-            var component = this.components[i];
-            if(component.id != this.idRoot){
-                continue;
-            }
-            var componentPrimitives = component.getPrimitives();
-            var componentChildren = component.getChildren();
-            for(let j = 0; j < componentPrimitives.length; j++){
-                var id = componentPrimitives[j];
-                this.scene.pushMatrix();
-                this.scene.multMatrix(component.transformation);
-                component.material.apply();
-                this.primitives[id].display();
-                this.scene.popMatrix();
-            }
-            
-            for(let j = 0; j < componentChildren.length; j++){
-
-                for(let k = 0; k < this.components.length; k++){
-                    if(this.components[k].id == componentChildren[j]){
-                        this.displaySceneRecursive(this.components[k],{transformation : component.transformation, material : component.material});
-                        break;
-                    }
-                }
-            }
-        }
-
-        //displaySceneRecursive(this.idRoot,context);
+    displayScene() {    
+        this.displaySceneRecursive(this.idRoot, null, null);
     }
 
-    displaySceneRecursive(component,context){
-        var componentPrimitives = component.getPrimitives();
-        var componentChildren = component.getChildren();
-
-
-        var currTransf = mat4.create();
-        mat4.multiply(currTransf,component.transformation,context.transformation);
-        
-        for(let j = 0; j < componentPrimitives.length; j++){
-            var id = componentPrimitives[j];
-            this.scene.pushMatrix();
-            this.scene.multMatrix(currTransf);
-            component.material.apply();
-            this.primitives[id].display();
-            this.scene.popMatrix();
+    displaySceneRecursive(componentID, prevMat, prevTex){
+    
+        if(this.components[componentID] == null){
+            this.onXMLMinorError("No component for ID : " + componentID);
         }
-        for(let j = 0; j < componentChildren.length; j++){
 
-            for(let k = 0; k < this.components.length; k++){
-                if(this.components[k].id == componentChildren[j]){
-                    this.displaySceneRecursive(this.components[k],{transformation : currTransf});
-                    break;
-                }
-            }
+        //Get current component
+        var component = new MyComponent(this);
+        component = this.components[componentID];
+
+        this.scene.pushMatrix();
+
+        //Apply component transformations
+        this.scene.multMatrix(component.transformation);
+
+        //Update previous material
+        if(component.materialID != "inherit"){
+            prevMat = this.materials[component.materialID];
         }
+
+
+        //Apply textures
+
+
+        //Apply material
+        prevMat.apply();
+
+
+        //Display primitives
+        for(let i in component.getPrimitives()){
+            this.primitives[component.primitives[i]].display();
+        }
+
+        //Recursive call to go threw 
+        for(let i in component.getChildren()){
+            this.displaySceneRecursive(component.children[i], prevMat, prevTex);
+        }
+
+        this.scene.popMatrix();
     }
 }
