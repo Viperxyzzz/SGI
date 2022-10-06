@@ -1,12 +1,14 @@
 export class MyComponent {
-    constructor(scene){
+    constructor(scene, id, materialID, texture, l_s, l_t, primitives=[], children=[]){
         this.scene = scene;
-        this.id = "";
+        this.id = id;
         this.transformation = mat4.create();
-        this.material = null;
-        this.texture = null;
-        this.primitives = []
-        this.children = [];
+        this.materialID = materialID;
+        this.texture = texture;
+        this.l_s = l_s;
+        this.l_t = l_t;
+        this.primitives = primitives;
+        this.children = children;
     }
 
     addPrimitive(primitive){
