@@ -398,6 +398,34 @@ export class MySceneGraph {
      * @param {textures block element} texturesNode
      */
     parseTextures(texturesNode) {
+        console.log("TEXTURE NODE ", texturesNode);
+        this.textures = [];
+        
+        var children = texturesNode.children;
+
+        for(let i = 0; i < children.length; i++){
+            if(children[i].nodeName != "texture"){
+                this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
+                continue;
+            }
+
+            var textureID = this.reader.getString(children[i], 'id');
+            var file = this.reader.getString(children[i],'file');
+            console.log("TEXUTRE ID " , textureID);
+            console.log("FILE ", file);
+
+            if (textureID == null)
+                return "no ID defined for material";
+
+            // Checks for repeated IDs.
+            if (this.textures[textureID] != null)
+                return "ID must be unique for each light (conflict: ID = " + materialID + ")";
+            var texture = new CGFappearance(this.scene);
+            texture.loadTexture(file);
+            texture.setTextureWrap('REPEAT', 'REPEAT');
+            this.textures[textureID] = texture;
+
+        }
 
         //For each texture in textures block, check ID and file URL
         this.onXMLMinorError("To do: Parse textures.");
@@ -876,7 +904,8 @@ export class MySceneGraph {
             
 
             // Texture
-
+            var textureNodes = grandChildren[textureIndex];
+            component.texture = textureNodes.id;
             // Children
             var childrenNodes = grandChildren[childrenIndex].children;
             for (var j = 0; j < childrenNodes.length; j++) {
