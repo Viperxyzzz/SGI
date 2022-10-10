@@ -1066,12 +1066,19 @@ export class MySceneGraph {
             prevMat = this.materials[component.materialID];
         }
 
-
-        //Apply textures
-
-
-        //Apply material
         prevMat.apply();
+        if (component.texture != "inherit" && component.texture != "none"){
+            prevTex = this.textures[component.texture];
+        }
+
+        if(component.texture == "none"){
+            prevTex = null;
+        }
+
+        if(component.texture != "none" && prevTex != null)
+            prevTex.apply();
+
+
 
 
         //Display primitives
