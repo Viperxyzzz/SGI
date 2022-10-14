@@ -52,7 +52,6 @@ export class XMLscene extends CGFscene {
     initLights() {
         var i = 0;
         // Lights index.
-
         // Reads the lights from the scene graph.
         for (var key in this.graph.lights) {
             if (i >= 8)
@@ -106,6 +105,16 @@ export class XMLscene extends CGFscene {
         this.sceneInited = true;
     }
 
+    handleKeyPress(){
+        if(this.interface.isKeyPressed("KeyM")){
+            this.graph.changeMaterial();
+        }
+    }
+
+    update() {
+        this.handleKeyPress();
+    }
+
     /**
      * Displays the scene.
      */
@@ -137,6 +146,7 @@ export class XMLscene extends CGFscene {
 
             // Displays the scene (MySceneGraph function).
             this.graph.displayScene();
+
         }
 
         this.popMatrix();
