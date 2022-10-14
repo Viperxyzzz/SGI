@@ -1,4 +1,4 @@
-import { CGFappearance, CGFXMLreader } from '../lib/CGF.js';
+import { CGFappearance, CGFcamera, CGFXMLreader } from '../lib/CGF.js';
 import { MyRectangle } from './MyRectangle.js';
 import { MyTriangle } from './MyTriangle.js';
 import { MySphere } from './MySphere.js'
@@ -229,12 +229,74 @@ export class MySceneGraph {
         return null;
     }
 
+
+
     /**
      * Parses the <views> block.
      * @param {view block element} viewsNode
      */
     parseView(viewsNode) {
-        this.onXMLMinorError("To do: Parse views and create cameras.");
+
+        this.cameras = []
+        let children = viewsNode.children;
+        for(let i = 0; i < children.length; i++){
+            let curView = children[i];
+            let camera = null;
+            let id = curView.id;
+            let type = curView.nodeName;
+            switch(type){
+                case 'perspective':
+                    let near = this.reader.getFloat(curView, 'near');
+                    let far = this.reader.getFloat(curView, 'far');
+                    let fov = (this.reader.getFloat(curView,'angle')) * DEGREE_TO_RAD;
+                    
+                    let curViewChildren = []
+                    for(let i = 0 ; i < curView.children.length; i++){
+                        curViewChildren.push(curView.children[i].nodeName);
+                    }
+
+                    let fromIndex = curViewChildren.indexOf('from');
+                    let toIndex = curViewChildren.indexOf('to');
+                    /*
+                    if (fromIndex == -1 || toIndex == -1){
+                        return "Missing from or to in perspective view";
+                    }*/
+                    let from = this.parseCoordinates3D(curView.children[fromIndex], 'from');
+                    let to = this.parseCoordinates3D(curView.children[toIndex], 'to');
+
+                    camera = new CGFcamera(fov, near, far, from, to);
+                    break;
+                case 'ortho':
+                    let nearOrtho = this.reader.getFloat(curView, 'near');
+                    let farOrtho = this.reader.getFloat(curView, 'far');
+                    let left = this.reader.getFloat(curView, 'left');
+                    let right = this.reader.getFloat(curView, 'right');
+                    let top = this.reader.getFloat(curView, 'top');
+                    let bottom = this.reader.getFloat(curView, 'bottom');
+
+                    let curViewChildrenOrtho = [];
+
+                    for(let i = 0 ; i < curView.children.length; i++){
+                        curViewChildrenOrtho.push(curView.children[i].nodeName);
+                    }
+
+                    let fromIndexOrtho = curViewChildrenOrtho.indexOf('from');
+                    let toIndexOrtho = curViewChildrenOrtho.indexOf('to');
+                    let upIndexOrtho = curViewChildrenOrtho.indexOf('up');
+
+                    if(fromIndexOrtho == -1 || toIndexOrtho == -1 || upIndexOrtho == -1){
+                        return "Missing from, to or up in ortho view";
+                    }
+
+                    let fromOrtho = this.parseCoordinates3D(curView.children[fromIndexOrtho], 'from');
+                    let toOrtho = this.parseCoordinates3D(curView.children[toIndexOrtho], 'to');
+                    let upOrtho = this.parseCoordinates3D(curView.children[upIndexOrtho], 'up');
+
+                    camera = new CGFcameraOrtho(left, right, bottom, top, nearOrtho, farOrtho, fromOrtho, toOrtho, upOrtho);
+                    break;
+            }
+        }
+        this.log("Parsed views");
 
         return null;
     }
@@ -398,7 +460,6 @@ export class MySceneGraph {
      * @param {textures block element} texturesNode
      */
     parseTextures(texturesNode) {
-        console.log("TEXTURE NODE ", texturesNode);
         this.textures = [];
         
         var children = texturesNode.children;
@@ -411,8 +472,6 @@ export class MySceneGraph {
 
             var textureID = this.reader.getString(children[i], 'id');
             var file = this.reader.getString(children[i],'file');
-            console.log("TEXUTRE ID " , textureID);
-            console.log("FILE ", file);
 
             if (textureID == null)
                 return "no ID defined for material";
@@ -428,7 +487,6 @@ export class MySceneGraph {
         }
 
         //For each texture in textures block, check ID and file URL
-        this.onXMLMinorError("To do: Parse textures.");
         return null;
     }
 
@@ -582,7 +640,6 @@ export class MySceneGraph {
                         var y = (axis == "y") ? 1 : 0;
                         var z = (axis == "z") ? 1 : 0;
                         transfMatrix = mat4.rotate(transfMatrix, transfMatrix, DEGREE_TO_RAD * angle, [x, y, z])
-                        this.onXMLMinorError("To do: Parse rotate transformations.");
                         break;
                 }
             }
@@ -788,9 +845,6 @@ export class MySceneGraph {
 
                 this.primitives[primitiveId] = torus;
             }
-            else {
-                console.warn("To do: Parse other primitives.");
-            }
         }
         this.log("Parsed primitives");
         return null;
@@ -843,7 +897,6 @@ export class MySceneGraph {
             component.id = componentID;
 
 
-            this.onXMLMinorError("To do: Parse components.");
             // Transformations
             var transformationNodes = grandChildren[transformationIndex].children;
             var transfMatrix = mat4.create();
@@ -875,7 +928,6 @@ export class MySceneGraph {
                         var y = (axis == "y") ? 1 : 0;
                         var z = (axis == "z") ? 1 : 0;
                         transfMatrix = mat4.rotate(transfMatrix, transfMatrix, DEGREE_TO_RAD * angle, [x, y, z])
-                        this.onXMLMinorError("To do: Parse rotate transformations.");
                         break;
                 }
             }
