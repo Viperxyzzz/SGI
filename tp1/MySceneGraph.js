@@ -1,4 +1,4 @@
-import { CGFappearance, CGFcamera, CGFXMLreader } from '../lib/CGF.js';
+import { CGFappearance, CGFcamera, CGFXMLreader, CGFcameraOrtho } from '../lib/CGF.js';
 import { MyRectangle } from './MyRectangle.js';
 import { MyTriangle } from './MyTriangle.js';
 import { MySphere } from './MySphere.js'
@@ -284,17 +284,25 @@ export class MySceneGraph {
                     let toIndexOrtho = curViewChildrenOrtho.indexOf('to');
                     let upIndexOrtho = curViewChildrenOrtho.indexOf('up');
 
-                    if(fromIndexOrtho == -1 || toIndexOrtho == -1 || upIndexOrtho == -1){
-                        return "Missing from, to or up in ortho view";
+                    if(fromIndexOrtho == -1 || toIndexOrtho == -1){
+                        return "Missing from or to in ortho view";
                     }
+
 
                     let fromOrtho = this.parseCoordinates3D(curView.children[fromIndexOrtho], 'from');
                     let toOrtho = this.parseCoordinates3D(curView.children[toIndexOrtho], 'to');
-                    let upOrtho = this.parseCoordinates3D(curView.children[upIndexOrtho], 'up');
+                    let upOrtho;
+                    if(upIndexOrtho != -1){
+                        upOrtho = this.parseCoordinates3D(curView.children[upIndexOrtho], 'up');
+                    }else{
+                        upOrtho = [0,1,0];
+                    }
 
                     camera = new CGFcameraOrtho(left, right, bottom, top, nearOrtho, farOrtho, fromOrtho, toOrtho, upOrtho);
                     break;
             }
+            
+            this.cameras[id] = camera;
         }
         this.log("Parsed views");
 
