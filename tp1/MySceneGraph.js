@@ -853,7 +853,7 @@ export class MySceneGraph {
                 switch (transformationNodes[j].nodeName) {
                     case 'transformationref':
                         var id = this.reader.getString(transformationNodes[j], 'id');
-                        component.transformation = (this.transformations[id]);
+                        transfMatrix = mat4.multiply(transfMatrix, transfMatrix, this.transformations[id]);
                         break;
                     case 'translate':
                         var coordinates = this.parseCoordinates3D(transformationNodes[j], "translate transformation");
