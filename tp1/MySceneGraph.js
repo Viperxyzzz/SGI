@@ -867,7 +867,6 @@ export class MySceneGraph {
         this.components = [];
         
         var grandChildren = [];
-        var grandgrandChildren = [];
         var nodeNames = [];
 
         // Any number of components.
@@ -958,8 +957,14 @@ export class MySceneGraph {
                 if (componentID == this.idRoot && materialID == "inherit") {
                     return "Initial Root cannot inherit materials";
                 }
-                component.materialID = materialID;
-            
+                /*<!-- se varios materiais declarados, o default e' o -->
+
+                <!-- primeiro material; de cada vez que se pressione a tecla m/M, -->*/
+
+                if(i == 0){
+                    component.materialID = materialID;
+                }
+                component.materialList.push(materialID);
             }
             
 
@@ -1097,6 +1102,12 @@ export class MySceneGraph {
      */
     log(message) {
         console.log("   " + message);
+    }
+    
+    changeMaterial(){
+        for(let i in this.components){
+            this.components[i].changeMaterial();
+        }
     }
 
     /**

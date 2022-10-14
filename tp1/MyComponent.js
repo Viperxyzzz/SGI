@@ -9,6 +9,8 @@ export class MyComponent {
         this.l_t = l_t;
         this.primitives = primitives;
         this.children = children;
+
+        this.materialList = [];
     }
 
     addPrimitive(primitive){
@@ -29,5 +31,15 @@ export class MyComponent {
 
     getChildren(){
         return this.children;
+    }
+
+    changeMaterial(){
+        let curIndex = this.materialList.indexOf(this.materialID);
+        if(curIndex == this.materialList.length - 1){
+            this.materialID = this.materialList[0];
+        }
+        else{
+            this.materialID = this.materialList[curIndex + 1];
+        }
     }
 }
