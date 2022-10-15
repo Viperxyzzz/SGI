@@ -237,8 +237,15 @@ export class MySceneGraph {
      */
     parseView(viewsNode) {
 
-        this.cameras = []
+        this.cameras = [];
+        this.scene.cameraIDs = [];
         let children = viewsNode.children;
+
+        this.default = this.reader.getString(viewsNode, 'default');
+        if (this.default == null) {
+            this.onXMLError('Error Parsing Default View');
+        }
+        
         for(let i = 0; i < children.length; i++){
             let curView = children[i];
             let camera = null;
@@ -304,6 +311,10 @@ export class MySceneGraph {
             
             this.cameras[id] = camera;
         }
+
+        if (Object.keys(this.cameras).length == 0)
+            return "at least one view must be defined";
+        
         this.log("Parsed views");
 
         return null;
