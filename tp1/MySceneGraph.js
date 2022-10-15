@@ -1,10 +1,10 @@
 import { CGFappearance, CGFcamera, CGFXMLreader, CGFcameraOrtho } from '../lib/CGF.js';
-import { MyRectangle } from './MyRectangle.js';
-import { MyTriangle } from './MyTriangle.js';
-import { MySphere } from './MySphere.js'
-import { MyCylinder } from './MyCylinder.js';
+import { MyRectangle } from './primitives/MyRectangle.js';
+import { MyTriangle } from './primitives/MyTriangle.js';
+import { MySphere } from './primitives/MySphere.js'
+import { MyCylinder } from './primitives/MyCylinder.js';
 import { MyComponent } from './MyComponent.js';
-import { MyTorus } from './MyTorus.js';
+import { MyTorus } from './primitives/MyTorus.js';
 
 var DEGREE_TO_RAD = Math.PI / 180;
 
@@ -982,6 +982,11 @@ export class MySceneGraph {
             // Texture
             var textureNodes = grandChildren[textureIndex];
             component.texture = textureNodes.id;
+            if(this.reader.hasAttribute(textureNodes, "length_s") && this.reader.hasAttribute(textureNodes, "length_t")){
+                component.l_s = this.reader.getFloat(textureNodes, "length_s");
+                component.l_t = this.reader.getFloat(textureNodes, "length_t");            
+            }    
+
             // Children
             var childrenNodes = grandChildren[childrenIndex].children;
             for (var j = 0; j < childrenNodes.length; j++) {
@@ -1125,10 +1130,10 @@ export class MySceneGraph {
      * Displays the scene, processing each node, starting in the root node.
      */
     displayScene() {    
-        this.displaySceneRecursive(this.idRoot, null, null);
+        this.displaySceneRecursive(this.idRoot, null, null, null, null);
     }
 
-    displaySceneRecursive(componentID, prevMat, prevTex){
+    displaySceneRecursive(componentID, prevMat, prevTex, l_s, l_t){
     
         if(this.components[componentID] == null){
             this.onXMLMinorError("No component for ID : " + componentID);
@@ -1151,6 +1156,8 @@ export class MySceneGraph {
         prevMat.apply();
         if (component.texture != "inherit" && component.texture != "none"){
             prevTex = this.textures[component.texture];
+            l_s = component.l_s;
+            l_t = component.l_t;
         }
 
         if(component.texture == "none"){
@@ -1165,6 +1172,7 @@ export class MySceneGraph {
 
         //Display primitives
         for(let i in component.getPrimitives()){
+            this.primitives[component.primitives[i]].updateTexCoords(l_s, l_t);
             this.primitives[component.primitives[i]].display();
         }
 

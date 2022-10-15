@@ -1,4 +1,4 @@
-import {CGFobject} from '../lib/CGF.js';
+import {CGFobject} from '../../lib/CGF.js';
 
 
 export class MyCylinder extends CGFobject {
@@ -82,5 +82,8 @@ export class MyCylinder extends CGFobject {
         this.initNormalVizBuffers();
 
     }
-
+    
+    updateTexCoords(coords){
+        //doesn't need to do anything
+    }
 }

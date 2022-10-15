@@ -1,4 +1,4 @@
-import {CGFobject} from '../lib/CGF.js';
+import {CGFobject} from '../../lib/CGF.js';
 
 export class MySphere extends CGFobject {
   /**
@@ -86,9 +86,8 @@ export class MySphere extends CGFobject {
 	 * Updates the list of texture coordinates of the rectangle
 	 * @param {Array} coords - Array of texture coordinates
 	 */
-	updateTexCoords(coords) {
-		this.texCoords = [...coords];
-		this.updateTexCoordsGLBuffers();
-	}
+  updateTexCoords(coords){
+      //doesn't need to do anything
+  }
 
 }

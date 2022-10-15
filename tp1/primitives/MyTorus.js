@@ -1,4 +1,4 @@
-import {CGFobject} from '../lib/CGF.js';
+import {CGFobject} from '../../lib/CGF.js';
 
 
 export class MyTorus extends CGFobject {
@@ -71,6 +71,10 @@ export class MyTorus extends CGFobject {
 
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
+    }
+
+    updateTexCoords(coords){
+        //doesn't need to do anything
     }
 
 }

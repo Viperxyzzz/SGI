@@ -1,4 +1,4 @@
-import { CGFobject } from '../lib/CGF.js';
+import { CGFobject } from '../../lib/CGF.js';
 /**
  * MyRectangle
  * @constructor
@@ -65,7 +65,7 @@ export class MyRectangle extends CGFobject {
 	 * @param {Array} coords - Array of texture coordinates
 	 */
 	updateTexCoords(coords) {
-		this.texCoords = [...coords];
+		//idk
 		this.updateTexCoordsGLBuffers();
 	}
 }

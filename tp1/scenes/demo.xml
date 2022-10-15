@@ -65,6 +65,8 @@
         <texture id="tireTexture" file="scenes/images/tire.jpg"/>
         <texture id="tankTexture" file="scenes/images/tank.jpg" />
         <texture id="gunTexture" file="scenes/images/gun.jpg" />
+        <texture id="mastTexture" file="scenes/images/wood.jpg" />
+        <texture id="flagTexture" file="scenes/images/flag.jpg" />
     </textures>
 
     <materials>
@@ -78,6 +80,18 @@
             <emission r="0.0" g="0.0" b="0.0" a="1.0" />
             <ambient r="0.0" g="0.0" b="0.5" a="1.0" />
             <diffuse r="0.0" g="0.0" b="0.5" a="1.0" />
+            <specular r="0.0" g="0.0" b="0.0" a="1.0" />
+        </material>
+        <material id="red" shininess="10">
+            <emission r="0.0" g="0.0" b="0.0" a="1.0" />
+            <ambient r="1" g="0" b="0.0" a="1.0" />
+            <diffuse r="1" g="0" b="0.0" a="1.0" />
+            <specular r="0.0" g="0.0" b="0.0" a="1.0" />
+        </material>
+        <material id="blue" shininess="10">
+            <emission r="0.0" g="0.0" b="0.0" a="1.0" />
+            <ambient r="0" g="0" b="1" a="1.0" />
+            <diffuse r="0" g="0" b="1" a="1.0" />
             <specular r="0.0" g="0.0" b="0.0" a="1.0" />
         </material>
     </materials>
@@ -123,6 +137,7 @@
             <children>
                 <componentref id="tank" />
                 <componentref id="floor" />
+                <componentref id="flag" />
             </children>
         </component>
 
@@ -371,6 +386,94 @@
             <texture id="tireTexture"/>
             <children>
                 <primitiveref id="demoTorus" />
+            </children>
+        </component>
+        <component id="flag">
+            <transformation>
+                <translate x="5.85" y="4" z="-2" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="tankTexture"/>
+            <children>
+                <componentref id="mast" /> 
+                <componentref id="triangleFlag" /> 
+            </children>
+        </component>
+        
+        <component id="mast">
+            <transformation>
+                <translate x="0" y="-4" z="0" />
+                <scale x="0.15" y="1.25" z="0.15" />
+                <rotate angle="-90" axis="x"/>
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="mastTexture"/>
+            <children>
+                <primitiveref id="demoCylinder" />
+                <componentref id="mastTop" />
+            </children>
+        </component>
+        
+        <component id="mastTop">
+            <transformation>
+                <translate x="0" y="0" z="4.9" />
+                <scale x="2" y="2" z="0.25" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit"/>
+            <children>
+                <primitiveref id="demoSphere" />
+            </children>
+        </component>
+
+        <component id="triangleFlag">
+            <transformation>
+                <translate x="0.01" y="0" z="0" />
+                <scale x="1" y="0.5" z="2" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="flagTexture"/>
+            <children>
+                <componentref id="triangleFlag1" /> 
+                <componentref id="triangleFlag2" /> 
+            </children>
+        </component>
+        <component id="triangleFlag1">
+            <transformation>
+                <rotate angle="-90" axis="x"/>
+            </transformation>
+            <materials>
+                <material id="inherit" />
+                <material id="red" />
+                <material id="blue"/>
+            </materials>
+            <texture id="inherit" length_s="1" length_t="1"/>
+            <children>
+                <primitiveref id="demoTriangle" />
+            </children>
+        </component>
+        <component id="triangleFlag2">
+            <transformation>
+                <translate x="0" y="4" z="0"/>
+                <rotate angle="-90" axis="x"/>
+                <rotate angle="180" axis="y"/>
+            </transformation>
+            <materials>
+                <material id="inherit" />
+                <material id="red" />
+                <material id="blue"/>
+            </materials>
+            <texture id="inherit" length_s="1" length_t="1"/>
+            <children>
+                <primitiveref id="demoTriangle" />
             </children>
         </component>
     </components>

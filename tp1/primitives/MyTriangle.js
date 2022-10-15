@@ -1,4 +1,4 @@
-import { CGFobject } from '../lib/CGF.js';
+import { CGFobject } from '../../lib/CGF.js';
 /**
  * MyTriangle
  * @constructor
@@ -38,24 +38,34 @@ export class MyTriangle extends CGFobject {
 
 		//A = p2 - p1
 		//B = p3 - p1
+		//C = p3 - p2
 
-		var ax = this.x2 - this.x1;
-		var ay = this.y2 - this.y1;
-		var az = this.z2 - this.z1;
-		var bx = this.x3 - this.x1;
-		var by = this.y3 - this.y1;
-		var bz = this.z3 - this.z1;
-		var nx = ay * bz - az * by;
-		var ny = az * bx - ax * bz;
-		var nz = ax * by - ay * bx;
+		this.v1 = vec3.fromValues(this.x1,this.y1,this.z1);
+		this.v2 = vec3.fromValues(this.x2,this.y2,this.z2);
+		this.v3 = vec3.fromValues(this.x3,this.y3,this.z3);
+
+		this.vA = vec3.sub(vec3.create(), this.v2, this.v1);
+		this.vB = vec3.sub(vec3.create(), this.v3, this.v1);
+		this.vC = vec3.sub(vec3.create(), this.v3, this.v2);
+
+		let a = vec3.len(this.vA);
+		let b = vec3.len(this.vB);
+		let c = vec3.len(this.vC);
 		
+		let cosAngle = (a*a + c*c - b*b) / (2*a*c);
+		let sinAngle = Math.sqrt(1 - cosAngle*cosAngle);
+
+		let normal = vec3.normalize(vec3.create(),vec3.cross(vec3.create(), this.vA, this.vB));
+
 
 		//Facing Z positive
 		this.normals = [
-			nx, 0, 0,
-			0, ny, 0,
-			0, 0, nz,
+			...normal,
+			...normal,
+			...normal
 		];
+
+		console.log(this.normals);
 		
 		/*
 		Texture coords (s,t)
@@ -66,21 +76,24 @@ export class MyTriangle extends CGFobject {
 		v
         t
         */
-		let a = Math.sqrt(Math.pow(this.x1 - this.x3,2) + Math.pow(this.y1 - this.y3,2));
-		let b = Math.sqrt(Math.pow(this.x3 - this.x2,2) + Math.pow(this.y3 - this.y2,2));
-		let c = Math.sqrt(Math.pow(this.x1 - this.x2,2) + Math.pow(this.y1 - this.y2,2));
-		
-		let cosAngle = (a * a - b * b + c * c) / (2 * a * c);
-		let sinAngle = Math.sqrt(1 - (cosAngle * cosAngle));
+
+		this.a = a;
+		this.b = b;
+		this.c = c;
 
 		let length_u = 1;//?
 		let length_v = 1;
 
 		this.texCoords = [
-			0, 0,
+			0, 1,
 			a / length_u, 0,
 			c * cosAngle / length_u, c * sinAngle / length_v
 		]
+
+		this.a = a;
+		this.c = c;
+		this.cosAngle = cosAngle;
+		this.sinAngle =sinAngle;
 		this.primitiveType = this.scene.gl.TRIANGLES;
 		this.initGLBuffers();
 	}
@@ -90,8 +103,12 @@ export class MyTriangle extends CGFobject {
 	 * Updates the list of texture coordinates of the rectangle
 	 * @param {Array} coords - Array of texture coordinates
 	 */
-	updateTexCoords(coords) {
-		this.texCoords = [...coords];
+	updateTexCoords(l_s, l_t) {
+		this.texCoords = [
+			0,1,
+			this.a / l_s, 0,
+			this.c * this.cosAngle / l_s, this.c * this.sinAngle / l_t
+		];
 		this.updateTexCoordsGLBuffers();
 	}
 }
