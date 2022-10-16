@@ -984,7 +984,7 @@ export class MySceneGraph {
             component.texture = textureNodes.id;
             if(this.reader.hasAttribute(textureNodes, "length_s") && this.reader.hasAttribute(textureNodes, "length_t")){
                 component.l_s = this.reader.getFloat(textureNodes, "length_s");
-                component.l_t = this.reader.getFloat(textureNodes, "length_t");            
+                component.l_t = this.reader.getFloat(textureNodes, "length_t");       
             }    
 
             // Children
@@ -1154,7 +1154,7 @@ export class MySceneGraph {
         }
 
         prevMat.apply();
-        if (component.texture != "inherit" && component.texture != "none"){
+        if (component.texture != "inherit" && component.texture != "none"){;
             prevTex = this.textures[component.texture];
             l_s = component.l_s;
             l_t = component.l_t;
@@ -1168,8 +1168,6 @@ export class MySceneGraph {
             prevTex.apply();
 
 
-
-
         //Display primitives
         for(let i in component.getPrimitives()){
             this.primitives[component.primitives[i]].updateTexCoords(l_s, l_t);
@@ -1178,7 +1176,7 @@ export class MySceneGraph {
 
         //Recursive call to go threw 
         for(let i in component.getChildren()){
-            this.displaySceneRecursive(component.children[i], prevMat, prevTex);
+            this.displaySceneRecursive(component.children[i], prevMat, prevTex, l_s, l_t);
         }
 
         this.scene.popMatrix();
