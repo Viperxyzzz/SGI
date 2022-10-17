@@ -985,7 +985,11 @@ export class MySceneGraph {
             if(this.reader.hasAttribute(textureNodes, "length_s") && this.reader.hasAttribute(textureNodes, "length_t")){
                 component.l_s = this.reader.getFloat(textureNodes, "length_s");
                 component.l_t = this.reader.getFloat(textureNodes, "length_t");       
-            }    
+            }
+            else{
+                component.l_s = 1;
+                component.l_t = 1;
+            }
 
             // Children
             var childrenNodes = grandChildren[childrenIndex].children;
