@@ -3,7 +3,7 @@
 
     <views default="defaultCamera">
         <perspective id="defaultCamera" near="0.1" far="500" angle="45">
-            <from x="30" y="20" z="30" />
+            <from x="30" y="25" z="45" />
             <to x="0" y="-2" z="0" />
         </perspective>
 
@@ -37,7 +37,7 @@
 
     <ambient>
         <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
-        <background r="0.0" g="0.0" b="0.0" a="1.0" />
+        <background r="0.282" g="0.7" b="0.69" a="1.0"/>
     </ambient>
 
     <lights>
@@ -86,6 +86,10 @@
         <texture id="rocksTexture" file="scenes/images/rocks.jpg" />
         <texture id="tilesTexture" file="scenes/images/tiles.jpg" />
         <texture id="windowTexture" file="scenes/images/window.png" />
+        <texture id="sunTexture" file="scenes/images/sun.png" />
+        <texture id="steelTexture" file="scenes/images/steel.jpg" />
+        <texture id="doorTexture" file="scenes/images/door.jpg" />
+        <texture id="rustTexture" file="scenes/images/green_rust.jpg" />
     </textures>
 
     <materials>
@@ -119,11 +123,26 @@
             <diffuse r="0.2" g="0.2" b="0.2" a="1.0"/>
             <specular r="0" g="0" b="0" a="1.0"/>   
         </material>
+
+        <material id="black" shininess="10">
+            <emission r="0.0" g="0.0" b="0.0" a="1.0"/>
+            <ambient r="0.0" g="0.0" b="0.0" a="1.0"/>
+            <diffuse r="0.0" g="0.0" b="0.0" a="1.0"/>
+            <specular r="0.0" g="0.0" b="0.0" a="1.0"/>   
+        </material>
+
+        <material id="light_yellow" shininess="10">
+            <emission r="0.0" g="0.0" b="0.0" a="1.0"/>
+            <ambient r="0.8" g="0.8" b="0.0" a="1.0"/>
+            <diffuse r="0.8" g="0.8" b="0.0" a="1.0"/>
+            <specular r="0.8" g="0.8" b="0.0" a="1.0"/>   
+
         <material id="neutral" shininess="2">
             <emission r="0" g="0" b="0" a="1" />
             <ambient r="0.2" g="0.2" b="0.2" a="1" />
             <diffuse r="0.7" g="0.7" b="0.7" a="1" />
             <specular r="0.3" g="0.3" b="0.3" a="1" />
+
         </material>
     </materials>
 
@@ -177,6 +196,81 @@
                 <componentref id="billboard" />
                 <componentref id="tree" />
                 <componentref id="mine" />
+                <componentref id="sun" />
+                <componentref id="street_lamp" />
+            </children>
+        </component>
+
+
+        <component id="street_lamp">
+            <transformation>
+            </transformation>
+            <materials>
+                <material id="dark" />
+            </materials>
+            <texture id="rustTexture"/>
+            <children>
+                <componentref id="body_street_lamp" />
+                <componentref id="base_street_lamp" /> 
+                <componentref id="street_light" /> 
+            </children>
+        </component>
+
+        <component id="street_light">
+            <transformation>
+                <translate x="5.5" y="6.2" z="18" />   
+                <scale x="2" y="2" z="2" />
+            </transformation>
+            <materials>
+                <material id="light_yellow" />
+            </materials>
+            <texture id="none"/>
+            <children>
+                <primitiveref id="demoSphere" />
+            </children>
+        </component>
+
+        <component id="base_street_lamp">
+            <transformation>
+                <translate x="5.5" y="5.5" z="18" />
+                <scale x="1" y="0.5" z="1" />
+                <rotate angle="90" axis="x"/>
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit"/>
+            <children>
+                <primitiveref id="demoTorus" />
+            </children>
+        </component>
+
+        <component id="body_street_lamp">
+            <transformation>
+                <translate x="5.5" y="5.7" z="18" />
+                <scale x="1.1" y="1.1" z="1.1" />
+                <rotate angle="90" axis="x"/>
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit"/>
+            <children>
+                <primitiveref id="demoCylinder" />
+            </children>
+        </component>
+
+        <component id="sun">
+            <transformation>
+                <translate x="-16" y="13.6" z="-40" />
+                <scale x="3" y="3" z="3" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="sunTexture"/>
+            <children>
+                <primitiveref id="demoSphere" />
             </children>
         </component>
 
@@ -336,7 +430,7 @@
             <materials>
                 <material id="dark" />
             </materials>
-            <texture id="none"/>
+            <texture id="steelTexture"/>
             <children>
                 <componentref id="board_body" />
                 <componentref id="board" />
@@ -350,7 +444,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none"/>
+            <texture id="inherit"/>
             <children>
                 <componentref id="front_spotlight" />
                 <componentref id="back_spotlight" />
@@ -363,7 +457,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none"/>
+            <texture id="inherit"/>
             <children>
                 <componentref id="back_neck" />
                 <componentref id="back_sphere" />
@@ -380,9 +474,9 @@
                 <rotate angle="90" axis="y" />
             </transformation>
             <materials>
-                <material id="dark" />
+                <material id="light_yellow" />
             </materials>
-            <texture id="tireTexture"/>
+            <texture id="none"/>
             <children>
                 <primitiveref id="demoRectangle" />
             </children>
@@ -397,7 +491,7 @@
             <materials>
                 <material id="dark" />
             </materials>
-            <texture id="tankTexture"/>
+            <texture id="inherit"/>
             <children>
                 <primitiveref id="demoRectangle" />
             </children>
@@ -412,7 +506,7 @@
             <materials>
                 <material id="dark" />
             </materials>
-            <texture id="tankTexture"/>
+            <texture id="inherit"/>
             <children>
                 <primitiveref id="demoRectangle" />
             </children>
@@ -428,7 +522,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none"/>
+            <texture id="inherit"/>
             <children>
                 <primitiveref id="demoCylinder" />
             </children>
@@ -442,7 +536,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none"/>
+            <texture id="inherit"/>
             <children>
                 <primitiveref id="demoSphere" />
             </children>
@@ -454,7 +548,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none"/>
+            <texture id="inherit"/>
             <children>
                 <componentref id="front_neck" />
                 <componentref id="neck_sphere" />
@@ -471,9 +565,9 @@
                 <rotate angle="-90" axis="y" />
             </transformation>
             <materials>
-                <material id="dark" />
+                <material id="light_yellow" />
             </materials>
-            <texture id="tireTexture"/>
+            <texture id="none"/>
             <children>
                 <primitiveref id="demoRectangle" />
             </children>
@@ -488,7 +582,7 @@
             <materials>
                 <material id="dark" />
             </materials>
-            <texture id="tankTexture"/>
+            <texture id="inherit"/>
             <children>
                 <primitiveref id="demoRectangle" />
             </children>
@@ -503,7 +597,7 @@
             <materials>
                 <material id="dark" />
             </materials>
-            <texture id="tankTexture"/>
+            <texture id="inherit"/>
             <children>
                 <primitiveref id="demoRectangle" />
             </children>
@@ -519,7 +613,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none"/>
+            <texture id="inherit"/>
             <children>
                 <primitiveref id="demoCylinder" />
             </children>
@@ -533,7 +627,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none"/>
+            <texture id="inherit"/>
             <children>
                 <primitiveref id="demoSphere" />
             </children>
@@ -548,7 +642,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none"/>
+            <texture id="inherit"/>
             <children>
                 <primitiveref id="demoCylinder" />
             </children>
@@ -560,7 +654,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none"/>
+            <texture id="inherit"/>
             <children>
                 <componentref id="front_front_board" />
                 <componentref id="front_back_board" />
@@ -783,6 +877,19 @@
 
         <component id="door">
             <transformation>
+            </transformation>
+            <materials>
+                <material id="dark" />
+            </materials>
+            <texture id="none"/>
+            <children>
+                <componentref id="front_door" />
+                <componentref id="handle_door" />
+            </children>
+        </component>
+
+        <component id="front_door">
+            <transformation>
                 <translate x="-8.24" y="2.5" z="11" />
                 <scale x="2.2" y="2.4" z="2.2" />
                 <rotate angle="90" axis="y" />
@@ -790,9 +897,24 @@
             <materials>
                 <material id="dark" />
             </materials>
-            <texture id="mastTexture"/>
+            <texture id="doorTexture"/>
             <children>
                 <primitiveref id="demoRectangle" />
+            </children>
+        </component>
+
+        <component id="handle_door">
+            <transformation>
+                <translate x="-8.2" y="2.5" z="10.3" />
+                <scale x="0" y="0.25" z="0.25" />
+                <rotate angle="90" axis="y" />
+            </transformation>
+            <materials>
+                <material id="black" />
+            </materials>
+            <texture id="none"/>
+            <children>
+                <primitiveref id="demoCylinder" />
             </children>
         </component>
 
