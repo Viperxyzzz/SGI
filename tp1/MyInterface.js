@@ -35,6 +35,7 @@ export class MyInterface extends CGFinterface {
     addLights(){
 
         let lightsFolder = this.gui.addFolder("Lights");
+        lightsFolder.open();
 
         for(var i in this.scene.graph.lights){
             this.scene.interfaceLights[i] = this.scene.graph.lights[i][0];
@@ -46,6 +47,7 @@ export class MyInterface extends CGFinterface {
     addCameras(){
 
         let camerasFolder = this.gui.addFolder("Cameras");
+        camerasFolder.open();
 
         for(var i in this.scene.graph.cameras){
             this.scene.interfaceCameras[i] = i;
