@@ -1,4 +1,4 @@
-import { CGFappearance, CGFcamera, CGFXMLreader, CGFcameraOrtho } from '../lib/CGF.js';
+import { CGFappearance, CGFcamera, CGFXMLreader, CGFcameraOrtho, CGFtexture } from '../lib/CGF.js';
 import { MyRectangle } from './primitives/MyRectangle.js';
 import { MyTriangle } from './primitives/MyTriangle.js';
 import { MySphere } from './primitives/MySphere.js'
@@ -500,9 +500,10 @@ export class MySceneGraph {
             // Checks for repeated IDs.
             if (this.textures[textureID] != null)
                 return "ID must be unique for each light (conflict: ID = " + materialID + ")";
-            var texture = new CGFappearance(this.scene);
+            /*var texture = new CGFappearance(this.scene);
             texture.loadTexture(file);
-            texture.setTextureWrap('REPEAT', 'REPEAT');
+            texture.setTextureWrap('REPEAT', 'REPEAT');*/
+            var texture = new CGFtexture(this.scene,file);
             this.textures[textureID] = texture;
 
         }
@@ -1159,7 +1160,6 @@ export class MySceneGraph {
             prevMat = this.materials[component.materialID];
         }
 
-        prevMat.apply();
         if (component.texture != "inherit" && component.texture != "none"){;
             prevTex = this.textures[component.texture];
             l_s = component.l_s;
@@ -1168,11 +1168,15 @@ export class MySceneGraph {
 
         if(component.texture == "none"){
             prevTex = null;
+            prevMat.setTexture(null);
         }
 
-        if(component.texture != "none" && prevTex != null)
-            prevTex.apply();
+        if(component.texture != "none" && prevTex != null){
+            prevMat.setTexture(prevTex);
+            prevMat.setTextureWrap('REPEAT', 'REPEAT');
+        }
 
+        prevMat.apply();
 
         //Display primitives
         for(let i in component.getPrimitives()){
