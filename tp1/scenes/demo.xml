@@ -35,31 +35,41 @@
     </ambient>
 
     <lights>
-        <omni id="demoLight" enabled="1">
-            <location x="9.8" y="11.9" z="10" w="1.0" />
+        <omni id="lamp" enabled="1">            <!-- enable/disable -->
+            <location x="6" y="7" z="18" w="0" /><!-- light position; w=1: point light; w=0: directional light -->
+            <ambient r="1" g="1" b="1" a="1.0" />                   <!-- ambient component -->
+            <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />             <!-- diffuse component -->
+            <specular r="1.0" g="1.0" b="1.0" a="1.0" />            <!-- specular component -->
+        </omni>
+
+        <omni id="sun" enabled="1">            <!-- enable/disable -->
+            <location x="-14" y="15" z="-35" w="1" /><!-- light position; w=1: point light; w=0: directional light -->
+            <ambient r="1" g="1" b="1" a="1.0" />                   <!-- ambient component -->
+            <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />             <!-- diffuse component -->
+            <specular r="1.0" g="1.0" b="1.0" a="1.0" />            <!-- specular component -->
+        </omni>
+
+        <spot id="billboard1" enabled="1" angle="60" exponent="50">
+            <!-- atencao, "target" e' diferente de "direction" -->
+            <location x="-4" y="10" z="-9" w="1.0" />
+            <target x="-10" y="4" z="4" />
             <ambient r="0" g="0" b="0" a="1.0" />
             <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
-        </omni>
+            <attenuation constant="0" linear="1" quadratic="0" />
 
-        <spot id="demoSpot" enabled="1" angle="45" exponent="50">
+        </spot>
 
+        <spot id="billboard2" enabled="1" angle="75" exponent="50">
             <!-- atencao, "target" e' diferente de "direction" -->
-            <location x="0" y="0" z="0" w="1.0" />
-            <target x="4" y="0" z="0" />
+            <location x="-13" y="10" z="-9" w="1.0" />
+            <target x="10" y="9" z="-9" />
             <ambient r="0" g="0" b="0" a="1.0" />
             <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
             <attenuation constant="1" linear="0" quadratic="0" />
 
         </spot>
-        
-        <omni id="candeeiro" enabled="1">            <!-- enable/disable -->
-            <location x="10" y="19" z="10" w="0" /><!-- light position; w=1: point light; w=0: directional light -->
-            <ambient r="1" g="1" b="1" a="1.0" />                   <!-- ambient component -->
-            <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />             <!-- diffuse component -->
-            <specular r="1.0" g="1.0" b="1.0" a="1.0" />            <!-- specular component -->
-        </omni>
 
     </lights>
 
@@ -1049,7 +1059,7 @@
             <materials>
                 <material id="dark" />
             </materials>
-            <texture id="sandTexure"/>
+            <texture id="sandTexture"/>
             <children>
                 <componentref id="road" />
                 <componentref id="roadside" />
