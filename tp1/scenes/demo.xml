@@ -27,6 +27,16 @@
             <to x="0" y="0" z="0" />
             <up x="0" y="2" z="0"/>
         </ortho>
+        <ortho id="sideOrtho" near="0.1" far="500" left="-8.5" right="8.5" top="7" bottom="-5">
+            <from x="10" y="4" z="4" />
+            <to x="0" y="3" z="3" />
+            <up x="0" y="1" z="0" />
+        </ortho>
+        <ortho id="topOrtho" near="0.1" far="500" left="-7.5" right="10" top="6" bottom="-4">
+            <from x="3" y="10" z="3" />
+            <to x="3" y="0" z="3" />
+            <up x="0" y="0" z="1" />
+        </ortho>
     </views>
 
     <ambient>
