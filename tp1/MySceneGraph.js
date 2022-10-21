@@ -460,8 +460,22 @@ export class MySceneGraph {
                 else
                     return "light target undefined for ID = " + lightId;
 
-                global.push(...[angle, exponent, targetLight])
+                var attenuationIndex = nodeNames.indexOf("attenuation");
+                if(attenuationIndex != -1){
+                    var constant = this.reader.getFloat(grandChildren[attenuationIndex], 'constant');
+                    var linear = this.reader.getFloat(grandChildren[attenuationIndex], 'linear');
+                    var quadratic = this.reader.getFloat(grandChildren[attenuationIndex], 'quadratic');
+
+                    if(constant + linear + quadratic != 1){
+                        return "Invalid attenuation factors for light with ID = " + lightId;
+                    }
+
+
+
+
+                global.push(...[angle, exponent, targetLight,constant,linear,quadratic]);
             }
+        }
 
             this.lights[lightId] = global;
             numLights++;
