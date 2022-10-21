@@ -24,10 +24,38 @@ export class MyInterface extends CGFinterface {
         this.gui = new dat.GUI();
 
         // add a group of controls (and open/expand by defult)
+        this.gui.add(this.scene, 'displayAxis').name("Display Axis");
+        this.gui.add(this.scene, 'scaleFactor', 0.1, 10.0).name('Scale');
 
         this.initKeys();
 
         return true;
+    }
+
+    addLights(){
+
+        let lightsFolder = this.gui.addFolder("Lights");
+        lightsFolder.open();
+
+        for(var i in this.scene.graph.lights){
+            this.scene.interfaceLights[i] = this.scene.graph.lights[i][0];
+            lightsFolder.add(this.scene.interfaceLights, i);
+        }
+
+    }
+
+    addCameras(){
+
+        let camerasFolder = this.gui.addFolder("Cameras");
+        camerasFolder.open();
+
+        for(var i in this.scene.graph.cameras){
+            this.scene.interfaceCameras[i] = i;
+        }
+
+        camerasFolder.add(this.scene, 'selectedCamera', this.scene.interfaceCameras).name('Selected Camera').onChange(this.scene.updateCameras.bind(this.scene));
+
+
     }
 
     /**

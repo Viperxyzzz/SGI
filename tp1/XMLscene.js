@@ -27,6 +27,9 @@ export class XMLscene extends CGFscene {
 
         this.sceneInited = false;
 
+        this.interfaceCameras = new Object();
+        this.selectedCamera = 0;
+        this.interfaceLights = {};
         this.initCameras();
 
         this.enableTextures(true);
@@ -38,6 +41,8 @@ export class XMLscene extends CGFscene {
 
         this.axis = new CGFaxis(this);
         this.setUpdatePeriod(100);
+        this.displayAxis = false;
+        this.scaleFactor = 1;
     }
 
     /**
@@ -46,13 +51,25 @@ export class XMLscene extends CGFscene {
     initCameras() {
         this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
     }
+
+    initsceneCameras(){
+        this.selectedCamera=this.graph.default;
+        this.camera = this.graph.cameras[this.graph.default];
+        this.interface.setActiveCamera(this.camera);
+    }
+
+    updateCameras(){
+        this.camera = this.graph.cameras[this.selectedCamera];
+        this.interface.setActiveCamera(this.camera);
+    }
+
+
     /**
      * Initializes the scene lights with the values read from the XML file.
      */
     initLights() {
         var i = 0;
         // Lights index.
-
         // Reads the lights from the scene graph.
         for (var key in this.graph.lights) {
             if (i >= 8)
@@ -66,10 +83,13 @@ export class XMLscene extends CGFscene {
                 this.lights[i].setDiffuse(light[4][0], light[4][1], light[4][2], light[4][3]);
                 this.lights[i].setSpecular(light[5][0], light[5][1], light[5][2], light[5][3]);
 
-                if (light[1] == "spot") {
+                if (light[0] == "spot") {
                     this.lights[i].setSpotCutOff(light[6]);
                     this.lights[i].setSpotExponent(light[7]);
                     this.lights[i].setSpotDirection(light[8][0], light[8][1], light[8][2]);
+                    this.lights[i].setConstantAttenuation(light[9]);
+                    this.lights[i].setLinearAttenuation(light[10]);
+                    this.lights[i].setQuadraticAttenuation(light[11]);
                 }
 
                 this.lights[i].setVisible(true);
@@ -81,6 +101,21 @@ export class XMLscene extends CGFscene {
                 this.lights[i].update();
 
                 i++;
+            }
+        }
+    }
+
+    updateLights(){
+        let i = 0;
+        for (let key in this.interfaceLights) {
+            if (this.interfaceLights.hasOwnProperty(key)) {
+                if (this.interfaceLights[key]) {
+                    this.lights[i].enable();
+                }
+                else {
+                    this.lights[i].disable();
+                }
+                this.lights[i++].update();
             }
         }
     }
@@ -101,9 +136,23 @@ export class XMLscene extends CGFscene {
 
         this.setGlobalAmbientLight(this.graph.ambient[0], this.graph.ambient[1], this.graph.ambient[2], this.graph.ambient[3]);
 
+        this.interface.addCameras();
+        this.interface.addLights();
+
         this.initLights();
+        this.initsceneCameras();
 
         this.sceneInited = true;
+    }
+
+    handleKeyPress(){
+        if(this.interface.isKeyPressed("KeyM")){
+            this.graph.changeMaterial();
+        }
+    }
+
+    update() {
+        this.handleKeyPress();
     }
 
     /**
@@ -124,7 +173,8 @@ export class XMLscene extends CGFscene {
         this.applyViewMatrix();
 
         this.pushMatrix();
-        this.axis.display();
+
+        this.scale(this.scaleFactor, this.scaleFactor, this.scaleFactor);
 
         for (var i = 0; i < this.lights.length; i++) {
             this.lights[i].setVisible(true);
@@ -133,10 +183,19 @@ export class XMLscene extends CGFscene {
 
         if (this.sceneInited) {
             // Draw axis
+            if(this.displayAxis){
+                this.axis.display();
+            }
+
+
             this.setDefaultAppearance();
+
+            this.updateCameras();
+            this.updateLights();
 
             // Displays the scene (MySceneGraph function).
             this.graph.displayScene();
+
         }
 
         this.popMatrix();
