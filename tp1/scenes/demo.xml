@@ -40,7 +40,7 @@
     </views>
 
     <ambient>
-        <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
+        <ambient r="0.3" g="0.3" b="0.3" a="1.0" />
         <background r="0.282" g="0.7" b="0.69" a="1.0"/>
     </ambient>
 
@@ -58,10 +58,11 @@
             <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />             <!-- diffuse component -->
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />            <!-- specular component -->
         </omni>
-        <spot id="billboard1" enabled="1" angle="60" exponent="1">
+        
+        <spot id="billboard1" enabled="1" angle="60" exponent="0">
             <!-- atencao, "target" e' diferente de "direction" -->
-            <location x="-7.3" y="10" z="-9" w="1.0" />
-            <target x="-1" y="0 " z="1" />
+            <location x="-3" y="10" z="-9" w="1.0" />
+            <target x="-10.5" y="6" z="-7" />
             <ambient r="0" g="0" b="0" a="1.0" />
             <diffuse r="1" g="1" b="1" a="1.0" />
             <specular r="1" g="1" b="1" a="1.0" />
@@ -69,11 +70,11 @@
 
         </spot>
 
-        <spot id="billboard2" enabled="1" angle="45" exponent="0">
+        <spot id="billboard2" enabled="1" angle="180" exponent="16">
             <!-- atencao, "target" e' diferente de "direction" -->
-            <location x="-18" y="10" z="-9" w="1.0" />
-            <target x="-10.5" y="8" z="-9" />
-            <ambient r="0.3" g="0.3" b="0.3" a="1" />
+            <location x="-16" y="10" z="-9" w="1.0" />
+            <target x="-7" y="2" z="-13" />
+            <ambient r="0" g="0" b="0" a="1.0" />
             <diffuse r="1" g="1" b="1" a="1.0" />
             <specular r="1" g="1" b="1" a="1.0" />
             <attenuation constant="1" linear="0" quadratic="0" />
@@ -156,6 +157,13 @@
             <ambient r="0.2" g="0.2" b="0.2" a="1" />
             <diffuse r="0.7" g="0.7" b="0.7" a="1" />
             <specular r="0.3" g="0.3" b="0.3" a="1" />
+        </material>
+
+        <material id="white" shininess="2">
+            <emission r="0.0" g="0.0" b="0.0" a="1.0"/>
+            <ambient r="0.0" g="0.0" b="0.0" a="1.0"/>
+            <diffuse r="1.0" g="1.0" b="1.0" a="1.0"/>
+            <specular r="0.0" g="0.0" b="0.0" a="0.0"/>
         </material>
     </materials>
 
@@ -686,7 +694,7 @@
                 <rotate angle="90" axis="y" />
             </transformation>
             <materials>
-                <material id="dark" />
+                <material id="white" />
             </materials>
             <texture id="ederTexture"/>
             <children>
@@ -716,7 +724,7 @@
                 <rotate angle="-90" axis="y" />
             </transformation>
             <materials>
-                <material id="dark" />
+                <material id="white" />
             </materials>
             <texture id="ederTexture"/>
             <children>
@@ -777,7 +785,7 @@
             <materials>
                 <material id="dark" />
             </materials>
-            <texture id="inherit"/>
+            <texture id="windowTexture" length_s="0.1" length_t="0.1"/>
             <children>
                 <primitiveref id="demoRectangle" />
             </children>
