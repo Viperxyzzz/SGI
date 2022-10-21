@@ -50,6 +50,7 @@
             <ambient r="1" g="1" b="1" a="1.0" />                   <!-- ambient component -->
             <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />             <!-- diffuse component -->
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />            <!-- specular component -->
+            <attenuation constant="1" linear="0" quadratic="0" />
         </omni>
 
         <omni id="sun" enabled="1">            <!-- enable/disable -->
@@ -57,6 +58,7 @@
             <ambient r="1" g="1" b="1" a="1.0" />                   <!-- ambient component -->
             <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />             <!-- diffuse component -->
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />            <!-- specular component -->
+            <attenuation constant="1" linear="0" quadratic="0" />
         </omni>
         
         <spot id="billboard1" enabled="1" angle="60" exponent="0">

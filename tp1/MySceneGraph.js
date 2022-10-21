@@ -936,33 +936,65 @@ export class MySceneGraph {
             var transformationNodes = grandChildren[transformationIndex].children;
             var transfMatrix = mat4.create();
 
+
+            var transCount = 0;
+            var hasTrans = false;
+            var hasTransRef = false;
             //process the transformation
             for (var j = 0; j < transformationNodes.length; j++) {
                 switch (transformationNodes[j].nodeName) {
                     case 'transformationref':
-                        var id = this.reader.getString(transformationNodes[j], 'id');
-                        transfMatrix = mat4.multiply(transfMatrix, transfMatrix, this.transformations[id]);
+                        if(transCount >= 1){
+                            this.onXMLError("It is only possible to have a single transformationref. (componentID = " + componentID + ")");
+                        }
+                        else if(hasTrans){
+                            this.onXMLError("Component has already multiple transformations. (componentID = " + componentID + ")");
+                        }
+                        else{
+                            var id = this.reader.getString(transformationNodes[j], 'id');
+                            transfMatrix = mat4.multiply(transfMatrix, transfMatrix, this.transformations[id]);
+                            hasTransRef = true;
+                            transCount++;
+                        }
                         break;
                     case 'translate':
-                        var coordinates = this.parseCoordinates3D(transformationNodes[j], "translate transformation");
-                        if (!Array.isArray(coordinates))
-                            return coordinates;
-                        transfMatrix = mat4.translate(transfMatrix, transfMatrix, coordinates);
+                        if(!hasTransRef){
+                            var coordinates = this.parseCoordinates3D(transformationNodes[j], "translate transformation");
+                            if (!Array.isArray(coordinates))
+                                return coordinates;
+                            transfMatrix = mat4.translate(transfMatrix, transfMatrix, coordinates);
+                            hasTrans = true;
+                        }
+                        else{
+                            this.onXMLError("Component has already one transformationref. (componentID = " + componentID + ")");
+                        }
                         break;
                     case 'scale':
-                        var coordinates = this.parseCoordinates3D(transformationNodes[j], "scale transformation");
-                        if (!Array.isArray(coordinates))
-                            return coordinates;
-                        transfMatrix = mat4.scale(transfMatrix, transfMatrix, coordinates);
+                        if(!hasTransRef){
+                            var coordinates = this.parseCoordinates3D(transformationNodes[j], "scale transformation");
+                            if (!Array.isArray(coordinates))
+                                return coordinates;
+                            transfMatrix = mat4.scale(transfMatrix, transfMatrix, coordinates);
+                            hasTrans = true;
+                        }
+                        else{
+                            this.onXMLError("Component has already one transformationref. (componentID = " + componentID + ")");
+                        }
                         break;
                     case 'rotate':
-                        var axis = this.reader.getString(transformationNodes[j], "axis");
-                        var angle = this.reader.getFloat(transformationNodes[j], "angle");
+                        if(!hasTransRef){
+                            var axis = this.reader.getString(transformationNodes[j], "axis");
+                            var angle = this.reader.getFloat(transformationNodes[j], "angle");
 
-                        var x = (axis == "x") ? 1 : 0;
-                        var y = (axis == "y") ? 1 : 0;
-                        var z = (axis == "z") ? 1 : 0;
-                        transfMatrix = mat4.rotate(transfMatrix, transfMatrix, DEGREE_TO_RAD * angle, [x, y, z])
+                            var x = (axis == "x") ? 1 : 0;
+                            var y = (axis == "y") ? 1 : 0;
+                            var z = (axis == "z") ? 1 : 0;
+                            transfMatrix = mat4.rotate(transfMatrix, transfMatrix, DEGREE_TO_RAD * angle, [x, y, z]);
+                            hasTrans = true;
+                        }
+                        else{
+                            this.onXMLError("Component has already one transformationref. (componentID = " + componentID + ")");
+                        }
                         break;
                 }
             }
