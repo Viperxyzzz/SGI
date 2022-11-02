@@ -201,28 +201,45 @@
             <cylinder base="1" top="0.3" height="5" slices="16" stacks="8"/>
         </primitive>
 
-        <primitive id="demoPatch">
-            <patch degree_u="3" parts_u="50" degree_v="3" parts_v="50" >
+        <primitive id="patchRectangle">
+            <patch degree_u="1" parts_u="5" degree_v="1" parts_v="5" >
 
-                <controlpoint x="1.0" y="1.0" z="0.0" />
-                <controlpoint x="1.0" y="1.0" z="0.0" />
-                <controlpoint x="0.75" y="-0.85" z="0.00" />
-                <controlpoint x="0.75" y="-0.85" z="0.0" />
+                <controlpoint x="-2.0" y="-3.0" z="0.0" />
+                <controlpoint x="-2.0" y="3.0" z="0.0" />
+                <controlpoint x="2.0" y="-3.0" z="0.0" />
+                <controlpoint x="2.0" y="3.0" z="0.0" />
+            </patch>
+        </primitive>
 
-                <controlpoint x="0.7" y="1.0" z="1.5" />
-                <controlpoint x="0.5" y="1.0" z="0.0" />
-                <controlpoint x="0.9" y="-0.85" z="2.15" />
-                <controlpoint x="0.2" y="-1.2" z="0.0" />
+        <primitive id="patchTent">
+            <patch degree_u="2" parts_u="50" degree_v="1" parts_v="50" >
 
-                <controlpoint x="-0.7" y="1.0" z="1.5" />
-                <controlpoint x="-0.5" y="1.0" z="0.0" />
-                <controlpoint x="-0.9" y="-0.85" z="2.15" />
-                <controlpoint x="-0.2" y="-1.2" z="0.0" />
+                <controlpoint x="-1.5" y="-1.5" z="0.0" />
+                <controlpoint x="-1.5" y="1.5" z="0.0" />
+                <controlpoint x="0.0" y="-1.5" z="4.0" />
+                <controlpoint x="0.0" y="1.5" z="4.0" />
+                <controlpoint x="1.5" y="-1.5" z="0.0" />
+                <controlpoint x="1.5" y="1.5" z="0.0" />
+            </patch>
+        </primitive>
 
-                <controlpoint x="-1.0" y="1.0" z="0.0" />
-                <controlpoint x="-1.0" y="1.0" z="0.0" />
-                <controlpoint x="-0.75" y="-0.85" z="0" />
-                <controlpoint x="-0.75" y="-0.85" z="0" />
+        <primitive id="patchBarrel">
+            <patch degree_u="2" parts_u="50" degree_v="3" parts_v="50" >
+                <controlpoint x="-1.5" y="-1.5" z="0" />
+                <controlpoint x="-2.0" y="-2.0" z="2.0" />
+                <controlpoint x="-2.0" y="2.0" z="2.0" />
+                <controlpoint x="-1.5" y="1.5" z="0" />
+
+                <controlpoint x="0.0" y="0.0" z="3.0" />
+                <controlpoint x="0.0" y="-2.0" z="3.0" />
+                <controlpoint x="0.0" y="2.0" z="3.0" />
+                <controlpoint x="0.0" y="0.0" z="3.0" />
+
+                <controlpoint x="1.5" y="-1.5" z="0.0" />
+                <controlpoint x="2.0" y="-2.0" z="2.0" />
+                <controlpoint x="2.0" y="2.0" z="2.0" />
+                <controlpoint x="1.5" y="1.5" z="0.0" />
+                
             </patch>
         </primitive>
     </primitives>
@@ -236,7 +253,7 @@
             </materials>
             <texture id="demoTexture"/>
             <children>
-                <!-- <componentref id="tank" />
+                <componentref id="tank" />
                 <componentref id="floor" />
                 <componentref id="ground" />
                 <componentref id="flag" />
@@ -245,22 +262,67 @@
                 <componentref id="tree" />
                 <componentref id="mine" />
                 <componentref id="sun" />
-                <componentref id="street_lamp" /> -->
+                <componentref id="street_lamp" />
                 <componentref id="patch" />
             </children>
         </component>
 
         <component id="patch">
             <transformation>
-                <translate x="5.5" y="6.2" z="18" />   
-                <scale x="2" y="2" z="2" />
             </transformation>
             <materials>
                 <material id="light_yellow" />
             </materials>
             <texture id="none"/>
             <children>
-                <primitiveref id="demoPatch" />
+                <componentref id="rectPatch" />
+                <componentref id="tentPatch" /> 
+                <!-- <componentref id="barrelPatch" />  -->
+            </children>
+        </component>
+
+        <component id="barrelPatch">
+            <transformation>
+                <translate x="10" y="0.02" z="12" />  
+                <scale x="2" y="2" z="2" />
+                <rotate angle="-90" axis="x"/>
+            </transformation>
+            <materials>
+                <material id="red" />
+            </materials>
+            <texture id="none"/>
+            <children>
+                <primitiveref id="patchBarrel" />
+            </children>
+        </component>
+
+        <component id="tentPatch">
+            <transformation>
+                <translate x="10" y="0.02" z="12" />  
+                <scale x="2" y="2" z="2" />
+                <rotate angle="-90" axis="x"/>
+            </transformation>
+            <materials>
+                <material id="red" />
+            </materials>
+            <texture id="none"/>
+            <children>
+                <primitiveref id="patchTent" />
+            </children>
+        </component>
+
+        <component id="rectPatch">
+            <transformation>
+                <translate x="9.5" y="0.02" z="12" />  
+                <scale x="2" y="2" z="2" />
+                <rotate angle="-90" axis="x"/>
+            </transformation>
+            <materials>
+                <material id="light_yellow" />
+            </materials>
+            <texture id="none"/>
+            <children>
+                <primitiveref id="patchRectangle" />
             </children>
         </component>
 
