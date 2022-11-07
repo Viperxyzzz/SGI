@@ -70,7 +70,7 @@ export class MyRectangle extends CGFobject {
 		let yValue = Math.abs((this.y2 - this.y1)) / l_t;
 
 
-		this.textCoords = [
+		this.texCoords = [
 			0, yValue,
 			xValue , yValue,
 			0, 0,

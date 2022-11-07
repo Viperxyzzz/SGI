@@ -202,7 +202,7 @@
         </primitive>
 
         <primitive id="patchRectangle">
-            <patch degree_u="1" parts_u="5" degree_v="1" parts_v="5" >
+            <patch degree_u="1" parts_u="50" degree_v="1" parts_v="50" >
 
                 <controlpoint x="-2.0" y="-3.0" z="0.0" />
                 <controlpoint x="-2.0" y="3.0" z="0.0" />
@@ -318,7 +318,7 @@
                 <rotate angle="-90" axis="x"/>
             </transformation>
             <materials>
-                <material id="light_yellow" />
+                <material id="blue" />
             </materials>
             <texture id="none"/>
             <children>
@@ -799,7 +799,7 @@
             <materials>
                 <material id="white" />
             </materials>
-            <texture id="ederTexture"/>
+            <texture id="ederTexture" length_s="1" length_t="2"/>
             <children>
                 <primitiveref id="demoRectangle" />
             </children>
@@ -829,7 +829,7 @@
             <materials>
                 <material id="white" />
             </materials>
-            <texture id="ederTexture"/>
+            <texture id="ederTexture" length_s="1" length_t="2"/>
             <children>
                 <primitiveref id="demoRectangle" />
             </children>
@@ -871,7 +871,7 @@
             <materials>
                 <material id="dark" />
             </materials>
-            <texture id="windowTexture"/>
+            <texture id="windowTexture" length_s="1" length_t="2"/>
             <children>
                 <componentref id="window_left" />
                 <componentref id="window_right" />
@@ -888,7 +888,7 @@
             <materials>
                 <material id="dark" />
             </materials>
-            <texture id="windowTexture" length_s="0.1" length_t="0.1"/>
+            <texture id="inherit"/>
             <children>
                 <primitiveref id="demoRectangle" />
             </children>

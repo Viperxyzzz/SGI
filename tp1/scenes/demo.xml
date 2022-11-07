@@ -698,7 +698,7 @@
             <materials>
                 <material id="white" />
             </materials>
-            <texture id="ederTexture"/>
+            <texture id="ederTexture" length_s="1" length_t="2"/>
             <children>
                 <primitiveref id="demoRectangle" />
             </children>
@@ -728,7 +728,7 @@
             <materials>
                 <material id="white" />
             </materials>
-            <texture id="ederTexture"/>
+            <texture id="ederTexture" length_s="1" length_t="2"/>
             <children>
                 <primitiveref id="demoRectangle" />
             </children>
@@ -770,7 +770,7 @@
             <materials>
                 <material id="dark" />
             </materials>
-            <texture id="windowTexture"/>
+            <texture id="windowTexture" length_s="1" length_t="2"/>
             <children>
                 <componentref id="window_left" />
                 <componentref id="window_right" />
@@ -787,7 +787,7 @@
             <materials>
                 <material id="dark" />
             </materials>
-            <texture id="windowTexture" length_s="0.1" length_t="0.1"/>
+            <texture id="inherit"/>
             <children>
                 <primitiveref id="demoRectangle" />
             </children>
