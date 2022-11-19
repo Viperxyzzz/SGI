@@ -151,8 +151,11 @@ export class XMLscene extends CGFscene {
         }
     }
 
-    update() {
+    update(t) {
         this.handleKeyPress();
+        if (this.graph.highlightShader != null)
+            this.graph.highlightShader.setUniformsValues({ timeFactor: t / 100 % 100 });
+            console.log(this.graph.highlightShader);
     }
 
     /**

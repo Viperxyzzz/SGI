@@ -509,6 +509,7 @@
             <children>
                 <primitiveref id="demoSphere" />
             </children>
+            <highlighted r="1.0" g="1.0" b="1.0" length_h="1.5"/>
         </component>
 
         <component id="mine">

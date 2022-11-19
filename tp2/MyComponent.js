@@ -9,7 +9,8 @@ export class MyComponent {
         this.l_t = l_t;
         this.primitives = primitives;
         this.children = children;
-
+        this.isHighlighted = false;
+        this.highlight = [];
         this.materialList = [];
     }
 
@@ -41,5 +42,11 @@ export class MyComponent {
         else{
             this.materialID = this.materialList[curIndex + 1];
         }
+    }
+    addHiglight(r,g,b,length){
+        this.highlight['red'] = r;
+        this.highlight['green'] = g;
+        this.highlight['blue'] = b;
+        this.highlight['length_h'] = length;
     }
 }

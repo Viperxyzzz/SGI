@@ -1,4 +1,4 @@
-import { CGFappearance, CGFcamera, CGFXMLreader, CGFcameraOrtho, CGFtexture } from '../lib/CGF.js';
+import { CGFappearance, CGFcamera, CGFXMLreader, CGFcameraOrtho, CGFtexture, CGFshader } from '../lib/CGF.js';
 import { MyRectangle } from './primitives/MyRectangle.js';
 import { MyTriangle } from './primitives/MyTriangle.js';
 import { MySphere } from './primitives/MySphere.js'
@@ -989,10 +989,35 @@ export class MySceneGraph {
             var materialsIndex = nodeNames.indexOf("materials");
             var textureIndex = nodeNames.indexOf("texture");
             var childrenIndex = nodeNames.indexOf("children");
+            var highlightIndex = nodeNames.indexOf("highlighted");
 
 
             var component = new MyComponent(this.scene);
             component.id = componentID;
+            
+            // Highlight
+            if(highlightIndex != -1){
+                component.isHighlighted = true;
+                var red = this.reader.getFloat(grandChildren[highlightIndex], 'r');
+                if (!(red != null && !isNaN(red)))	
+                    return "unable to parse red value of the highlight for ID = " + componentID;
+                var green = this.reader.getFloat(grandChildren[highlightIndex], 'g');
+                if (!(green != null && !isNaN(green)))
+                    return "unable to parse green value of the highlight for ID = " + componentID;
+                var blue = this.reader.getFloat(grandChildren[highlightIndex], 'b');
+                if (!(blue != null && !isNaN(blue)))
+                    return "unable to parse blue value of the highlight for ID = " + componentID;
+                var length_h = this.reader.getFloat(grandChildren[highlightIndex], 'length_h');
+                if (!(length_h != null && !isNaN(length_h)))
+                    return "unable to parse length value of the highlight for ID = " + componentID;
+                component.addHiglight(red, green, blue, length_h);
+                
+                this.highlightShader = new CGFshader(this.scene.gl, "shaders/highlight.vert", "shaders/highlight.frag");
+                this.highlightShader.setUniformsValues({timeFactor : 0});
+                this.highlightShader.setUniformsValues({uSampler2 : 1});
+                this.highlightShader.setUniformsValues({normScale : length_h});
+
+            }
 
 
             // Transformations
@@ -1242,6 +1267,7 @@ export class MySceneGraph {
         }
     }
 
+
     /**
      * Displays the scene, processing each node, starting in the root node.
      */
@@ -1287,16 +1313,24 @@ export class MySceneGraph {
 
         prevMat.apply();
 
+        //Recursive call to go threw 
+        for(let i in component.getChildren()){
+            this.displaySceneRecursive(component.children[i], prevMat, prevTex, l_s, l_t);
+        }
+
+        if(component.isHighlighted == true){
+            this.scene.setActiveShader(this.highlightShader);
+        }
+
         //Display primitives
         for(let i in component.getPrimitives()){
             this.primitives[component.primitives[i]].updateTexCoords(l_s, l_t);
             this.primitives[component.primitives[i]].display();
         }
-
-        //Recursive call to go threw 
-        for(let i in component.getChildren()){
-            this.displaySceneRecursive(component.children[i], prevMat, prevTex, l_s, l_t);
+        if(component.isHighlighted == true){
+            this.scene.setActiveShader(this.scene.defaultShader);
         }
+
 
         this.scene.popMatrix();
     }
