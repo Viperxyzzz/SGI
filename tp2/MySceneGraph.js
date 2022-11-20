@@ -1295,6 +1295,16 @@ export class MySceneGraph {
         //Apply component transformations
         this.scene.multMatrix(component.transformation);
 
+        if(component.isHighlighted == true){
+            let highlight = component.getHighlight();
+            console.log(highlight);
+            this.highlightShader.setUniformsValues({r : highlight['red']});
+            this.highlightShader.setUniformsValues({g : highlight['green']});
+            this.highlightShader.setUniformsValues({b : highlight['blue']});
+            this.highlightShader.setUniformsValues({normScale : highlight['length_h']});
+            this.scene.setActiveShader(this.highlightShader);
+        }
+
         //Update previous material
         if(component.materialID != "inherit"){
             prevMat = this.materials[component.materialID];
@@ -1321,15 +1331,6 @@ export class MySceneGraph {
         //Recursive call to go threw 
         for(let i in component.getChildren()){
             this.displaySceneRecursive(component.children[i], prevMat, prevTex, l_s, l_t);
-        }
-
-        if(component.isHighlighted == true){
-            console.log(component.getHiglight());
-            this.highlightShader.setUniformsValues({r : component.getHiglight['red'], 
-            g : component.getHiglight['green'], 
-            b : component.getHiglight['blue'], 
-            normScale : component.getHiglight['length_h']});
-            this.scene.setActiveShader(this.highlightShader);
         }
 
         //Display primitives

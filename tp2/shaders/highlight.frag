@@ -5,7 +5,6 @@ precision highp float;
 varying vec2 vTextureCoord;
 
 uniform sampler2D uSampler;
-uniform sampler2D uSampler2;
 uniform float timeFactor;
 
 uniform float r;
@@ -18,6 +17,8 @@ void main() {
 	float n = sin(timeFactor) + 1.0;
     float t = n / 2.0;
     float time = 1.0 - t;
+
+
 
     vec4 animColor = color;
     animColor.r = color.r * r + color.g * g * time + color.b * b * time;
