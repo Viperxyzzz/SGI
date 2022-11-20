@@ -956,7 +956,8 @@ export class MySceneGraph {
     parseComponents(componentsNode) {
         var children = componentsNode.children;
         this.components = [];
-        
+        this.shaders = [];
+
         var grandChildren = [];
         var nodeNames = [];
 
@@ -997,7 +998,6 @@ export class MySceneGraph {
             
             // Highlight
             if(highlightIndex != -1){
-                component.isHighlighted = true;
                 var red = this.reader.getFloat(grandChildren[highlightIndex], 'r');
                 if (!(red != null && !isNaN(red)))	
                     return "unable to parse red value of the highlight for ID = " + componentID;
@@ -1017,6 +1017,7 @@ export class MySceneGraph {
                 this.highlightShader.setUniformsValues({uSampler2 : 1});
                 this.highlightShader.setUniformsValues({normScale : length_h});
 
+                this.shaders[componentID] = this.highlightShader;
             }
 
 
@@ -1265,6 +1266,10 @@ export class MySceneGraph {
         for(let i in this.components){
             this.components[i].changeMaterial();
         }
+    }
+
+    updateShader(component, update){
+        this.components[component].isHighlighted = update;
     }
 
 

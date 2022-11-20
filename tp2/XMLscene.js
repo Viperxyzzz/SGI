@@ -30,6 +30,7 @@ export class XMLscene extends CGFscene {
         this.interfaceCameras = new Object();
         this.selectedCamera = 0;
         this.interfaceLights = {};
+        this.interfaceShaders = {};
         this.initCameras();
 
         this.enableTextures(true);
@@ -105,6 +106,12 @@ export class XMLscene extends CGFscene {
         }
     }
 
+    updateShaders(){
+        for(let key in this.interfaceShaders){
+            this.graph.updateShader(key, this.interfaceShaders[key]);
+        }
+    }
+
     updateLights(){
         let i = 0;
         for (let key in this.interfaceLights) {
@@ -138,6 +145,7 @@ export class XMLscene extends CGFscene {
 
         this.interface.addCameras();
         this.interface.addLights();
+        this.interface.addShaders();
 
         this.initLights();
         this.initsceneCameras();
@@ -155,7 +163,6 @@ export class XMLscene extends CGFscene {
         this.handleKeyPress();
         if (this.graph.highlightShader != null)
             this.graph.highlightShader.setUniformsValues({ timeFactor: t / 100 % 100 });
-            console.log(this.graph.highlightShader);
     }
 
     /**

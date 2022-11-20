@@ -58,6 +58,18 @@ export class MyInterface extends CGFinterface {
 
     }
 
+    addShaders(){
+        let shadersFolder = this.gui.addFolder("shaders");
+        shadersFolder.open();
+
+        for(var i in this.scene.graph.shaders){
+            this.scene.interfaceShaders[i] = false;
+            shadersFolder.add(this.scene.interfaceShaders, i).name(i).onChange(this.scene.updateShaders.bind(this.scene));
+            //shadersFolder.add(this.scene.interfaceShaders,i);
+        }
+
+    }
+
     /**
      * initKeys
      */
