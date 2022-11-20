@@ -8,12 +8,21 @@ uniform sampler2D uSampler;
 uniform sampler2D uSampler2;
 uniform float timeFactor;
 
-void main() {
-	vec4 color = texture2D(uSampler, vTextureCoord+vec2(timeFactor*.01,0.0));
-	vec4 filter = texture2D(uSampler2, vec2(0.0,0.1)+vTextureCoord);
+uniform float r;
+uniform float g;
+uniform float b;
 
-	if (filter.b > 0.5)
-		color=vec4(0.52, 0.18, 0.11, 1.0);
+void main() {
+	vec4 color = texture2D(uSampler, vTextureCoord);
 	
-	gl_FragColor = color;
+	float n = sin(timeFactor) + 1.0;
+    float t = n / 2.0;
+    float time = 1.0 - t;
+
+    vec4 animColor = color;
+    animColor.r = color.r * r + color.g * g * time + color.b * b * time;
+    animColor.g = color.r * r * time + color.g * g + color.b * b * time;
+    animColor.b = color.r * r * time + color.g * g * time + color.b * b;
+
+	gl_FragColor = animColor;
 }

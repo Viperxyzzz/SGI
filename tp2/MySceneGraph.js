@@ -1324,6 +1324,11 @@ export class MySceneGraph {
         }
 
         if(component.isHighlighted == true){
+            console.log(component.getHiglight());
+            this.highlightShader.setUniformsValues({r : component.getHiglight['red'], 
+            g : component.getHiglight['green'], 
+            b : component.getHiglight['blue'], 
+            normScale : component.getHiglight['length_h']});
             this.scene.setActiveShader(this.highlightShader);
         }
 

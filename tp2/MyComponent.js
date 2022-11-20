@@ -43,10 +43,15 @@ export class MyComponent {
             this.materialID = this.materialList[curIndex + 1];
         }
     }
+    
     addHiglight(r,g,b,length){
         this.highlight['red'] = r;
         this.highlight['green'] = g;
         this.highlight['blue'] = b;
         this.highlight['length_h'] = length;
+    }
+
+    getHiglight(){
+        return this.highlight;
     }
 }
