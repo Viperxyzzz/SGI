@@ -1,5 +1,5 @@
 export class MyComponent {
-    constructor(scene, id, materialID, texture, l_s, l_t, primitives=[], children=[]){
+    constructor(scene, id, materialID, texture, l_s, l_t, animationID=null,primitives=[], children=[]){
         this.scene = scene;
         this.id = id;
         this.transformation = mat4.create();
@@ -10,6 +10,7 @@ export class MyComponent {
         this.primitives = primitives;
         this.children = children;
         this.isHighlighted = false;
+        this.animation = animationID;
         this.highlight = [];
         this.materialList = [];
     }
@@ -53,5 +54,13 @@ export class MyComponent {
 
     getHighlight(){
         return this.highlight;
+    }
+
+    setAnimation(animation){
+        this.animation = animation;
+    }
+
+    getAnimation(){
+        return this.animation;
     }
 }

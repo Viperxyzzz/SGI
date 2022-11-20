@@ -6,6 +6,8 @@ import { MyCylinder } from './primitives/MyCylinder.js';
 import { MyComponent } from './MyComponent.js';
 import { MyTorus } from './primitives/MyTorus.js';
 import { MyPatch } from './primitives/MyPatch.js';
+import { MyKeyframeAnimation } from './MyKeyframeAnimation.js'
+import {KeyFrame} from './KeyFrame.js';
 
 var DEGREE_TO_RAD = Math.PI / 180;
 
@@ -18,7 +20,8 @@ var TEXTURES_INDEX = 4;
 var MATERIALS_INDEX = 5;
 var TRANSFORMATIONS_INDEX = 6;
 var PRIMITIVES_INDEX = 7;
-var COMPONENTS_INDEX = 8;
+var ANIMATIONS_INDEX = 8;
+var COMPONENTS_INDEX = 9;
 
 /**
  * MySceneGraph class, representing the scene graph.
@@ -190,6 +193,18 @@ export class MySceneGraph {
             if ((error = this.parsePrimitives(nodes[index])) != null)
                 return error;
         }
+
+        // <animations>
+        if ((index = nodeNames.indexOf("animations")) == -1)
+        return "tag <animations> missing";
+    else {
+        if (index != ANIMATIONS_INDEX)
+            this.onXMLMinorError("tag <animations> out of order");
+
+        //Parse primitives block
+        if ((error = this.parseAnimations(nodes[index])) != null)
+            return error;
+    }
 
         // <components>
         if ((index = nodeNames.indexOf("components")) == -1)
@@ -925,27 +940,129 @@ export class MySceneGraph {
                     pointsAux = [];
                 }
                 
-                // for (let u = 0; u < degreeU + 1; u++) {
-                //     let points = [];
-                //     for (let v = 0; v < degreeV + 1; v++) {
-
-                //         if(patchChildren[u * degreeV + v].nodeName != 'controlpoint')
-                //             return "unknown tag <" + patchChildren[u * degreeV + v].nodeName + "> for primtive with ID =  " + primitiveId;
-
-                //         let coords = this.parseCoordinates3D(patchChildren[u * degreeV + v])
-
-                //         points.push([coords[0], coords[1], coords[2], 1.0]);
-                        
-                //     }
-                //     controlPoints.push(points);
-                // }
-                
                 var patch = new MyPatch(this.scene, degreeU, partsU, degreeV, partsV, controlPoints);
 
                 this.primitives[primitiveId] = patch;
             }
         }
         this.log("Parsed primitives");
+        return null;
+    }
+
+        /**
+   * Parses the <animations> block.
+   * @param {animations block element} animationsNode
+   */
+    parseAnimations(animationsNode) {
+        var children = animationsNode.children;
+        var grandChildren = [];
+
+        this.animations = [];
+
+        for(var i = 0; i < children.length; i++){
+
+            if (children[i].nodeName != "keyframeanim") {
+                this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
+                continue;
+            }
+
+            var animationID = this.reader.getString(children[i], "id");
+
+            if(animationID == null){
+                return "no ID defined for animationID";
+            }
+
+            // Checks for repeated IDs.
+            if (this.animations[animationID] != null)
+                return "ID must be unique for each animation (conflict: ID = " + animationID + ")";
+            
+
+            grandChildren = children[i].children;
+            let keyframes=[];
+
+            for(var j = 0; j < grandChildren.length; j++){
+
+                if (grandChildren[j].nodeName != "keyframe") {
+                    this.onXMLMinorError("Unknown tag <" + grandChildren[j].nodeName + "> in animation " + " animationsID " + " on <animations> tag.");
+                    continue;
+                }
+
+                let instant = this.reader.getFloat(grandChildren[j], "instant");
+                
+                let transformations = grandChildren[j].children;
+
+                let translation = transformations[0];
+                let rotx = transformations[1];
+                let roty = transformations[2];
+                let rotz = transformations[3];
+                let scale = transformations[4];
+
+
+                if(translation.nodeName != "translation"){
+                    continue;
+                }
+
+                let transPoint = this.parseCoordinates3D(translation, "translate transformation for keyframe " + animationID);
+
+                if(rotz.nodeName != "rotation"){
+                    continue;
+                }
+
+                let axisZ = this.reader.getString(rotz, 'axis');
+                if (axisZ == null || axisZ != 'z') {
+                     this.onXMLMinorError("Missing/Invalid value (valid = z) for parameter 'axis' in first rotation of animation " + animationID);
+                }
+                let angleZ = this.reader.getFloat(rotz, 'angle');
+                if (!(angleZ != null && !isNaN(angleZ))) {
+                     this.onXMLMinorError("Missing/Invalid value for parameter 'angle' in first rotation of animation " + animationID);
+                     angleZ = 0;
+                }
+
+                if(rotz.nodeName != "rotation"){
+                    continue;
+                }
+
+                let axisY = this.reader.getString(roty, 'axis');
+                if (axisY == null || axisY != 'y') {
+                     this.onXMLMinorError("Missing/Invalid value (valid = y) for parameter 'axis' in first rotation of animation " + animationID);
+                }
+                let angleY = this.reader.getFloat(roty, 'angle');
+                if (!(angleY != null && !isNaN(angleY))) {
+                     this.onXMLMinorError("Missing/Invalid value for parameter 'angle' in first rotation of animation " + animationID);
+                     angleY = 0;
+                }
+
+                if(rotz.nodeName != "rotation"){
+                    continue;
+                }
+
+                let axisX = this.reader.getString(rotx, 'axis');
+                if (axisX == null || axisX != 'x') {
+                     this.onXMLMinorError("Missing/Invalid value (valid = x) for parameter 'axis' in first rotation of animation " + animationID);
+                }
+                let angleX = this.reader.getFloat(rotx, 'angle');
+                if (!(angleX != null && !isNaN(angleX))) {
+                     this.onXMLMinorError("Missing/Invalid value for parameter 'angle' in first rotation of animation " + animationID);
+                     angleX = 0;
+                }
+
+                if(scale.nodeName != "scale"){
+                    continue;
+                }
+
+                let scaleCoords = this.parseScaleCoordinates3D(scale);
+
+                let keyframe = new KeyFrame(instant, transPoint, rotx, roty, rotz, scaleCoords);
+                keyframes.push(keyframe);
+                
+            }
+
+            var animation = new MyKeyframeAnimation(this.scene, keyframes);
+            this.animations[animationID] = animation;
+            
+        }
+
+        this.log("Parsed animations");
         return null;
     }
 
@@ -991,6 +1108,7 @@ export class MySceneGraph {
             var textureIndex = nodeNames.indexOf("texture");
             var childrenIndex = nodeNames.indexOf("children");
             var highlightIndex = nodeNames.indexOf("highlighted");
+            var animationIndex = nodeNames.indexOf("animation");
 
 
             var component = new MyComponent(this.scene);
@@ -1129,6 +1247,18 @@ export class MySceneGraph {
                 component.l_t = 1;
             }
 
+            var animationNodes = grandChildren[animationIndex];
+            if(animationIndex != -1){
+                let animationID = this.reader.getString(animationNodes, 'id');
+                if(this.animations[animationID] == undefined){
+                    this.onXMLMinorError("The animation with id " + animationID + "referenced in component " + componentID + " is not defined. The animation will be ignored.");
+                    animationID = null;
+                }
+                else{
+                    component.animationID = animationID;
+                }
+            }
+
             // Children
             var childrenNodes = grandChildren[childrenIndex].children;
             for (var j = 0; j < childrenNodes.length; j++) {
@@ -1178,6 +1308,34 @@ export class MySceneGraph {
 
         return position;
     }
+
+        /**
+     * Parse the coordinates from a node with ID = id
+     * @param {block element} node
+     * @param {message to be displayed in case of error} messageError
+     */
+         parseScaleCoordinates3D(node, messageError) {
+            var position = [];
+    
+            // x
+            var x = this.reader.getFloat(node, 'sx');
+            if (!(x != null && !isNaN(x)))
+                return "unable to parse x-coordinate of the " + messageError;
+    
+            // y
+            var y = this.reader.getFloat(node, 'sy');
+            if (!(y != null && !isNaN(y)))
+                return "unable to parse y-coordinate of the " + messageError;
+    
+            // z
+            var z = this.reader.getFloat(node, 'sz');
+            if (!(z != null && !isNaN(z)))
+                return "unable to parse z-coordinate of the " + messageError;
+    
+            position.push(...[x, y, z]);
+    
+            return position;
+        }
 
     /**
      * Parse the coordinates from a node with ID = id
@@ -1327,6 +1485,10 @@ export class MySceneGraph {
         }
 
         prevMat.apply();
+
+        if(component.animationID != null){
+            this.animations[component.animationID].apply();
+        }
 
         //Recursive call to go threw 
         for(let i in component.getChildren()){
