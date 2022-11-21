@@ -74,10 +74,14 @@ export class MyKeyframeAnimation extends MyAnimation {
         let transX = currFrame.translate[0] + (nextFrame.translate[0] - currFrame.translate[0])*(this.elapsedTime - currFrame.instant) / (nextFrame.instant - currFrame.instant);
         let transY = currFrame.translate[1] + (nextFrame.translate[1] - currFrame.translate[1])*(this.elapsedTime - currFrame.instant) / (nextFrame.instant - currFrame.instant);
         let transZ = currFrame.translate[2] + (nextFrame.translate[2] - currFrame.translate[2])*(this.elapsedTime - currFrame.instant) / (nextFrame.instant - currFrame.instant);
+        // console.log(transX, transY, transZ, "TESTE");
 
         let rotationX = currFrame.rotx*Math.PI/180 + (nextFrame.rotx - currFrame.rotx)*Math.PI/180*(this.elapsedTime - currFrame.instant) / (nextFrame.instant - currFrame.instant);
         let rotationY = currFrame.roty*Math.PI/180 + (nextFrame.roty - currFrame.roty)*Math.PI/180*(this.elapsedTime - currFrame.instant) / (nextFrame.instant - currFrame.instant);
         let rotationZ = currFrame.rotz*Math.PI/180 + (nextFrame.rotz - currFrame.rotz)*Math.PI/180*(this.elapsedTime - currFrame.instant) / (nextFrame.instant - currFrame.instant);
+        // console.log(rotationX, rotationY, rotationZ, "TESTE");
+        // console.log(currFrame.rotx);
+
 
         let scaleX = currFrame.scale[0] + (nextFrame.scale[0] - currFrame.scale[0])*(this.elapsedTime - currFrame.instant) / (nextFrame.instant - currFrame.instant);
         let scaleY = currFrame.scale[1] + (nextFrame.scale[1] - currFrame.scale[1])*(this.elapsedTime - currFrame.instant) / (nextFrame.instant - currFrame.instant);
@@ -88,6 +92,7 @@ export class MyKeyframeAnimation extends MyAnimation {
         mat4.rotateY(this.matrix, this.matrix, rotationY);
         mat4.rotateZ(this.matrix, this.matrix, rotationZ);
         mat4.scale(this.matrix, this.matrix, [scaleX, scaleY, scaleZ]);
+        // console.log(this.matrix);
 
         this.previousTime = t;
 

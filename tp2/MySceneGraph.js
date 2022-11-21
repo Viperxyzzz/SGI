@@ -1052,7 +1052,7 @@ export class MySceneGraph {
 
                 let scaleCoords = this.parseScaleCoordinates3D(scale);
 
-                let keyframe = new KeyFrame(instant, transPoint, rotx, roty, rotz, scaleCoords);
+                let keyframe = new KeyFrame(instant, transPoint, angleX, angleY, angleZ, scaleCoords);
                 keyframes.push(keyframe);
                 
             }
