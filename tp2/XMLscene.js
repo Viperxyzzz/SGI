@@ -149,6 +149,8 @@ export class XMLscene extends CGFscene {
 
         this.initLights();
         this.initsceneCameras();
+        this.setUpdatePeriod(100);
+
 
         this.sceneInited = true;
     }
@@ -163,6 +165,14 @@ export class XMLscene extends CGFscene {
         this.handleKeyPress();
         if (this.graph.highlightShader != null)
             this.graph.highlightShader.setUniformsValues({ timeFactor: t / 100 % 100 });
+
+        this.updateAnimations(t / 1000);
+    }
+
+    updateAnimations(t){
+        for(let key in this.graph.animations){
+            this.graph.animations[key].update(t);
+        }
     }
 
     /**

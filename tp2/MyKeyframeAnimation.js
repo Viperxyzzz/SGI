@@ -29,15 +29,15 @@ export class MyKeyframeAnimation extends MyAnimation {
 
         this.elapsedTime = t - this.initialTime;
 
-        if(this.keyframes[0].instant > elapsedTime){
+        if(this.keyframes[0].instant > this.elapsedTime){
             this.matrix = mat4.create();
             mat4.scale(this.matrix, this.matrix, [0,0,0]);
             return;
         }
-        else if(this.keyframes[this.keyframes.length-1].instant > elapsedTime){
+        else if(this.keyframes[this.keyframes.length-1].instant > this.elapsedTime){
             this.isActive = true;
         }
-        else if(this.keyframes[this.keyframes.length-1].instant < elapsedTime && this.isActive==false){
+        else if(this.keyframes[this.keyframes.length-1].instant < this.elapsedTime && this.isActive==false){
             return;
         }
         else{
