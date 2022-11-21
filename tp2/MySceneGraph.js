@@ -1456,9 +1456,8 @@ export class MySceneGraph {
         if(component.isHighlighted == true){
             let highlight = component.getHighlight();
             console.log(highlight);
-            this.highlightShader.setUniformsValues({r : highlight['red']});
-            this.highlightShader.setUniformsValues({g : highlight['green']});
-            this.highlightShader.setUniformsValues({b : highlight['blue']});
+            let targetColor = [highlight['red'],highlight['green'],highlight['blue'],1.0];
+            this.highlightShader.setUniformsValues({targetColor: targetColor});
             this.highlightShader.setUniformsValues({normScale : highlight['length_h']});
             this.scene.setActiveShader(this.highlightShader);
         }
