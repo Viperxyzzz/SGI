@@ -3,27 +3,19 @@ precision highp float;
 #endif
 
 varying vec2 vTextureCoord;
-
 uniform sampler2D uSampler;
+
 uniform float timeFactor;
 
-uniform float r;
-uniform float g;
-uniform float b;
+uniform vec4 targetColor;
 
 void main() {
-	vec4 color = texture2D(uSampler, vTextureCoord);
-	
-	float n = sin(timeFactor) + 1.0;
-    float t = n / 2.0;
-    float time = 1.0 - t;
 
+    float t = (sin(timeFactor) + 1.0) / 2.0;
 
+    vec4 texColor = texture2D(uSampler, vTextureCoord + vec2(t * .01,0.0));
 
-    vec4 animColor = color;
-    animColor.r = color.r * r + color.g * g * time + color.b * b * time;
-    animColor.g = color.r * r * time + color.g * g + color.b * b * time;
-    animColor.b = color.r * r * time + color.g * g * time + color.b * b;
+    vec4 color = texColor + (targetColor - texColor) * t;
 
-	gl_FragColor = animColor;
+    gl_FragColor = color * texColor;
 }
