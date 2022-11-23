@@ -183,7 +183,7 @@
 
     <primitives>
         <primitive id="demoRectangle">
-            <rectangle x1="-0.5" y1="-1" x2="0.5" y2="1" />
+            <rectangle x1="-0.5" y1="-1" x2="0.5" y2="1" />a
         </primitive>
         <primitive id="demoTriangle">
             <triangle x1="0" y1="0" z1="0" x2="0" y2="0" z2="4" x3="0" y3="2" z3="2"/>
@@ -277,7 +277,7 @@
                 <scale sx="1" sy="1" sz="1" />
             </keyframe>
 
-            <keyframe instant="10">
+            <keyframe instant="7">
                 <translation x="0" y="40" z="0" />
                 <rotation axis="x" angle="0" />
                 <rotation axis="y" angle="0" />
@@ -309,6 +309,143 @@
                 <scale sx="1" sy="1" sz="1" />
             </keyframe>
         </keyframeanim>
+
+        <keyframeanim id="tireAnimation">
+            <keyframe instant="0">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="5">
+                <translation x="0" y="1" z="3" />
+                <rotation axis="x" angle="-30" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="10">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="15">
+                <translation x="0" y="1" z="-3" />
+                <rotation axis="x" angle="30" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="20">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+        </keyframeanim>
+
+
+        <keyframeanim id="sunAnimation">
+            <keyframe instant="0">
+                <translation x="-10" y="-7" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="5">
+                <translation x="-3" y="-3" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="10">
+                <translation x="4" y="1" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="12">
+                <translation x="5" y="1" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="20">
+                <translation x="12" y="-7" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+        </keyframeanim>
+
+
+        <keyframeanim id="wheelAnimation">
+            <keyframe instant="0">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="10">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="720" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="20">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="30">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="40">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="720" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="50">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+        </keyframeanim> 
+
     </animations>
 
 
@@ -560,6 +697,8 @@
                 <material id="inherit" />
             </materials>
             <texture id="sunTexture"/>
+            <animation id="sunAnimation" />
+            <!-- <animation id="firepitAnimation" /> -->
             <children>
                 <primitiveref id="demoSphere" />
             </children>
@@ -666,6 +805,7 @@
                 <material id="wheelMaterial" />
             </materials>
             <texture id="mastTexture"/>
+            <animation id="tireAnimation"/>
             <children>
                 <primitiveref id="demoTorus" />
             </children>
@@ -681,6 +821,7 @@
                 <material id="inherit" />
             </materials>
             <texture id="mastTexture"/>
+            <animation id="tireAnimation"/>
             <children>
                 <primitiveref id="demoCylinder" />
             </children>
@@ -1872,6 +2013,7 @@
                 <material id="neutral" />
             </materials>
             <texture id="tireTexture"/>
+            <animation id="wheelAnimation" />
             <children>
                 <primitiveref id="demoTorus" />
             </children>
@@ -1888,6 +2030,7 @@
                 <material id="neutral" />
             </materials>
             <texture id="tireTexture"/>
+            <animation id="wheelAnimation" />
             <children>
                 <primitiveref id="demoTorus" />
             </children>
@@ -1946,6 +2089,7 @@
                 <material id="inherit" />
             </materials>
             <texture id="flagTexture"/>
+            <anination id="flag_anim" />
             <children>
                 <componentref id="triangleFlag1" /> 
                 <componentref id="triangleFlag2" /> 
