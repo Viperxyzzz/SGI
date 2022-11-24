@@ -370,8 +370,8 @@
                 <scale sx="1" sy="1" sz="1" />
             </keyframe>
             
-            <keyframe instant="6">
-                <translation x="0" y="-10" z="0" />
+            <keyframe instant="5.1">
+                <translation x="0" y="-1000" z="0" />
                 <rotation axis="x" angle="0" />
                 <rotation axis="y" angle="0" />
                 <rotation axis="z" angle="0" />
@@ -386,19 +386,19 @@
                 <rotation axis="z" angle="0" />
                 <scale sx="1" sy="1" sz="1" />
             </keyframe>
-            <keyframe instant="6">
+            <keyframe instant="5.5">
                 <translation x="0" y="0" z="0" />
                 <rotation axis="x" angle="0" />
                 <rotation axis="y" angle="0" />
                 <rotation axis="z" angle="0" />
-                <scale sx="15" sy="15" sz="15" />
+                <scale sx="6" sy="6" sz="6" />
             </keyframe>
-            <keyframe instant="7">
+            <keyframe instant="5.6">
                 <translation x="0" y="-1000" z="0" />
                 <rotation axis="x" angle="0" />
                 <rotation axis="y" angle="0" />
                 <rotation axis="z" angle="0" />
-                <scale sx="12" sy="12" sz="12" />
+                <scale sx="1" sy="1" sz="1" />
             </keyframe>
         </keyframeanim>
         <keyframeanim id="tireAnimation">
@@ -1397,6 +1397,7 @@
             </materials>
             <texture id="none"/>
             <animation id="explosionAnimation" />
+            <highlighted r="1.0" g="0.0" b="0.0" length_h="15"/>
             <children>
                 <primitiveref id="demoSphere" />
             </children>
