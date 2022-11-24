@@ -109,9 +109,9 @@
         <texture id="glassTexture" file="scenes/images/glass.jpg" />
         <texture id="brokenGlassTexture" file="scenes/images/broken_glass.jpg" />
         <texture id="camouflageTexture" file="scenes/images/camouflage.jpg" />
-        <texture id="tentTexture" file="scenes/images/tent.jpg" />
-        <texture id="barrelTexture" file="scenes/images/barrel.jpg" />
-        <texture id="picnicTexture" file="scenes/images/picnic.jpg" />
+        <texture id="tentTexture" file="scenes/images/camouflage.jpg" />
+        <texture id="barrelTexture" file="scenes/images/greenMetal.jpg" />
+        <texture id="picnicTexture" file="scenes/images/floor.jpg" />
         <texture id="rocksBaseTexture" file="scenes/images/rocks_base.jpg" />
     </textures>
 
@@ -284,9 +284,41 @@
                 <scale sx="1" sy="1" sz="1" />
             </keyframe>
 
+            <!-- <keyframe instant="6">
+                <translation x="0" y="20" z="7" />
+                <rotation axis="x" angle="-135" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe> -->
+
             <keyframe instant="7">
-                <translation x="0" y="40" z="0" />
-                <rotation axis="x" angle="0" />
+                <translation x="0" y="30" z="-3" />
+                <rotation axis="x" angle="-225" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+<!-- 
+            <keyframe instant="8">
+                <translation x="0" y="20" z="0" />
+                <rotation axis="x" angle="-315" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe> -->
+
+            <keyframe instant="9">
+                <translation x="0" y="0" z="-13" />
+                <rotation axis="x" angle="-360" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="10">
+                <translation x="0" y="0" z="-13" />
+                <rotation axis="x" angle="-360" />
                 <rotation axis="y" angle="0" />
                 <rotation axis="z" angle="0" />
                 <scale sx="1" sy="1" sz="1" />
@@ -294,15 +326,7 @@
 
             <keyframe instant="15">
                 <translation x="0" y="0" z="0" />
-                <rotation axis="x" angle="0" />
-                <rotation axis="y" angle="0" />
-                <rotation axis="z" angle="0" />
-                <scale sx="1" sy="1" sz="1" />
-            </keyframe>
-
-            <keyframe instant="20">
-                <translation x="0" y="0" z="0" />
-                <rotation axis="x" angle="0" />
+                <rotation axis="x" angle="-360" />
                 <rotation axis="y" angle="-60" />
                 <rotation axis="z" angle="0" />
                 <scale sx="1" sy="1" sz="1" />
@@ -310,7 +334,7 @@
 
             <keyframe instant="25">
                 <translation x="0" y="0" z="0" />
-                <rotation axis="x" angle="0" />
+                <rotation axis="x" angle="-360" />
                 <rotation axis="y" angle="0" />
                 <rotation axis="z" angle="0" />
                 <scale sx="1" sy="1" sz="1" />
@@ -359,49 +383,7 @@
             </keyframe>
         </keyframeanim>
 
-
-        <keyframeanim id="sunAnimation">
-            <keyframe instant="0">
-                <translation x="-10" y="-7" z="0" />
-                <rotation axis="x" angle="0" />
-                <rotation axis="y" angle="0" />
-                <rotation axis="z" angle="0" />
-                <scale sx="1" sy="1" sz="1" />
-            </keyframe>
-
-            <keyframe instant="5">
-                <translation x="-3" y="-3" z="0" />
-                <rotation axis="x" angle="0" />
-                <rotation axis="y" angle="0" />
-                <rotation axis="z" angle="0" />
-                <scale sx="1" sy="1" sz="1" />
-            </keyframe>
-
-            <keyframe instant="10">
-                <translation x="4" y="1" z="0" />
-                <rotation axis="x" angle="0" />
-                <rotation axis="y" angle="0" />
-                <rotation axis="z" angle="0" />
-                <scale sx="1" sy="1" sz="1" />
-            </keyframe>
-
-            <keyframe instant="12">
-                <translation x="5" y="1" z="0" />
-                <rotation axis="x" angle="0" />
-                <rotation axis="y" angle="0" />
-                <rotation axis="z" angle="0" />
-                <scale sx="1" sy="1" sz="1" />
-            </keyframe>
-
-            <keyframe instant="20">
-                <translation x="12" y="-7" z="0" />
-                <rotation axis="x" angle="0" />
-                <rotation axis="y" angle="0" />
-                <rotation axis="z" angle="0" />
-                <scale sx="1" sy="1" sz="1" />
-            </keyframe>
-        </keyframeanim>
-
+    
 
         <keyframeanim id="wheelAnimation">
             <keyframe instant="0">
@@ -496,7 +478,7 @@
             <children>
                 <componentref id="patch" />
                 <componentref id="picnic_towel" />
-                <componentref id="bonfire" />
+                <!-- <componentref id="bonfire" /> -->
             </children>
         </component>
 
@@ -1093,7 +1075,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="mastTexture"/>
+            <texture id="barrelTexture"/>
             <children>
                 <componentref id="leftBarrel" />
                 <componentref id="rightBarrel" /> 
@@ -1210,7 +1192,6 @@
                 <primitiveref id="patchTent" />
             </children>
         </component>
-
         <component id="street_lamp">
             <transformation>
             </transformation>
@@ -1388,7 +1369,7 @@
                 <material id="wheelMaterial" />
             </materials>
             <texture id="mastTexture"/>
-            <animation id="tireAnimation"/>
+            <!-- <animation id="tireAnimation"/> -->
             <children>
                 <primitiveref id="demoTorus" />
             </children>
@@ -1404,7 +1385,7 @@
                 <material id="inherit" />
             </materials>
             <texture id="mastTexture"/>
-            <animation id="tireAnimation"/>
+            <!-- <animation id="tireAnimation"/> -->
             <children>
                 <primitiveref id="demoCylinder" />
             </children>
