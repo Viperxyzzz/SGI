@@ -229,6 +229,18 @@
                 <controlpoint x="1.5" y="1.5" z="0.0" />
             </patch>
         </primitive>
+        
+        <primitive id="patchTentInside">
+            <patch degree_u="2" parts_u="50" degree_v="1" parts_v="50" >
+
+                <controlpoint x="1.5" y="1.5" z="0.0" />
+                <controlpoint x="1.5" y="-1.5" z="0.0" />
+                <controlpoint x="0.0" y="1.5" z="-4.0" />
+                <controlpoint x="0.0" y="-1.5" z="-4.0" />
+                <controlpoint x="-1.5" y="1.5" z="0.0" />
+                <controlpoint x="-1.5" y="-1.5" z="0.0" />
+            </patch>
+        </primitive>
 
         <primitive id="patchHalfBarrel">
             <patch degree_u="2" parts_u="50" degree_v="3" parts_v="50" >
@@ -283,6 +295,7 @@
                 <rotation axis="z" angle="0" />
                 <scale sx="1" sy="1" sz="1" />
             </keyframe>
+            
 
             <!-- <keyframe instant="6">
                 <translation x="0" y="20" z="7" />
@@ -340,7 +353,54 @@
                 <scale sx="1" sy="1" sz="1" />
             </keyframe>
         </keyframeanim>
-
+        <keyframeanim id="mineAnimation">
+            <keyframe instant="0">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+            
+            <keyframe instant="5">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+            
+            <keyframe instant="6">
+                <translation x="0" y="-10" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+        </keyframeanim>
+        <keyframeanim id="explosionAnimation"> 
+            <keyframe instant="5">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+            <keyframe instant="6">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="15" sy="15" sz="15" />
+            </keyframe>
+            <keyframe instant="7">
+                <translation x="0" y="-1000" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="12" sy="12" sz="12" />
+            </keyframe>
+        </keyframeanim>
         <keyframeanim id="tireAnimation">
             <keyframe instant="0">
                 <translation x="0" y="0" z="0" />
@@ -502,6 +562,7 @@
                 <componentref id="billboard" />
                 <componentref id="tree" />
                 <componentref id="mine" />
+                <componentref id="explosion"/>
                 <componentref id="sun" />
                 <componentref id="street_lamp" />
                 <componentref id="car" />
@@ -1105,6 +1166,7 @@
             <children>
                 <componentref id="tentPatch" /> 
                 <componentref id="barrelPatch" /> 
+                <componentref id="tentPatchInside"/>
             </children>
         </component>
 
@@ -1233,6 +1295,22 @@
                 <primitiveref id="patchTent" />
             </children>
         </component>
+
+        <component id="tentPatchInside">
+            <transformation>
+                <translate x="10" y="0.02" z="10" />  
+                <scale x="1.5" y="1.5" z="1.5" />
+                <rotate angle="90" axis="x"/>
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="tentTexture"/>
+            <children>
+                <primitiveref id="patchTentInside" />
+            </children>
+        </component>
+
         <component id="street_lamp">
             <transformation>
             </transformation>
@@ -1310,6 +1388,20 @@
             <highlighted r="0.0" g="1.0" b="0.0" length_h="15"/>
         </component>
 
+        <component id="explosion">
+            <transformation>
+                <translate x="2" y="0.2" z="7" />
+            </transformation>
+            <materials>
+                <material id="dark" />
+            </materials>
+            <texture id="none"/>
+            <animation id="explosionAnimation" />
+            <children>
+                <primitiveref id="demoSphere" />
+            </children>
+        </component>
+
         <component id="mine">
             <transformation>
             </transformation>
@@ -1317,6 +1409,7 @@
                 <material id="dark" />
             </materials>
             <texture id="none"/>
+            <animation id="mineAnimation" />
             <children>
                 <componentref id="base" />
                 <componentref id="top_mine" /> 
