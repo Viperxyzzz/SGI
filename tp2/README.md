@@ -1,20 +1,23 @@
-# SGI 2022/2023 - TP2
+# SGI 2022/2023 - TP1
 
-## Group: T0xG0y
+## Group: T05G08
 
 | Name             | Number    | E-Mail             |
 | ---------------- | --------- | ------------------ |
-| John Doe         | 201801010 | ...                |
-| Jane Doe         | 201801011 | ...                |
+| Pedro Nunes         | 201905396 | up201905396@fe.up.pt                |
+| Filipe Pinto         | 201907747 | up201907747@fe.up.pt                |
 
 ----
 ## Project information
 
-- (items describing main strong points)
+- All the specified primitves were implemented
+- Animations were implemented
+- NURBS were implemented
+- Shaders were implemented
 - Scene
-  - (Brief description of the created scene)
-  - (relative link to the scene)
+  - Our [scene](scenes/demo.xml).
+  - Screenshots of the project can be found [here](screenshots)
 ----
 ## Issues/Problems
 
-- (items describing unimplemented features, bugs, problems, etc.)
+- None
