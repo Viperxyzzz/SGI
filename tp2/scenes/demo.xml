@@ -113,6 +113,7 @@
         <texture id="barrelTexture" file="scenes/images/greenMetal.jpg" />
         <texture id="picnicTexture" file="scenes/images/floor.jpg" />
         <texture id="rocksBaseTexture" file="scenes/images/rocks_base.jpg" />
+        <texture id="explosionTexture" file="scenes/images/explosion.jpg"/>
     </textures>
 
     <materials>
@@ -401,6 +402,44 @@
                 <scale sx="1" sy="1" sz="1" />
             </keyframe>
         </keyframeanim>
+        <keyframeanim id="shootingAnimation"> 
+            <keyframe instant="17">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="17.3">
+                <translation x="-7" y="0" z="8" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+            <keyframe instant="18">
+                <translation x="-7" y="0" z="8" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="10" sy="10" sz="10" />
+            </keyframe>
+            <keyframe instant="18.1">
+                <translation x="0" y="-10000" z="8" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="0" sy="0" sz="0" />
+            </keyframe>
+            <!-- <keyframe instant="5.6">
+                <translation x="0" y="-1000" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe> -->
+        </keyframeanim>
         <keyframeanim id="tireAnimation">
             <keyframe instant="0">
                 <translation x="0" y="0" z="0" />
@@ -523,6 +562,43 @@
         </keyframeanim> 
 
 
+        <keyframeanim id="tankWheelAnimation">
+            <keyframe instant="0">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="10">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="720" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="20">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="1440" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="25">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="2880" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+
+        </keyframeanim>
+
+
         <keyframeanim id="carAnimation">
             <keyframe instant="0">
                 <translation x="0" y="0" z="0" />
@@ -563,6 +639,7 @@
                 <componentref id="tree" />
                 <componentref id="mine" />
                 <componentref id="explosion"/>
+                <componentref id="shootingBullet" />
                 <componentref id="sun" />
                 <componentref id="street_lamp" />
                 <componentref id="car" />
@@ -580,54 +657,9 @@
             <children>
                 <componentref id="patch" />
                 <componentref id="picnic_towel" />
-                <!-- <componentref id="bonfire" /> -->
             </children>
         </component>
 
-        <component id="bonfire">
-            <transformation>
-            </transformation>
-            <materials>
-                <material id="inherit" />
-            </materials>
-            <texture id="inherit"/>
-            <children>
-                <componentref id="bonfire_base" />
-                <!-- <componentref id="fire1" /> -->
-                <!-- <componentref id="car_body_front" />  -->
-                <!-- <componentref id="bonfire" /> -->
-            </children>
-        </component>
-
-        <component id="fire1">
-            <transformation>
-                <translate x="10.5" y="0.02" z="14.5" />
-                <scale x="1.5" y="1" z="1.5" />
-                <rotate angle="-90" axis="x"/>
-            </transformation>
-            <materials>
-                <material id="inherit" />
-            </materials>
-            <texture id="inherit"/>
-            <children>
-                <primitiveref id="demoTorus" />
-            </children>
-        </component>
-
-        <component id="bonfire_base">
-            <transformation>
-                <translate x="10.5" y="0.4" z="14.5" />
-                <scale x="1.5" y="1" z="1.5" />
-                <rotate angle="-90" axis="x"/>
-            </transformation>
-            <materials>
-                <material id="inherit" />
-            </materials>
-            <texture id="rocksBaseTexture"/>
-            <children>
-                <primitiveref id="demoTorus" />
-            </children>
-        </component>
 
         <component id="picnic_towel">
             <transformation>
@@ -1395,9 +1427,23 @@
             <materials>
                 <material id="dark" />
             </materials>
-            <texture id="none"/>
+            <texture id="explosionTexture"/>
             <animation id="explosionAnimation" />
             <highlighted r="1.0" g="0.0" b="0.0" length_h="15"/>
+            <children>
+                <primitiveref id="demoSphere" />
+            </children>
+        </component>
+
+        <component id="shootingBullet">
+            <transformation>
+                <translate x="0" y="2.4" z="3" />
+            </transformation>
+            <materials>
+                <material id="dark" />
+            </materials>
+            <texture id="explosionTexture"/>
+            <animation id="shootingAnimation" />
             <children>
                 <primitiveref id="demoSphere" />
             </children>
@@ -2712,7 +2758,7 @@
                 <material id="neutral" />
             </materials>
             <texture id="tireTexture"/>
-            <animation id="wheelAnimation" />
+            <animation id="tankWheelAnimation" />
             <children>
                 <primitiveref id="demoTorus" />
             </children>
@@ -2729,7 +2775,7 @@
                 <material id="neutral" />
             </materials>
             <texture id="tireTexture"/>
-            <animation id="wheelAnimation" />
+            <animation id="tankWheelAnimation" />
             <children>
                 <primitiveref id="demoTorus" />
             </children>
