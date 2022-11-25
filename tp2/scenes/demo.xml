@@ -410,16 +410,23 @@
                 <rotation axis="z" angle="0" />
                 <scale sx="1" sy="1" sz="1" />
             </keyframe>
-            <keyframe instant="18.5">
+
+            <keyframe instant="17.3">
                 <translation x="-7" y="0" z="8" />
                 <rotation axis="x" angle="0" />
                 <rotation axis="y" angle="0" />
                 <rotation axis="z" angle="0" />
-                <scale sx="6" sy="6" sz="6" />
+                <scale sx="1" sy="1" sz="1" />
             </keyframe>
-
-            <keyframe instant="19">
+            <keyframe instant="18">
                 <translation x="-7" y="0" z="8" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="10" sy="10" sz="10" />
+            </keyframe>
+            <keyframe instant="18.1">
+                <translation x="0" y="-10000" z="8" />
                 <rotation axis="x" angle="0" />
                 <rotation axis="y" angle="0" />
                 <rotation axis="z" angle="0" />
@@ -553,6 +560,43 @@
 
 
         </keyframeanim> 
+
+
+        <keyframeanim id="tankWheelAnimation">
+            <keyframe instant="0">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="0" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="10">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="720" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="20">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="1440" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+            <keyframe instant="25">
+                <translation x="0" y="0" z="0" />
+                <rotation axis="x" angle="0" />
+                <rotation axis="y" angle="0" />
+                <rotation axis="z" angle="2880" />
+                <scale sx="1" sy="1" sz="1" />
+            </keyframe>
+
+
+        </keyframeanim>
 
 
         <keyframeanim id="carAnimation">
@@ -2714,7 +2758,7 @@
                 <material id="neutral" />
             </materials>
             <texture id="tireTexture"/>
-            <animation id="wheelAnimation" />
+            <animation id="tankWheelAnimation" />
             <children>
                 <primitiveref id="demoTorus" />
             </children>
@@ -2731,7 +2775,7 @@
                 <material id="neutral" />
             </materials>
             <texture id="tireTexture"/>
-            <animation id="wheelAnimation" />
+            <animation id="tankWheelAnimation" />
             <children>
                 <primitiveref id="demoTorus" />
             </children>
