@@ -107,19 +107,39 @@ export class MyGameBoard {
             }
         }
 
-        if(Math.abs(startTile.x - endTile.x) == 2){
-            // Check that there is an opponent's piece in the square being jumped over
-            let jumpedX = (startTile.x + endTile.x) / 2;
-            let jumpedY = (startTile.y + endTile.y) / 2;
-            if(this.getTileByCoords(jumpedX, jumpedY).getPiece() == null || this.getTileByCoords(jumpedX, jumpedY).getPiece().type == piece.type){
-                return false;
-            }
-            else{
-                // TODO: add piece to aux board and animate the capture 
-                this.removePiecefromTile(this.getTileByCoords(jumpedX, jumpedY).getPiece(), this.getTileByCoords(jumpedX, jumpedY));
+        if(!piece.isKing){
+            if(Math.abs(startTile.x - endTile.x) == 2){
+                // Check that there is an opponent's piece in the square being jumped over
+                let jumpedX = (startTile.x + endTile.x) / 2;
+                let jumpedY = (startTile.y + endTile.y) / 2;
+                if(this.getTileByCoords(jumpedX, jumpedY).getPiece() == null || this.getTileByCoords(jumpedX, jumpedY).getPiece().type == piece.type){
+                    return false;
+                }
+                else{
+                    // TODO: add piece to aux board and animate the capture 
+                    this.removePiecefromTile(this.getTileByCoords(jumpedX, jumpedY).getPiece(), this.getTileByCoords(jumpedX, jumpedY));
+                }
             }
         }
+        else{
+            let dx = endTile.x - startTile.x;
+            let dy = endTile.y - startTile.y;
 
+            let x = endTile.x - (dx / Math.abs(dx));
+            let y = endTile.y - (dy / Math.abs(dy));
+
+            if(x >= 0 && x < 8 && y >= 0 && y < 8){
+                let tile = this.getTileByCoords(x, y);
+                if(tile.getPiece() !== null){
+                    if(tile.getPiece().type !== piece.type){
+                        this.removePiecefromTile(tile.getPiece(), tile);
+                    }
+                    else{
+                        return true;
+                    }
+                }
+            }
+        }
         return true;
     }
 

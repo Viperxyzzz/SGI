@@ -63,6 +63,8 @@ export class MyPiece {
 
     display() {
         let m4 = mat4.create();
+        if(this.isKing)
+            mat4.scale(m4, m4, [1, 1, 3]);
         mat4.translate(m4, m4, [this.tilePointer.x + 0.5, this.tilePointer.y + 0.5, 0]);
         // register the id of the object to be picked
         if(this.selectable)

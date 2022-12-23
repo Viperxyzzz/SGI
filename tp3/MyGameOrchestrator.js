@@ -114,7 +114,39 @@ export class MyGameOrchestrator {
                 }
             }
         }
+
+        // check if the piece is a king
+        if(pickedPiece.isKing == true){
+            this.renderKingMoves(pickedPiece, this.isPayerBlack);
+        }
         this.state = "NEXT_TURN";
+    }
+
+    renderKingMoves(pickedPiece, isPlayerBlack){
+        for(let dx = -1; dx <= 1; dx+=2){
+            for(let dy = -1; dy <= 1; dy+=2){
+                let i = pickedPiece.getTile().x + dx;
+                let j = pickedPiece.getTile().y + dy;
+
+                while(i >= 0 && i < 8 && j >= 0 && j < 8){
+                    if(this.gameBoard.getTileByCoords(i, j).getPiece() != null){
+                        if(this.gameBoard.getTileByCoords(i, j).getPiece().type == pickedPiece.type)
+                            break;
+                        else{
+                            if(i + dx >= 0 && i + dx < 8 && j + dy >= 0 && j + dy < 8 && this.gameBoard.getTileByCoords(i + dx, j + dy).getPiece() == null){
+                                this.gameBoard.getTileByCoords(i + dx, j + dy).setMaterialApplied("green");
+                                break;
+                            }
+                            else
+                                break;
+                        }
+                    }
+                    this.gameBoard.getTileByCoords(i, j).setMaterialApplied("green");
+                    i += dx;
+                    j += dy;
+                }
+            }
+        }
     }
 
     display() {
