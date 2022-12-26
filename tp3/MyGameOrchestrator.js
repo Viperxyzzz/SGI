@@ -173,6 +173,7 @@ export class MyGameOrchestrator {
     OnObjectSelected(obj, customId) {
         if (obj instanceof MyPiece) {
             if(this.pickedPiece != null){
+                this.pickedPiece.unsetTexture();
                 this.pickedPiece = null;
                 this.clearPossibleMoves();
                 console.log("Select a valid tile to move the piece");
@@ -181,6 +182,7 @@ export class MyGameOrchestrator {
                 // verify if the piece equals turn player
                 if(this.isPayerBlack && obj.type == "black" || !this.isPayerBlack && obj.type == "white"){
                     this.pickedPiece = obj;
+                    this.pickedPiece.setTexture();
                     this.state = "POSSIBLE_MOVES";
                 }
 
@@ -200,6 +202,7 @@ export class MyGameOrchestrator {
                     }
                     this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard));
                 }
+                this.pickedPiece.unsetTexture();
                 this.pickedPiece = null;
                 this.pickedTile = null;
                 this.clearPossibleMoves();

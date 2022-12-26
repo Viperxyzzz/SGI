@@ -1,4 +1,4 @@
-import { CGFscene } from '../lib/CGF.js';
+import { CGFscene, CGFtexture } from '../lib/CGF.js';
 import { CGFappearance } from '../lib/CGF.js';
 import { MyCylinder } from "./primitives/MyCylinder.js";
 import { MySphere } from './primitives/MySphere.js';
@@ -13,6 +13,7 @@ export class MyPiece {
         this.selectable = true;
         this.tilePointer = null;
         this.isKing = false;
+        this.texture = null;
         this.createMaterials();
     }
 
@@ -29,6 +30,14 @@ export class MyPiece {
         this.materialWhite.setDiffuse(1, 1, 1, 1);
         this.materialWhite.setSpecular(0, 0, 0, 1);
         this.materialWhite.setShininess(10.0);
+    }
+
+    setTexture(){
+        this.texture = new CGFtexture(this.scene, "scenes/images/wood.jpg");
+    }
+
+    unsetTexture(){
+        this.texture = null;
     }
 
     getType() {
@@ -75,10 +84,14 @@ export class MyPiece {
         // with this uniqueId
         this.scene.pushMatrix();
         this.scene.multMatrix(m4);
-        if(this.type == "black")
+        if(this.type == "black"){
+            this.materialBlack.setTexture(this.texture);
             this.materialBlack.apply();
-        else
+        }
+        else{
+            this.materialWhite.setTexture(this.texture);
             this.materialWhite.apply();
+        }
         this.geometry.display();
         this.top.display();
         this.scene.popMatrix();
