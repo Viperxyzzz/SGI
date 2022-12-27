@@ -78,9 +78,40 @@ export class MyGameBoard {
                 piece.isKing = true;
                 console.log("black king");
             }
+            if(this.isEating(piece, startTile, endTile, playerBlack)){
+                this.eat(piece, startTile, endTile, playerBlack);
+            }
             return true;
         }
         return false;
+    }
+
+    isEating(piece, startTile, endTile, playerBlack) {
+        if(Math.abs(startTile.x - endTile.x) != 2){
+            return false;
+        }
+        let jumpedX = (startTile.x + endTile.x) / 2;
+        let jumpedY = (startTile.y + endTile.y) / 2;
+        if(this.getTileByCoords(jumpedX, jumpedY).getPiece() == null || this.getTileByCoords(jumpedX, jumpedY).getPiece().type == piece.type){
+            return false;
+        }
+        return true;
+    }
+
+    
+    eat(piece, startTile, endTile, playerBlack) {
+        let jumpedX = (startTile.x + endTile.x) / 2;
+        let jumpedY = (startTile.y + endTile.y) / 2;
+        var piece = this.getTileByCoords(jumpedX, jumpedY).getPiece();
+        this.removePiecefromTile(this.getTileByCoords(jumpedX, jumpedY).getPiece(), this.getTileByCoords(jumpedX, jumpedY));
+        if(piece.type == "black"){
+            console.log("adding to auxiliar board black ");
+            this.auxBoardBlack.addPiece(piece);
+        }
+        else{
+            console.log("adding to auxiliar board white ");
+            this.auxBoardWhite.addPiece(piece);
+        }
     }
 
     //check if a move is possible
@@ -111,25 +142,7 @@ export class MyGameBoard {
 
         if(!piece.isKing){
             if(Math.abs(startTile.x - endTile.x) == 2){
-                // Check that there is an opponent's piece in the square being jumped over
-                let jumpedX = (startTile.x + endTile.x) / 2;
-                let jumpedY = (startTile.y + endTile.y) / 2;
-                if(this.getTileByCoords(jumpedX, jumpedY).getPiece() == null || this.getTileByCoords(jumpedX, jumpedY).getPiece().type == piece.type){
-                    return false;
-                }
-                else{
-                    // TODO: add piece to aux board and animate the capture 
-                    var piece = this.getTileByCoords(jumpedX, jumpedY).getPiece();
-                    this.removePiecefromTile(this.getTileByCoords(jumpedX, jumpedY).getPiece(), this.getTileByCoords(jumpedX, jumpedY));
-                    if(piece.type == "black"){
-                        console.log("adding to auxiliar board black ");
-                        this.auxBoardBlack.addPiece(piece);
-                    }
-                    else{
-                        console.log("adding to auxiliar board white ");
-                        this.auxBoardWhite.addPiece(piece);
-                    }
-                }
+                return this.isEating(piece, startTile, endTile, playerBlack);
             }
         }
         else{

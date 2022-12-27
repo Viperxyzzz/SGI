@@ -82,8 +82,13 @@ export class MyTile {
         }
 
         this.tile.display();
-        if(this.pointerPiece != null)
+        if(this.pointerPiece != null){
+            let m4 = mat4.create();
+            //create a translation matrix with pointer piece dx and dy
+            // mat4.translate(m4, m4, [-this.pointerPiece.dx, -this.pointerPiece.dy, 0]);
+            // this.scene.multMatrix(m4);
             this.pointerPiece.display();
+        }
         this.scene.popMatrix();
 
         if(this.selectable)

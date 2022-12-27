@@ -36,9 +36,14 @@ export class MyGameOrchestrator {
                 this.isMoving = false;
                 this.movingPiece = null;
                 let move = this.gameSequence.sequence[this.gameSequence.sequence.length - 1];
-                console.log(move);
+                console.log("FINAL (X,Y): ");
+                console.log(move.tileFrom.x);
+                console.log(move.tileFrom.y);
+                let dx = move.tileTo.x - move.tileFrom.x;
+                let dy = move.tileTo.y - move.tileFrom.y;
+                // move.piece.tilePointer.x -= dx;
+                // move.piece.tilePointer.y -= dy;
                 let value = this.gameBoard.movePiece(move.piece,move.tileFrom,move.tileTo,move.isPlayerBlack);
-                console.log(value);
             }
         }
 
@@ -222,6 +227,10 @@ export class MyGameOrchestrator {
             if(this.pickedPiece != null){
                 this.pickedTile = obj;
                 if(this.gameBoard.isValidMove(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.isPayerBlack)){
+                    // console.log("INITIAL X,Y");
+                    // console.log(this.pickedPiece.getTile().x);
+                    // console.log(this.pickedPiece.getTile().y);
+                    // they stay the same
                     this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard,this.isPayerBlack));
                     // change player
                     if(this.isPayerBlack){
@@ -230,11 +239,6 @@ export class MyGameOrchestrator {
                     else{
                         this.isPayerBlack = true;
                     }
-                    //print is validmove parameters
-                    console.log(this.pickedPiece);
-                    console.log(this.pickedPiece.getTile());
-                    console.log(this.pickedTile);
-                    console.log(this.isPayerBlack);
                     this.animator.addAnimation(this.pickedPiece.addAnimation(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile));
                     this.movingPiece = this.pickedPiece;
                     this.isMoving = true;

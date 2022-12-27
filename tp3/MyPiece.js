@@ -15,6 +15,8 @@ export class MyPiece {
         this.tilePointer = null;
         this.isKing = false;
         this.animation = null;
+        this.dx = 0;
+        this.dy = 0;
         this.createMaterials();
     }
 
@@ -61,15 +63,18 @@ export class MyPiece {
         this.isKing = false;
     }
 
-    addAnimation(currentPieceTile, pickedTile){
+    addAnimation(pickedPiece,currentPieceTile, pickedTile){
+        let dx = pickedTile.x - currentPieceTile.x;
+        let dy = pickedTile.y - currentPieceTile.y;
         let keyframe = new KeyFrame(0, [0,0,0], 0, 0, 0, [1,1,1]);
-        let keyframe1 = new KeyFrame(1000, [0,0,0], 0, 0, 0, [2,2,2]);
+        let keyframe1 = new KeyFrame(1000, [dx,dy,0], 0, 0, 0, [1,1,1]);
         let keyframes = [keyframe,keyframe1];
 
         var animation = new MyKeyframeAnimation(this.scene, keyframes);
 
         this.animation = animation;
-        
+        this.dx = dx;
+        this.dy = dy;
         return animation;
     }
 
@@ -78,6 +83,12 @@ export class MyPiece {
         if(this.isKing)
             mat4.scale(m4, m4, [1, 1, 3]);
         mat4.translate(m4, m4, [this.tilePointer.x + 0.5, this.tilePointer.y + 0.5, 0]);
+        if(this.animation != null){
+            if(this.animation.ended){
+                this.animation = null;
+                mat4.translate(m4, m4, [-this.dx, -this.dy, 0]);
+            }
+        }
         // register the id of the object to be picked
         if(this.selectable)
             this.scene.registerForPick(this.id, this);
