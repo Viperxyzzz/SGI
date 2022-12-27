@@ -6,6 +6,7 @@ export class MyAnimator {
         this.scene = scene;
         this.orchestrator = orchestrator;
         this.sequence = sequence;
+        this.animations = [];
     }
     
     reset() {
@@ -18,16 +19,17 @@ export class MyAnimator {
         });
     }
 
+    addAnimation(animation) {
+        this.animations.push(animation);
+    }
 
     update(t) {
-        this.sequence.forEach(move => {
-            move.update(t);
-        });
+        for (let animation of this.animations){
+            animation.update(t);
+        }
     }
 
     display() {
-        this.sequence.forEach(move => {
-            move.display();
-        });
+        this.sequence[this.index].display();
     }
 }

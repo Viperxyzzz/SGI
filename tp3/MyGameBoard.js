@@ -4,7 +4,7 @@ import { MyPiece } from "./MyPiece.js";
 
 
 export class MyGameBoard {
-    constructor(scene) {
+    constructor(scene, auxBoardWhite, auxBoardBlack) {
         this.scene = scene;
         this.tiles = [];
         this.selectableTiles = [];
@@ -14,6 +14,8 @@ export class MyGameBoard {
         this.board = Array(8).fill().map(() => Array(8));
         this.setTilesToBoard();
         this.initBoard();
+        this.auxBoardWhite = auxBoardWhite;
+        this.auxBoardBlack = auxBoardBlack;
     }
 
     setTilesToBoard() {
@@ -117,7 +119,16 @@ export class MyGameBoard {
                 }
                 else{
                     // TODO: add piece to aux board and animate the capture 
+                    var piece = this.getTileByCoords(jumpedX, jumpedY).getPiece();
                     this.removePiecefromTile(this.getTileByCoords(jumpedX, jumpedY).getPiece(), this.getTileByCoords(jumpedX, jumpedY));
+                    if(piece.type == "black"){
+                        console.log("adding to auxiliar board black ");
+                        this.auxBoardBlack.addPiece(piece);
+                    }
+                    else{
+                        console.log("adding to auxiliar board white ");
+                        this.auxBoardWhite.addPiece(piece);
+                    }
                 }
             }
         }

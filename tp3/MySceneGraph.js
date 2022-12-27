@@ -1053,9 +1053,11 @@ export class MySceneGraph {
                 let scaleCoords = this.parseScaleCoordinates3D(scale);
 
                 let keyframe = new KeyFrame(instant, transPoint, angleX, angleY, angleZ, scaleCoords);
+                console.log(keyframe);
                 keyframes.push(keyframe);
                 
             }
+            console.log(keyframes);
 
             var animation = new MyKeyframeAnimation(this.scene, keyframes);
             this.animations[animationID] = animation;

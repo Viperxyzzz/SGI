@@ -16,6 +16,7 @@ export class MyKeyframeAnimation extends MyAnimation {
         this.currentFrame = -1;
         this.isActive = false;
         this.matrix = mat4.create();
+        this.ended = false;
 
         this.keyframes.sort((a,b) => a.instant - b.instant);
 
@@ -38,6 +39,7 @@ export class MyKeyframeAnimation extends MyAnimation {
             this.isActive = true;
         }
         else if(this.keyframes[this.keyframes.length-1].instant < this.elapsedTime && this.isActive==false){
+            this.ended = true;
             return;
         }
         else{
@@ -57,7 +59,7 @@ export class MyKeyframeAnimation extends MyAnimation {
                 break;
             }
         }
-        
+
         this.interpolate(this.keyframes[this.currentFrame - 1], this.keyframes[this.currentFrame], t);
 
     }

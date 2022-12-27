@@ -173,6 +173,7 @@ export class XMLscene extends CGFscene {
         this.updateAnimations(t / 1000);
 
         this.gameOrchestrator.managePick(this.pickEnabled, this.pickResults);
+        this.gameOrchestrator.update(t);
         this.clearPickRegistration();
     }
 
@@ -222,8 +223,8 @@ export class XMLscene extends CGFscene {
 
             // Displays the scene (MySceneGraph function).
             // this.graph.displayScene();
-            // this.gameOrchestrator.display();
-            this.gameOrchestrator.update(1/60);
+            this.gameOrchestrator.display();
+            // this.gameOrchestrator.update(1/60);
 
         }
 

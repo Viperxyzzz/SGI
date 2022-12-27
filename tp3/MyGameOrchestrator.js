@@ -2,23 +2,32 @@ import { MySceneGraph } from "./MySceneGraph.js";
 import { MyGameSequence } from "./MyGameSequence.js";
 import { MyAnimator } from "./MyAnimator.js";
 import { MyGameBoard } from "./MyGameBoard.js";
+import { MyAuxBoard } from "./MyAuxBoard.js";
 import { MyPiece } from "./MyPiece.js";
 import { MyTile } from "./MyTile.js";
 import { MyGameMove } from "./MyGameMove.js";
+import { MyKeyframeAnimation } from "./MyKeyframeAnimation.js";
 
 export class MyGameOrchestrator {
     constructor(scene) {
         this.gameSequence = new MyGameSequence(scene);
-        this.gameBoard = new MyGameBoard(scene);
+        this.auxBoardBlack = new MyAuxBoard(scene, -2, 0 , 2);
+        this.auxBoardWhite = new MyAuxBoard(scene, 9, 0 ,2);
+        this.gameBoard = new MyGameBoard(scene, this.auxBoardWhite, this.auxBoardBlack);
         //this.theme = new MySceneGraph("scenes/tp3/board.xml", scene);
-        //this.animator = new MyAnimator(scene, this, this.gameSequence);
+        this.animator = new MyAnimator(scene, this, this.gameSequence);
         this.pickedPiece = null;
         this.pickedTile = null;
+        this.movingPiece = null;
         this.state = "MENU";
         this.isPayerBlack = true;
+
+        this.startTime = Date.now() / 1000;
+        this.lastTime = this.startTime;
     }
 
     update(t) {
+        this.animator.update(t);
         //state machine
         switch(this.state){
             case "MENU":
@@ -34,6 +43,7 @@ export class MyGameOrchestrator {
                 this.drawPossibleMoves(this.pickedPiece);
                 break;
             case "ANIMATION":
+                this.movingPiece.display();
                 break;
             case "HAS_GAME_ENDED":
                 break;
@@ -152,6 +162,9 @@ export class MyGameOrchestrator {
     display() {
         //this.theme.display();
         this.gameBoard.display();
+        this.auxBoardBlack.display();
+        this.auxBoardWhite.display();
+        
     }
 
     managePick(pickMode, results) {
@@ -199,6 +212,11 @@ export class MyGameOrchestrator {
                         this.isPayerBlack = true;
                     }
                     this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard));
+                    //a move was made, so the game state is animation
+                    console.log("BEFORE ANIMATION: " + this.pickedPiece);
+                    this.animator.addAnimation(this.pickedPiece.addAnimation(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile));
+                    // this.addAnimation(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile);
+                    this.movingPiece = this.pickedPiece;
                 }
                 this.pickedPiece = null;
                 this.pickedTile = null;

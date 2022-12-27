@@ -2,7 +2,8 @@ import { CGFscene } from '../lib/CGF.js';
 import { CGFappearance } from '../lib/CGF.js';
 import { MyCylinder } from "./primitives/MyCylinder.js";
 import { MySphere } from './primitives/MySphere.js';
-
+import { MyKeyframeAnimation } from "./MyKeyframeAnimation.js";
+import { KeyFrame } from './KeyFrame.js';
 export class MyPiece {
     constructor(scene, id, type) {
         this.scene = scene;
@@ -13,6 +14,7 @@ export class MyPiece {
         this.selectable = true;
         this.tilePointer = null;
         this.isKing = false;
+        this.animation = null;
         this.createMaterials();
     }
 
@@ -59,7 +61,23 @@ export class MyPiece {
         this.isKing = false;
     }
 
+    addAnimation(currentPieceTile, pickedTile){
+        let keyframe = new KeyFrame(0, [0,0,0], 0, 0, 0, [1,1,1]);
+        let keyframe1 = new KeyFrame(1000, [0,0,0], 0, 0, 0, [2,2,2]);
+        console.log("CURRENT TILE");
+        console.log(this.tilePointer);
+        console.log("PICKED TILE");
+        console.log(pickedTile);
+        console.log(pickedTile.x);
+        console.log(pickedTile.y);
+        let keyframes = [keyframe,keyframe1];
 
+        var animation = new MyKeyframeAnimation(this.scene, keyframes);
+
+        this.animation = animation;
+        
+        return animation;
+    }
 
     display() {
         let m4 = mat4.create();
@@ -79,6 +97,9 @@ export class MyPiece {
             this.materialBlack.apply();
         else
             this.materialWhite.apply();
+        if(this.animation != null){
+            this.animation.apply();
+        }
         this.geometry.display();
         this.top.display();
         this.scene.popMatrix();
