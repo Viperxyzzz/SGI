@@ -19,8 +19,10 @@ export class MyGameOrchestrator {
         this.pickedPiece = null;
         this.pickedTile = null;
         this.movingPiece = null;
+        this.isMoving = false;
         this.state = "MENU";
         this.isPayerBlack = true;
+        this.scene = scene;
 
         this.startTime = Date.now() / 1000;
         this.lastTime = this.startTime;
@@ -28,6 +30,19 @@ export class MyGameOrchestrator {
 
     update(t) {
         this.animator.update(t);
+
+        if(this.isMoving){
+            if(this.movingPiece.animation.ended){
+                this.isMoving = false;
+                this.movingPiece = null;
+                let move = this.gameSequence.sequence[this.gameSequence.sequence.length - 1];
+                console.log(move);
+                let value = this.gameBoard.movePiece(move.piece,move.tileFrom,move.tileTo,move.isPlayerBlack);
+                console.log(value);
+            }
+        }
+
+
         //state machine
         switch(this.state){
             case "MENU":
@@ -43,7 +58,7 @@ export class MyGameOrchestrator {
                 this.drawPossibleMoves(this.pickedPiece);
                 break;
             case "ANIMATION":
-                this.movingPiece.display();
+
                 break;
             case "HAS_GAME_ENDED":
                 break;
@@ -184,6 +199,9 @@ export class MyGameOrchestrator {
     }
 
     OnObjectSelected(obj, customId) {
+        //wait till animation is over
+        if(this.isMoving)
+            return;
         if (obj instanceof MyPiece) {
             if(this.pickedPiece != null){
                 this.pickedPiece = null;
@@ -203,7 +221,8 @@ export class MyGameOrchestrator {
             // do something with the tile  
             if(this.pickedPiece != null){
                 this.pickedTile = obj;
-                if(this.gameBoard.movePiece(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.isPayerBlack)){
+                if(this.gameBoard.isValidMove(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.isPayerBlack)){
+                    this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard,this.isPayerBlack));
                     // change player
                     if(this.isPayerBlack){
                         this.isPayerBlack = false;
@@ -211,12 +230,14 @@ export class MyGameOrchestrator {
                     else{
                         this.isPayerBlack = true;
                     }
-                    this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard));
-                    //a move was made, so the game state is animation
-                    console.log("BEFORE ANIMATION: " + this.pickedPiece);
+                    //print is validmove parameters
+                    console.log(this.pickedPiece);
+                    console.log(this.pickedPiece.getTile());
+                    console.log(this.pickedTile);
+                    console.log(this.isPayerBlack);
                     this.animator.addAnimation(this.pickedPiece.addAnimation(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile));
-                    // this.addAnimation(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile);
                     this.movingPiece = this.pickedPiece;
+                    this.isMoving = true;
                 }
                 this.pickedPiece = null;
                 this.pickedTile = null;

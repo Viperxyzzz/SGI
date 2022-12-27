@@ -64,12 +64,6 @@ export class MyPiece {
     addAnimation(currentPieceTile, pickedTile){
         let keyframe = new KeyFrame(0, [0,0,0], 0, 0, 0, [1,1,1]);
         let keyframe1 = new KeyFrame(1000, [0,0,0], 0, 0, 0, [2,2,2]);
-        console.log("CURRENT TILE");
-        console.log(this.tilePointer);
-        console.log("PICKED TILE");
-        console.log(pickedTile);
-        console.log(pickedTile.x);
-        console.log(pickedTile.y);
         let keyframes = [keyframe,keyframe1];
 
         var animation = new MyKeyframeAnimation(this.scene, keyframes);
