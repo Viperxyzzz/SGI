@@ -98,6 +98,13 @@ export class MyGameBoard {
         return true;
     }
 
+    //should only by used inside a isEating() == true
+    getEatedPiece(startTile, endTile){
+        let jumpedX = (startTile.x + endTile.x) / 2;
+        let jumpedY = (startTile.y + endTile.y) / 2;
+        return this.getTileByCoords(jumpedX,jumpedY).getPiece();
+    }
+
     
     eat(piece, startTile, endTile, playerBlack) {
         let jumpedX = (startTile.x + endTile.x) / 2;

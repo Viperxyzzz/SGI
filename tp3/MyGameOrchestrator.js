@@ -11,7 +11,7 @@ import { MyKeyframeAnimation } from "./MyKeyframeAnimation.js";
 export class MyGameOrchestrator {
     constructor(scene) {
         this.gameSequence = new MyGameSequence(scene);
-        this.auxBoardBlack = new MyAuxBoard(scene, -2, 0 , 2);
+        this.auxBoardBlack = new MyAuxBoard(scene, -3, 0 , 2);
         this.auxBoardWhite = new MyAuxBoard(scene, 9, 0 ,2);
         this.gameBoard = new MyGameBoard(scene, this.auxBoardWhite, this.auxBoardBlack);
         //this.theme = new MySceneGraph("scenes/tp3/board.xml", scene);
@@ -36,13 +36,6 @@ export class MyGameOrchestrator {
                 this.isMoving = false;
                 this.movingPiece = null;
                 let move = this.gameSequence.sequence[this.gameSequence.sequence.length - 1];
-                console.log("FINAL (X,Y): ");
-                console.log(move.tileFrom.x);
-                console.log(move.tileFrom.y);
-                let dx = move.tileTo.x - move.tileFrom.x;
-                let dy = move.tileTo.y - move.tileFrom.y;
-                // move.piece.tilePointer.x -= dx;
-                // move.piece.tilePointer.y -= dy;
                 let value = this.gameBoard.movePiece(move.piece,move.tileFrom,move.tileTo,move.isPlayerBlack);
             }
         }
@@ -227,10 +220,6 @@ export class MyGameOrchestrator {
             if(this.pickedPiece != null){
                 this.pickedTile = obj;
                 if(this.gameBoard.isValidMove(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.isPayerBlack)){
-                    // console.log("INITIAL X,Y");
-                    // console.log(this.pickedPiece.getTile().x);
-                    // console.log(this.pickedPiece.getTile().y);
-                    // they stay the same
                     this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard,this.isPayerBlack));
                     // change player
                     if(this.isPayerBlack){
@@ -239,6 +228,19 @@ export class MyGameOrchestrator {
                     else{
                         this.isPayerBlack = true;
                     }
+                    let isEating = this.gameBoard.isEating(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile);
+                    if(isEating){
+                        var eatedPiece = this.gameBoard.getEatedPiece(this.pickedPiece.getTile(), this.pickedTile);
+                        //add auxboard based on color
+                        console.log("Eating piece: " + eatedPiece.type);
+                        if(eatedPiece.type == "white"){
+                            this.animator.addAnimation(eatedPiece.addEatedAnimation(this.auxBoardWhite));
+                        }
+                        else{
+                            this.animator.addAnimation(eatedPiece.addEatedAnimation(this.auxBoardBlack));
+                        }
+                    }
+
                     this.animator.addAnimation(this.pickedPiece.addAnimation(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile));
                     this.movingPiece = this.pickedPiece;
                     this.isMoving = true;

@@ -7,12 +7,14 @@ import { KeyFrame } from './KeyFrame.js';
 export class MyPiece {
     constructor(scene, id, type) {
         this.scene = scene;
+        console.log("Piece created: " + id + " " + type);
         this.id = id;
         this.type = type;
         this.geometry = new MyCylinder(scene, 0.5, 0.5, 0.1, 20, 20);
         this.top = new MyCylinder(scene, 0.5, 0, 0.1, 20, 20);
         this.selectable = true;
         this.tilePointer = null;
+        this.auxBoard = null;
         this.isKing = false;
         this.animation = null;
         this.dx = 0;
@@ -63,18 +65,48 @@ export class MyPiece {
         this.isKing = false;
     }
 
-    addAnimation(pickedPiece,currentPieceTile, pickedTile){
+    addEatedAnimation(auxBoard) {
+        let nextPiecePosition = auxBoard.getNextPiecePosition();
+        let dx = nextPiecePosition[0] - this.tilePointer.x;
+        let dy = nextPiecePosition[1] - this.tilePointer.y;
+        let dz = auxBoard.z - 0;
+        let keyframe = new KeyFrame(0, [0, 0, 0], 0, 0, 0, [1, 1, 1]);
+        let keyframe1 = new KeyFrame(1000, [dx - 0.5, -dy - 1, dz / 2], 0, 0, 0, [1, 1, 1]);
+
+        let keyframes = [keyframe, keyframe1];
+
+        var animation = new MyKeyframeAnimation(this.scene, keyframes);
+
+        this.animation = animation;
+        this.auxBoard = auxBoard;
+        return animation;
+    }
+
+    addAnimation(pickedPiece,currentPieceTile, pickedTile, outOfGameAnimation = false){
         let dx = pickedTile.x - currentPieceTile.x;
         let dy = pickedTile.y - currentPieceTile.y;
         let keyframe = new KeyFrame(0, [0,0,0], 0, 0, 0, [1,1,1]);
         let keyframe1 = new KeyFrame(1000, [dx,dy,0], 0, 0, 0, [1,1,1]);
+
         let keyframes = [keyframe,keyframe1];
+        
+        // if(eatingAnimation){
+        //     let keyframe2 = new KeyFrame(500, [dx/2,dy/2,1], 0, 0, 0, [1,1,1]);
+        //     keyframes = [keyframe,keyframe2,keyframe1];
+        // }
+        // else{
+        //     keyframes = [keyframe,keyframe1];
+        // }
+
+
 
         var animation = new MyKeyframeAnimation(this.scene, keyframes);
 
         this.animation = animation;
         this.dx = dx;
         this.dy = dy;
+        
+
         return animation;
     }
 
@@ -82,7 +114,13 @@ export class MyPiece {
         let m4 = mat4.create();
         if(this.isKing)
             mat4.scale(m4, m4, [1, 1, 3]);
-        mat4.translate(m4, m4, [this.tilePointer.x + 0.5, this.tilePointer.y + 0.5, 0]);
+        if(this.tilePointer == null){
+            let x = this.auxBoard.piecesPosition[this.id][0];
+            let y = this.auxBoard.piecesPosition[this.id][1];
+            mat4.translate(m4, m4, [x + 0.5, -y - 0.5, this.auxBoard.z / 2]);
+        }
+        else
+            mat4.translate(m4, m4, [this.tilePointer.x + 0.5, this.tilePointer.y + 0.5, 0]);
         if(this.animation != null){
             if(this.animation.ended){
                 this.animation = null;
