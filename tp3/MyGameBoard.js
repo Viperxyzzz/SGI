@@ -16,6 +16,11 @@ export class MyGameBoard {
         this.initBoard();
         this.auxBoardWhite = auxBoardWhite;
         this.auxBoardBlack = auxBoardBlack;
+        this.orchestrator = null;
+    }
+
+    setOrchestrator(orchestrator){
+        this.orchestrator = orchestrator;
     }
 
     setTilesToBoard() {
@@ -80,6 +85,12 @@ export class MyGameBoard {
             }
             if(this.isEating(piece, startTile, endTile, playerBlack)){
                 this.eat(piece, startTile, endTile, playerBlack);
+                if(this.doubleJump(piece)){
+                    this.orchestrator.setDoubleJump(true);
+                }
+                else{
+                    this.orchestrator.setDoubleJump(false);
+                }
             }
             return true;
         }
@@ -119,6 +130,74 @@ export class MyGameBoard {
             console.log("adding to auxiliar board white ");
             this.auxBoardWhite.addPiece(piece);
         }
+    }
+
+    doubleJump(piece){
+        let tile = piece.getTile();
+
+        if(!piece.isKing && piece.type == "black"){
+            if(tile.x - 2 >= 0 && tile.y - 2 >= 0 && tile.x - 2 <= 7 && tile.y - 2 <= 7 && this.getTileByCoords(tile.x - 2, tile.y - 2).getPiece() == null){
+                if(this.getTileByCoords(tile.x - 1, tile.y - 1).getPiece() != null && this.getTileByCoords(tile.x - 1, tile.y - 1).getPiece().type == "white"){
+                    return true;
+                }
+            }
+
+            if(tile.x + 2 <= 7 && tile.y - 2 >= 0 && tile.x + 2 >= 0 && tile.y - 2 <= 7 && this.getTileByCoords(tile.x + 2, tile.y - 2).getPiece() == null){
+                if(this.getTileByCoords(tile.x + 1, tile.y - 1).getPiece() != null && this.getTileByCoords(tile.x + 1, tile.y - 1).getPiece().type == "white"){
+                    return true;
+                }
+            }
+        }
+        else if(!piece.isKing && piece.type == "white"){
+            // Check for pieces that can be captured by jumping
+            if(tile.x - 2 >= 0 && tile.y + 2 <= 7 && tile.x - 2 <= 7 && tile.y + 2 >= 0 && this.getTileByCoords(tile.x - 2, tile.y + 2).getPiece() == null){
+                if(this.getTileByCoords(tile.x - 1, tile.y + 1).getPiece() != null && this.getTileByCoords(tile.x - 1, tile.y + 1).getPiece().type == "black"){
+                    return true;
+                }
+            }
+
+            if(tile.x + 2 <= 7 && tile.y + 2 <= 7 && tile.x + 2 >= 0 && tile.y + 2 >= 0 && this.getTileByCoords(tile.x + 2, tile.y + 2).getPiece() == null){
+                if(this.getTileByCoords(tile.x + 1, tile.y + 1).getPiece() != null && this.getTileByCoords(tile.x + 1, tile.y + 1).getPiece().type == "black"){
+                    return true;
+                }
+            }
+        }
+        else if(piece.isKing){
+
+            let jumped = false;
+            // let capturedPiece = null;
+            for(let dx = -1; dx <= 1; dx+=2){
+                for(let dy = -1; dy <= 1; dy+=2){
+                    let i = tile.x + dx;
+                    let j = tile.y + dy;
+    
+                    while(i >= 0 && i < 8 && j >= 0 && j < 8){
+                        if(this.getTileByCoords(i, j).getPiece() != null){
+                            if(this.getTileByCoords(i, j).getPiece().type == piece.type)
+                                break;
+                            else{
+                                if(i + dx >= 0 && i + dx < 8 && j + dy >= 0 && j + dy < 8 && this.getTileByCoords(i + dx, j + dy).getPiece() == null){
+                                    console.log("CAN JUMP");
+                                    jumped = true;
+                                }
+                                else
+                                    break;
+                            }
+
+                        }
+                        // else{
+                        //     if(this.getTileByCoords(i, j).getPiece().type !== piece.type)
+                        //         capturedPiece = this.getTileByCoords(i, j).getPiece();
+                        // }
+                        i += dx;
+                        j += dy;
+                    }
+                }
+            }
+            return jumped;
+        }
+
+        return false;
     }
 
     //check if a move is possible

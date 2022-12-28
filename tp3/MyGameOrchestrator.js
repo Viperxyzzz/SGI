@@ -7,9 +7,15 @@ import { MyPiece } from "./MyPiece.js";
 import { MyTile } from "./MyTile.js";
 import { MyGameMove } from "./MyGameMove.js";
 import { MyKeyframeAnimation } from "./MyKeyframeAnimation.js";
+import { MyCube } from "./primitives/MyCube.js";
+import { CGFappearance } from "../lib/CGF.js";
 
 export class MyGameOrchestrator {
     constructor(scene) {
+        this.undoCube = new MyCube(scene);
+        this.resetCube = new MyCube(scene);
+        this.movieCube = new MyCube(scene);
+
         this.gameSequence = new MyGameSequence(scene);
         this.auxBoardBlack = new MyAuxBoard(scene, -3, 0 , 2);
         this.auxBoardWhite = new MyAuxBoard(scene, 9, 0 ,2);
@@ -23,6 +29,11 @@ export class MyGameOrchestrator {
         this.state = "MENU";
         this.isPayerBlack = true;
         this.scene = scene;
+        this.hasDoubleJump = false;
+        this.gameBoard.setOrchestrator(this);
+        this.piece = null;
+
+
 
         this.startTime = Date.now() / 1000;
         this.lastTime = this.startTime;
@@ -37,6 +48,17 @@ export class MyGameOrchestrator {
                 this.movingPiece = null;
                 let move = this.gameSequence.sequence[this.gameSequence.sequence.length - 1];
                 let value = this.gameBoard.movePiece(move.piece,move.tileFrom,move.tileTo,move.isPlayerBlack);
+                this.piece = move.piece;
+
+                if(!this.hasDoubleJump){
+                    // change player
+                    if(this.isPayerBlack){
+                        this.isPayerBlack = false;
+                    }
+                    else{
+                        this.isPayerBlack = true;
+                    }
+                }
             }
         }
 
@@ -90,7 +112,6 @@ export class MyGameOrchestrator {
     }
 
     drawPossibleMoves(pickedPiece){
-        console.log("Possible Moves");
         if(this.isPayerBlack){
 
             //check the squares to the top-left and top-right of the current position
@@ -204,12 +225,20 @@ export class MyGameOrchestrator {
             if(this.pickedPiece != null){
                 this.pickedPiece = null;
                 this.clearPossibleMoves();
-                console.log("Select a valid tile to move the piece");
+                console.warn("Select a valid tile to move the piece");
             }
             else{
                 // verify if the piece equals turn player
                 if(this.isPayerBlack && obj.type == "black" || !this.isPayerBlack && obj.type == "white"){
                     this.pickedPiece = obj;
+                    if(this.pickedPiece !== this.piece && this.hasDoubleJump){
+                        this.pickedPiece = null;
+                        console.warn("Select the same piece to double jump");
+                        return;
+                    }
+                    else{
+                        this.piece = this.pickedPiece;
+                    }
                     this.state = "POSSIBLE_MOVES";
                 }
 
@@ -221,13 +250,6 @@ export class MyGameOrchestrator {
                 this.pickedTile = obj;
                 if(this.gameBoard.isValidMove(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.isPayerBlack)){
                     this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard,this.isPayerBlack));
-                    // change player
-                    if(this.isPayerBlack){
-                        this.isPayerBlack = false;
-                    }
-                    else{
-                        this.isPayerBlack = true;
-                    }
                     let isEating = this.gameBoard.isEating(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile);
                     if(isEating){
                         var eatedPiece = this.gameBoard.getEatedPiece(this.pickedPiece.getTile(), this.pickedTile);
@@ -254,7 +276,7 @@ export class MyGameOrchestrator {
             }
         }
         else {
-            console.log("Error: Picked object is not a piece or a tile");
+            console.warn("Error: Picked object is not a piece or a tile");
         }
     }
 }
