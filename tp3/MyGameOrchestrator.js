@@ -32,11 +32,16 @@ export class MyGameOrchestrator {
         this.hasDoubleJump = false;
         this.gameBoard.setOrchestrator(this);
         this.piece = null;
+        this.undoPlay = false;
 
 
 
         this.startTime = Date.now() / 1000;
         this.lastTime = this.startTime;
+    }
+
+    setDoubleJump(bool){
+        this.hasDoubleJump = bool;
     }
 
     update(t) {
@@ -80,6 +85,9 @@ export class MyGameOrchestrator {
             case "ANIMATION":
 
                 break;
+            case UNDO:
+                this.undo();
+                break;
             case "HAS_GAME_ENDED":
                 break;
             case "GAME_OVER":
@@ -90,6 +98,27 @@ export class MyGameOrchestrator {
                 break;
         }
     }
+
+    undo(){
+        let move = this.gameSequence.undo();
+        if(move != null){
+            console.log(move);
+            this.undoPlay = true;
+            this.gameBoard.movePiece(move.piece,move.tileTo,move.tileFrom,move.isPlayerBlack);
+            if(move.capturedPiece !== null){
+                this.gameBoard.addPiecetoTile(move.capturedPiece, move.tileCaptured);
+                console.log(move.tileCaptured);
+                if(move.isPlayerBlack){
+                    this.auxBoardWhite.removePiece();
+                }
+                else{
+                    this.auxBoardBlack.removePiece();
+                }
+            }
+            this.isPayerBlack = move.isPlayerBlack;
+        }
+    }
+
 
     clearPossibleMoves(){
         for(let i = 0; i < 8; i++){
@@ -249,18 +278,21 @@ export class MyGameOrchestrator {
             if(this.pickedPiece != null){
                 this.pickedTile = obj;
                 if(this.gameBoard.isValidMove(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.isPayerBlack)){
-                    this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard,this.isPayerBlack));
                     let isEating = this.gameBoard.isEating(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile);
                     if(isEating){
                         var eatedPiece = this.gameBoard.getEatedPiece(this.pickedPiece.getTile(), this.pickedTile);
                         //add auxboard based on color
-                        console.log("Eating piece: " + eatedPiece.type);
+                        console.log("Eating piece: " + eatedPiece);
                         if(eatedPiece.type == "white"){
                             this.animator.addAnimation(eatedPiece.addEatedAnimation(this.auxBoardWhite));
                         }
                         else{
                             this.animator.addAnimation(eatedPiece.addEatedAnimation(this.auxBoardBlack));
                         }
+                        this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard,this.isPayerBlack, eatedPiece, eatedPiece.getTile()));
+                    }
+                    else{
+                        this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard,this.isPayerBlack));
                     }
 
                     this.animator.addAnimation(this.pickedPiece.addAnimation(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile));

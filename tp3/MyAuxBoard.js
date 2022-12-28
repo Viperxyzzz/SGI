@@ -30,6 +30,10 @@ export class MyAuxBoard {
         }
     }
 
+    removePiece(){
+        this.pieces.pop();
+    }
+
     getNextPiecePosition(){
         return [this.lastPieceX + this.x, this.lastPieceY + this.y];
     }

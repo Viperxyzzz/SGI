@@ -94,6 +94,12 @@ export class MyGameBoard {
             }
             return true;
         }
+        else if(this.orchestrator.undoPlay){
+            this.removePiecefromTile(piece, startTile);
+            this.addPiecetoTile(piece, endTile);
+            this.orchestrator.undoPlay = false;
+            return true;
+        }
         return false;
     }
 

@@ -150,6 +150,7 @@ export class XMLscene extends CGFscene {
         this.interface.addCameras();
         this.interface.addLights();
         this.interface.addShaders();
+        this.interface.addGameInterface();
 
         this.initLights();
         this.initsceneCameras();
