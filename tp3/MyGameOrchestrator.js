@@ -85,8 +85,11 @@ export class MyGameOrchestrator {
             case "ANIMATION":
 
                 break;
-            case UNDO:
+            case "UNDO":
                 this.undo();
+                break;
+            case "MOVIE":
+                this.movie();
                 break;
             case "HAS_GAME_ENDED":
                 break;
@@ -99,15 +102,24 @@ export class MyGameOrchestrator {
         }
     }
 
+    movie(){
+        this.gameBoard.resetBoard();
+
+        for(let i = 0; i < this.gameSequence.sequence.length; i++){
+            let move = this.gameSequence.sequence[i];
+            this.gameBoard.movePiece(move.piece,move.tileFrom,move.tileTo,move.isPlayerBlack);
+        }
+        
+        this.isPayerBlack = true;
+    }
+
     undo(){
         let move = this.gameSequence.undo();
         if(move != null){
-            console.log(move);
             this.undoPlay = true;
             this.gameBoard.movePiece(move.piece,move.tileTo,move.tileFrom,move.isPlayerBlack);
             if(move.capturedPiece !== null){
                 this.gameBoard.addPiecetoTile(move.capturedPiece, move.tileCaptured);
-                console.log(move.tileCaptured);
                 if(move.isPlayerBlack){
                     this.auxBoardWhite.removePiece();
                 }

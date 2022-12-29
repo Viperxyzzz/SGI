@@ -75,7 +75,7 @@ export class MyInterface extends CGFinterface {
         gameFolder.open();
         // gameFolder.add(this.scene.gameOrchestrator, 'startGame').name('Start Game');
         gameFolder.add(this.scene.gameOrchestrator, 'undo').name('Undo Play');
-        // gameFolder.add(this.scene.gameOrchestrator, 'watchMovie').name('Game Movie');
+        gameFolder.add(this.scene.gameOrchestrator, 'movie').name('Game Movie');
         // gameFolder.add(this.scene.gameOrchestrator, 'cameraAnimation').name('Rotate Camera');
         // gameFolder.add(this.scene.gameOrchestrator, 'quitGame').name('Quit Game');
     }

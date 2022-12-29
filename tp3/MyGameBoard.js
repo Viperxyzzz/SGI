@@ -48,7 +48,20 @@ export class MyGameBoard {
             }
         }
     }
-    
+
+    resetBoard() {
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++){
+                if(this.getTileByCoords(i, j).getPiece() != null){
+                    this.removePiecefromTile(this.getTileByCoords(i, j).getPiece(), this.getTileByCoords(i, j));
+                }
+            }
+        }
+        this.auxBoardBlack.resetBoard();
+        this.auxBoardWhite.resetBoard();
+        this.initBoard();
+    }
+
     addPiecetoTile(piece, tile) {
         tile.setPiece(piece);
         piece.setTile(tile);

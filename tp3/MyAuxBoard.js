@@ -30,6 +30,12 @@ export class MyAuxBoard {
         }
     }
 
+    resetBoard(){
+        this.pieces = [];
+        this.lastPieceX = 0;
+        this.lastPieceY = 0;
+    }
+
     removePiece(){
         this.pieces.pop();
     }
