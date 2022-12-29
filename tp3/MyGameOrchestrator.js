@@ -8,36 +8,88 @@ import { MyTile } from "./MyTile.js";
 import { MyGameMove } from "./MyGameMove.js";
 import { MyKeyframeAnimation } from "./MyKeyframeAnimation.js";
 import { MyCube } from "./primitives/MyCube.js";
-import { CGFappearance } from "../lib/CGF.js";
+import { CGFappearance, CGFtexture, CGFshader} from "../lib/CGF.js";
+import {MyQuad} from "./primitives/MyQuad.js";
 
 export class MyGameOrchestrator {
     constructor(scene) {
         this.undoCube = new MyCube(scene);
-        this.resetCube = new MyCube(scene);
+        this.changeCamera = new MyCube(scene);
         this.movieCube = new MyCube(scene);
 
         this.gameSequence = new MyGameSequence(scene);
         this.auxBoardBlack = new MyAuxBoard(scene, -3, 0 , 2);
-        this.auxBoardWhite = new MyAuxBoard(scene, 9, 0 ,2);
+        this.auxBoardWhite = new MyAuxBoard(scene, 11, 0 ,2);
         this.gameBoard = new MyGameBoard(scene, this.auxBoardWhite, this.auxBoardBlack);
-        //this.theme = new MySceneGraph("scenes/tp3/board.xml", scene);
+
         this.animator = new MyAnimator(scene, this, this.gameSequence);
         this.pickedPiece = null;
         this.pickedTile = null;
         this.movingPiece = null;
         this.isMoving = false;
-        this.state = "MENU";
+        this.state = "NEXT_TURN";
         this.isPayerBlack = true;
         this.scene = scene;
         this.hasDoubleJump = false;
         this.gameBoard.setOrchestrator(this);
         this.piece = null;
         this.undoPlay = false;
+        this.score = [0,0];
 
 
 
         this.startTime = Date.now() / 1000;
         this.lastTime = this.startTime;
+
+
+
+
+        //textures and materials for the several objects
+        this.undoAppearance = new CGFappearance(this.scene);
+        this.undoAppearance.setAmbient(0.4, 0.2, 0.1, 0.5);
+        this.undoAppearance.setSpecular(0.1, 0.1, 0.1, 0.1);
+        this.undoAppearance.setDiffuse(0.8, 0.8, 0.8, 1);
+        this.undoAppearance.setShininess(5);
+        this.undoAppearance.loadTexture("scenes/images/undo.png");
+
+        this.movieAppearance = new CGFappearance(this.scene);
+        this.movieAppearance.setAmbient(0.4, 0.2, 0.1, 0.5);
+        this.movieAppearance.setSpecular(0.1, 0.1, 0.1, 0.1);
+        this.movieAppearance.setDiffuse(0.8, 0.8, 0.8, 1);
+        this.movieAppearance.setShininess(5);
+        this.movieAppearance.loadTexture("scenes/images/movie.png");
+
+        this.cameraAppearance = new CGFappearance(this.scene);
+        this.cameraAppearance.setAmbient(0.4, 0.2, 0.1, 0.5);
+        this.cameraAppearance.setSpecular(0.1, 0.1, 0.1, 0.1);
+        this.cameraAppearance.setDiffuse(0.8, 0.8, 0.8, 1);
+        this.cameraAppearance.setShininess(5);
+        this.cameraAppearance.loadTexture("scenes/images/eye.png");
+
+        this.scene.gl.clearColor(0.1, 0.1, 0.1, 1.0);
+		this.scene.gl.clearDepth(1000.0);
+		this.scene.gl.enable(this.scene.gl.DEPTH_TEST);
+		this.scene.gl.enable(this.scene.gl.CULL_FACE);
+		this.scene.gl.depthFunc(this.scene.gl.LEQUAL);
+
+
+        this.appearance = new CGFappearance(this.scene);
+
+		// font texture: 16 x 16 characters
+		// http://jens.ayton.se/oolite/files/font-tests/rgba/oolite-font.png
+		this.fontTexture = new CGFtexture(this.scene, "scenes/images/oolite-font.trans.png");
+		this.appearance.setTexture(this.fontTexture);
+
+		// plane where texture character will be rendered
+		this.quad = new MyQuad(this.scene);
+		
+		// instatiate text shader (used to simplify access via row/column coordinates)
+		// check the two files to see how it is done
+		this.textShader=new CGFshader(this.scene.gl, "shaders/font.vert", "shaders/font.frag");
+
+		// set number of rows and columns in font texture
+		this.textShader.setUniformsValues({'dims': [16, 16]});
+
     }
 
     setDoubleJump(bool){
@@ -71,7 +123,7 @@ export class MyGameOrchestrator {
         //state machine
         switch(this.state){
             case "MENU":
-                this.drawMenu();
+                // this.drawMenu();
                 break;
             case "LOAD_SCENE":
                 //this.theme = new MySceneGraph("scenes/tp3/board.xml", scene);
@@ -122,9 +174,11 @@ export class MyGameOrchestrator {
                 this.gameBoard.addPiecetoTile(move.capturedPiece, move.tileCaptured);
                 if(move.isPlayerBlack){
                     this.auxBoardWhite.removePiece();
+                    this.score[0]--;
                 }
                 else{
                     this.auxBoardBlack.removePiece();
+                    this.score[1]--;
                 }
             }
             this.isPayerBlack = move.isPlayerBlack;
@@ -147,9 +201,27 @@ export class MyGameOrchestrator {
         }
     }
 
-    drawMenu(){
-        console.log("Menu");
-        this.state = "NEXT_TURN";
+    drawObjects(){
+        this.scene.pushMatrix();
+        this.scene.translate(-2, 0, 0);
+        this.scene.registerForPick(9, this.undoCube);
+        this.undoAppearance.apply();
+        this.undoCube.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+        this.scene.translate(-2, 0, -2);
+        this.scene.registerForPick(99, this.movieCube);
+        this.movieAppearance.apply();
+        this.movieCube.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+        this.scene.translate(-2, 0, -4);
+        this.scene.registerForPick(999, this.changeCamera);
+        this.cameraAppearance.apply();
+        this.changeCamera.display();
+        this.scene.popMatrix();
     }
 
     drawPossibleMoves(pickedPiece){
@@ -236,10 +308,52 @@ export class MyGameOrchestrator {
 
     display() {
         //this.theme.display();
+
+        // Clear image and depth buffer every time we update the scene
+		// this.scene.gl.viewport(0, 0, this.scene.gl.canvas.width, this.scene.gl.canvas.height);
+		// this.scene.gl.clear(this.scene.gl.COLOR_BUFFER_BIT | this.scene.gl.DEPTH_BUFFER_BIT);
+		// this.scene.gl.enable(this.scene.gl.DEPTH_TEST);
+
+        // Initialize Model-View matrix as identity (no transformation
+		// this.scene.updateProjectionMatrix();
+		// this.scene.loadIdentity();
+
+        // Apply transformations corresponding to the camera position relative to the origin
+		// this.scene.applyViewMatrix();
+		
+		// Update all lights used
+		// this.scene.lights[0].update();
+
+        this.scene.setActiveShaderSimple(this.textShader);
+
+        // this.scene.gl.disable(this.scene.gl.DEPTH_TEST);
+
+        this.appearance.apply();
+        this.scene.pushMatrix();
+            this.scene.loadIdentity();
+
+            this.scene.translate(-1,0,-50);
+            this.scene.scale(1.5,1.5,1.5);
+			this.scene.activeShader.setUniformsValues({'charCoords': [0 + this.score[0], 3]});	
+			this.quad.display();
+
+            this.scene.translate(1,0,0);
+			this.scene.activeShader.setUniformsValues({'charCoords': [0 + this.score[1], 3]});	
+			this.quad.display();
+
+        this.scene.popMatrix();
+
+        
+		// re-enable depth test 
+		// this.scene.gl.enable(this.scene.gl.DEPTH_TEST);
+
+        this.scene.setActiveShaderSimple(this.scene.defaultShader);
+
         this.gameBoard.display();
         this.auxBoardBlack.display();
         this.auxBoardWhite.display();
-        
+        this.drawObjects();
+
     }
 
     managePick(pickMode, results) {
@@ -297,9 +411,11 @@ export class MyGameOrchestrator {
                         console.log("Eating piece: " + eatedPiece);
                         if(eatedPiece.type == "white"){
                             this.animator.addAnimation(eatedPiece.addEatedAnimation(this.auxBoardWhite));
+                            this.score[0]++;
                         }
                         else{
                             this.animator.addAnimation(eatedPiece.addEatedAnimation(this.auxBoardBlack));
+                            this.score[1]++;
                         }
                         this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard,this.isPayerBlack, eatedPiece, eatedPiece.getTile()));
                     }
@@ -317,6 +433,17 @@ export class MyGameOrchestrator {
             }
             else{
                 console.log("Select a piece first");
+            }
+        }
+        else if(obj instanceof MyCube){
+            if(customId == 9){
+                this.undo();
+            }
+            else if(customId == 99){
+                this.movie();
+            }
+            else if(customId == 999){
+                // this.changeCamera();
             }
         }
         else {

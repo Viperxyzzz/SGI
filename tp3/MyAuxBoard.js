@@ -18,6 +18,20 @@ export class MyAuxBoard {
         this.pieces = [];
         this.piecesPosition = [];
 
+        this.materialBlack = new CGFappearance(this.scene);
+        this.materialBlack.setAmbient(0, 0, 0, 1);
+        this.materialBlack.setDiffuse(0, 0, 0, 1);
+        this.materialBlack.setSpecular(0, 0, 0, 1);
+        this.materialBlack.setShininess(10.0);
+
+        //create texture
+        this.woodTexture = new CGFappearance(this.scene);
+        this.woodTexture.setAmbient(0.3, 0.3, 0.3, 1);
+        this.woodTexture.setDiffuse(0.7, 0.7, 0.7, 1);
+        this.woodTexture.setSpecular(0.0, 0.0, 0.0, 1);
+        this.woodTexture.setShininess(120);
+        this.woodTexture.loadTexture('scenes/images/woodenBox.jpg');
+
     }
 
     addPiece(piece){
@@ -48,6 +62,8 @@ export class MyAuxBoard {
         this.scene.pushMatrix();
         this.scene.translate(this.x, this.y, this.z);
         this.scene.scale(2,1,5);
+        this.materialBlack.apply();
+        this.woodTexture.apply();
         this.board.display();
         this.scene.scale(1/2,1,1/5);
         this.scene.rotate(-Math.PI/2, 1, 0, 0);
