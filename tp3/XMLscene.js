@@ -44,7 +44,10 @@ export class XMLscene extends CGFscene {
         this.axis = new CGFaxis(this);
         this.setUpdatePeriod(100);
         this.displayAxis = true;
-        this.scaleFactor = 3;
+        this.scaleFactor = 1;
+
+        this.cameraAnimation = false;
+        this.angle = 0;
 
         this.setPickEnabled(true);
         this.gameOrchestrator = new MyGameOrchestrator(this);
@@ -54,12 +57,15 @@ export class XMLscene extends CGFscene {
      * Initializes the scene cameras.
      */
     initCameras() {
-        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(0, 12, -15), vec3.fromValues(0, 10, 0));
+        this.interface.setActiveCamera(this.camera);
     }
 
     initsceneCameras(){
-        this.selectedCamera=this.graph.default;
+        this.selectedCamera = this.graph.default;
         this.camera = this.graph.cameras[this.graph.default];
+        // this.cameraWhite = {"target": this.graph.cameras["whiteCamera"].target[2], "position" : this.graph.cameras["whiteCamera"].position[2]};
+        // this.cameraBlack = {"target": this.graph.cameras["whiteCamera"].target[2], "position" : this.graph.cameras["defaultCamera"].position[2]};
         this.interface.setActiveCamera(this.camera);
     }
 
@@ -175,7 +181,78 @@ export class XMLscene extends CGFscene {
 
         this.gameOrchestrator.managePick(this.pickEnabled, this.pickResults);
         this.gameOrchestrator.update(t);
+
+        // if(this.cameraAnimation){
+        //     // this.changeCamera();
+        //     this.camera.orbit([0,1,0], -Math.PI / 35);
+        //     this.angle += Math.PI / 35;
+        //     if (this.angle >= Math.PI) {
+        //         this.angle -= Math.PI;
+        //         this.cameraAnimation = false;
+        //     }
+        // }
+    
         this.clearPickRegistration();
+    }
+
+    rotateCamera(){
+        if (this.graph.cameras["defaultCamera"] == this.camera ||
+        this.graph.cameras["whiteCamera"] == this.camera)
+        this.cameraAnimation = true;
+    }
+
+
+    changeCamera(){
+    // Find change coordinates
+
+    if(this.cameraPosZInc > 0){
+        if(this.camera.position[2] <= this.nextCamera.position[2]){
+          this.camera.position[2] += this.cameraPosZInc;
+        }
+        else{
+          this.cameraPosZInc = 0;
+        }
+      }
+      else{
+        if(this.camera.position[2] >= this.nextCamera.position[2]){
+          this.camera.position[2] += this.cameraPosZInc;
+        }
+        else{
+          this.cameraPosZInc = 0;
+        }
+      }
+      if(this.cameraTarZInc > 0){
+        if(this.camera.target[2] <= this.nextCamera.target[2]){
+          this.camera.target[2] += this.cameraTarZInc;
+        }
+        else{
+          this.cameraTarZInc = 0;
+        }
+      }
+      else{
+        if(this.camera.target[2] >= this.nextCamera.target[2]){
+          this.camera.target[2] += this.cameraTarZInc;
+        }
+        else{
+          this.cameraTarZInc = 0;
+        }
+      }
+  
+      if(this.cameraPosZInc == 0 && this.cameraTarZInc == 0){
+
+        // Reset values since they are changed in the animation
+        this.graph.cameras["whiteCamera"].position[2] = this.cameraWhite.position;
+        this.graph.cameras["whiteCamera"].target[2] = this.cameraWhite.target;
+        this.graph.cameras["defaultCamera"].position[2] = this.cameraBlack.position;
+        this.graph.cameras["defaultCamera"].target[2] = this.cameraBlack.target;
+
+        this.camera = this.nextCamera;
+        this.nextCamera = null;
+        this.cameraAnimation = false;
+        this.interface.setActiveCamera(this.camera);
+
+      }
+  
     }
 
     updateAnimations(t){
@@ -219,11 +296,11 @@ export class XMLscene extends CGFscene {
 
             this.setDefaultAppearance();
 
-            this.updateCameras();
+            this.updateCameras();   
             this.updateLights();
 
             // Displays the scene (MySceneGraph function).
-            // this.graph.displayScene();
+            this.graph.displayScene();
             this.gameOrchestrator.display();
             // this.gameOrchestrator.update(1/60);
 
