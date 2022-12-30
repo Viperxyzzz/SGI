@@ -90,6 +90,8 @@ export class MyGameOrchestrator {
 		// set number of rows and columns in font texture
 		this.textShader.setUniformsValues({'dims': [16, 16]});
 
+
+
     }
 
     setDoubleJump(bool){

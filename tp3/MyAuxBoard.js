@@ -3,6 +3,7 @@ import { CGFappearance } from '../lib/CGF.js';
 import { MyCylinder } from "./primitives/MyCylinder.js";
 import { MySphere } from './primitives/MySphere.js';
 import { MyCube } from './primitives/MyCube.js';
+import { MyPiece } from './MyPiece.js';
 
 export class MyAuxBoard {
     constructor(scene, x, y, z, color) {
