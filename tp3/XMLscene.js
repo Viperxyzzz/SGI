@@ -182,22 +182,23 @@ export class XMLscene extends CGFscene {
         this.gameOrchestrator.managePick(this.pickEnabled, this.pickResults);
         this.gameOrchestrator.update(t);
 
-        // if(this.cameraAnimation){
-        //     // this.changeCamera();
-        //     this.camera.orbit([0,1,0], -Math.PI / 35);
-        //     this.angle += Math.PI / 35;
-        //     if (this.angle >= Math.PI) {
-        //         this.angle -= Math.PI;
-        //         this.cameraAnimation = false;
-        //     }
-        // }
+        if(this.cameraAnimation){
+            // this.changeCamera();
+            this.camera.orbit([0,1,0], -Math.PI / 20);
+            this.angle += Math.PI / 20;
+            if (this.angle >= Math.PI) {
+                this.angle -= Math.PI;
+                this.cameraAnimation = false;
+                this.angle = 0;
+            }
+        }
     
         this.clearPickRegistration();
     }
 
     rotateCamera(){
-        if (this.graph.cameras["defaultCamera"] == this.camera ||
-        this.graph.cameras["whiteCamera"] == this.camera)
+        if (this.graph.cameras["blackPlayer"] == this.camera ||
+        this.graph.cameras["whitePlayer"] == this.camera)
         this.cameraAnimation = true;
     }
 

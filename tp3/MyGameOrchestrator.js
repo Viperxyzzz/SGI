@@ -134,7 +134,7 @@ export class MyGameOrchestrator {
                     // }
 
                     // this.scene.cameraAnimation = true;
-                    // this.scene.rotateCamera();
+                    this.scene.rotateCamera();
 
                 }
             }
