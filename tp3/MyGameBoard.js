@@ -128,6 +128,25 @@ export class MyGameBoard {
         return true;
     }
 
+    isEatingKing(piece,startTile,endTile){
+        let dx = endTile.x - startTile.x;
+        let dy = endTile.y - startTile.y;
+        let x = endTile.x - (dx / Math.abs(dx));
+        let y = endTile.y - (dy / Math.abs(dy));
+        if(x >= 0 && x < 8 && y >= 0 && y < 8){
+            let tile = this.getTileByCoords(x, y);
+            if(tile.getPiece() !== null){
+                if(tile.getPiece().type !== piece.type){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     //should only by used inside a isEating() == true
     getEatedPiece(startTile, endTile){
         let jumpedX = (startTile.x + endTile.x) / 2;
@@ -248,25 +267,6 @@ export class MyGameBoard {
         if(!piece.isKing){
             if(Math.abs(startTile.x - endTile.x) == 2){
                 return this.isEating(piece, startTile, endTile, playerBlack);
-            }
-        }
-        else{
-            let dx = endTile.x - startTile.x;
-            let dy = endTile.y - startTile.y;
-
-            let x = endTile.x - (dx / Math.abs(dx));
-            let y = endTile.y - (dy / Math.abs(dy));
-
-            if(x >= 0 && x < 8 && y >= 0 && y < 8){
-                let tile = this.getTileByCoords(x, y);
-                if(tile.getPiece() !== null){
-                    if(tile.getPiece().type !== piece.type){
-                        this.removePiecefromTile(tile.getPiece(), tile);
-                    }
-                    else{
-                        return true;
-                    }
-                }
             }
         }
         return true;

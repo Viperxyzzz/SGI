@@ -118,6 +118,9 @@ export class MyPiece {
             let x = this.auxBoard.piecesPosition[this.id][0];
             let y = this.auxBoard.piecesPosition[this.id][1];
             mat4.translate(m4, m4, [x + 0.5, -y - 0.5, this.auxBoard.z / 2]);
+            if(this.isKing){
+                mat4.translate(m4, m4, [0, 0, -0.66]);
+            }
         }
         else
             mat4.translate(m4, m4, [this.tilePointer.x + 0.5, this.tilePointer.y + 0.5, 0]);
