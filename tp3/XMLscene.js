@@ -189,8 +189,10 @@ export class XMLscene extends CGFscene {
             if (this.angle >= Math.PI) {
                 this.angle -= Math.PI;
                 this.cameraAnimation = false;
-                this.angle = 0;
             }
+        }
+        else{
+            this.angle = 0;
         }
     
         this.clearPickRegistration();

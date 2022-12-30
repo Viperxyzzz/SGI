@@ -163,6 +163,10 @@ export class MyGameOrchestrator {
             case "MOVIE":
                 this.movie();
                 break;
+            case "CAMERA_ANIMATION":
+                this.scene.rotateCamera();
+                this.state = "NEXT_TURN";
+                break;
             case "HAS_GAME_ENDED":
                 break;
             case "GAME_OVER":
@@ -461,13 +465,13 @@ export class MyGameOrchestrator {
         }
         else if(obj instanceof MyCube){
             if(customId == 9){
-                this.undo();
+                this.state = "UNDO";
             }
             else if(customId == 99){
-                this.movie();
+                this.state = "MOVIE";
             }
             else if(customId == 999){
-                // this.changeCamera();
+                this.state = "CAMERA_ANIMATION";
             }
         }
         else {
