@@ -19,7 +19,7 @@ export class MyGameOrchestrator {
 
         this.gameSequence = new MyGameSequence(scene);
         this.auxBoardBlack = new MyAuxBoard(scene, -3, 0 , 2);
-        this.auxBoardWhite = new MyAuxBoard(scene, 11, 0 ,2);
+        this.auxBoardWhite = new MyAuxBoard(scene, 9, 0 ,2);
         this.gameBoard = new MyGameBoard(scene, this.auxBoardWhite, this.auxBoardBlack);
 
         this.animator = new MyAnimator(scene, this, this.gameSequence);
@@ -66,29 +66,29 @@ export class MyGameOrchestrator {
         this.cameraAppearance.setShininess(5);
         this.cameraAppearance.loadTexture("scenes/images/eye.png");
 
-        this.scene.gl.clearColor(0.1, 0.1, 0.1, 1.0);
-		this.scene.gl.clearDepth(1000.0);
-		this.scene.gl.enable(this.scene.gl.DEPTH_TEST);
-		this.scene.gl.enable(this.scene.gl.CULL_FACE);
-		this.scene.gl.depthFunc(this.scene.gl.LEQUAL);
+        // this.scene.gl.clearColor(0.1, 0.1, 0.1, 1.0);
+		// this.scene.gl.clearDepth(1000.0);
+		// this.scene.gl.enable(this.scene.gl.DEPTH_TEST);
+		// this.scene.gl.enable(this.scene.gl.CULL_FACE);
+		// this.scene.gl.depthFunc(this.scene.gl.LEQUAL);
 
 
-        this.appearance = new CGFappearance(this.scene);
+        // this.appearance = new CGFappearance(this.scene);
 
-		// font texture: 16 x 16 characters
-		// http://jens.ayton.se/oolite/files/font-tests/rgba/oolite-font.png
-		this.fontTexture = new CGFtexture(this.scene, "scenes/images/oolite-font.trans.png");
-		this.appearance.setTexture(this.fontTexture);
+		// // font texture: 16 x 16 characters
+		// // http://jens.ayton.se/oolite/files/font-tests/rgba/oolite-font.png
+		// this.fontTexture = new CGFtexture(this.scene, "scenes/images/oolite-font.trans.png");
+		// this.appearance.setTexture(this.fontTexture);
 
-		// plane where texture character will be rendered
-		this.quad = new MyQuad(this.scene);
+		// // plane where texture character will be rendered
+		// this.quad = new MyQuad(this.scene);
 		
-		// instatiate text shader (used to simplify access via row/column coordinates)
-		// check the two files to see how it is done
-		this.textShader=new CGFshader(this.scene.gl, "shaders/font.vert", "shaders/font.frag");
+		// // instatiate text shader (used to simplify access via row/column coordinates)
+		// // check the two files to see how it is done
+		// this.textShader=new CGFshader(this.scene.gl, "shaders/font.vert", "shaders/font.frag");
 
-		// set number of rows and columns in font texture
-		this.textShader.setUniformsValues({'dims': [16, 16]});
+		// // set number of rows and columns in font texture
+		// this.textShader.setUniformsValues({'dims': [16, 16]});
 
 
 
@@ -113,10 +113,29 @@ export class MyGameOrchestrator {
                     // change player
                     if(this.isPayerBlack){
                         this.isPayerBlack = false;
+                        // this.scene.nextCamera = this.scene.graph.cameras["whiteCamera"];
                     }
                     else{
                         this.isPayerBlack = true;
+                        // this.scene.nextCamera = this.scene.graph.cameras["defaultCamera"];
                     }
+                
+                    // if(this.scene.camera.position[2] == 37){
+                    //     this.scene.cameraPosZInc = -1;
+                    // }
+                    // else{
+                    //     this.scene.cameraPosZInc = 1;
+                    // }
+                    // if(this.scene.camera.target[2] == 0){
+                    //     this.scene.cameraTarZInc = 0.1;
+                    // }
+                    // else{
+                    //     this.scene.cameraTarZInc = -0.1;
+                    // }
+
+                    // this.scene.cameraAnimation = true;
+                    this.scene.rotateCamera();
+
                 }
             }
         }
@@ -137,13 +156,16 @@ export class MyGameOrchestrator {
                 this.drawPossibleMoves(this.pickedPiece);
                 break;
             case "ANIMATION":
-
                 break;
             case "UNDO":
                 this.undo();
                 break;
             case "MOVIE":
                 this.movie();
+                break;
+            case "CAMERA_ANIMATION":
+                this.scene.rotateCamera();
+                this.state = "NEXT_TURN";
                 break;
             case "HAS_GAME_ENDED":
                 break;
@@ -326,35 +348,39 @@ export class MyGameOrchestrator {
 		// Update all lights used
 		// this.scene.lights[0].update();
 
-        this.scene.setActiveShaderSimple(this.textShader);
+        // this.scene.setActiveShaderSimple(this.textShader);
 
         // this.scene.gl.disable(this.scene.gl.DEPTH_TEST);
 
-        this.appearance.apply();
-        this.scene.pushMatrix();
-            this.scene.loadIdentity();
+        // this.appearance.apply();
+        // this.scene.pushMatrix();
+        //     this.scene.loadIdentity();
 
-            this.scene.translate(-1,0,-50);
-            this.scene.scale(1.5,1.5,1.5);
-			this.scene.activeShader.setUniformsValues({'charCoords': [0 + this.score[0], 3]});	
-			this.quad.display();
+        //     this.scene.translate(-1,0,-50);
+        //     this.scene.scale(1.5,1.5,1.5);
+		// 	this.scene.activeShader.setUniformsValues({'charCoords': [0 + this.score[0], 3]});	
+		// 	this.quad.display();
 
-            this.scene.translate(1,0,0);
-			this.scene.activeShader.setUniformsValues({'charCoords': [0 + this.score[1], 3]});	
-			this.quad.display();
+        //     this.scene.translate(1,0,0);
+		// 	this.scene.activeShader.setUniformsValues({'charCoords': [0 + this.score[1], 3]});	
+		// 	this.quad.display();
 
-        this.scene.popMatrix();
+        // this.scene.popMatrix();
 
         
 		// re-enable depth test 
 		// this.scene.gl.enable(this.scene.gl.DEPTH_TEST);
 
-        this.scene.setActiveShaderSimple(this.scene.defaultShader);
-
-        this.gameBoard.display();
-        this.auxBoardBlack.display();
-        this.auxBoardWhite.display();
-        this.drawObjects();
+        // this.scene.setActiveShaderSimple(this.scene.defaultShader);
+        
+        this.scene.pushMatrix();
+            this.scene.translate(9, 0.1, 13.5);
+            this.scene.scale(0.3, 0.3, 0.3);
+            this.gameBoard.display();
+            this.auxBoardBlack.display();
+            this.auxBoardWhite.display();
+            this.drawObjects();
+        this.scene.popMatrix();
 
     }
 
@@ -440,13 +466,13 @@ export class MyGameOrchestrator {
         }
         else if(obj instanceof MyCube){
             if(customId == 9){
-                this.undo();
+                this.state = "UNDO";
             }
             else if(customId == 99){
-                this.movie();
+                this.state = "MOVIE";
             }
             else if(customId == 999){
-                // this.changeCamera();
+                this.state = "CAMERA_ANIMATION";
             }
         }
         else {
