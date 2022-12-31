@@ -88,10 +88,6 @@ export class MyGameBoard {
         if(this.isValidMove(piece, startTile, endTile, playerBlack)){
             this.removePiecefromTile(piece, startTile);
             this.addPiecetoTile(piece, endTile);
-            if(piece.isKing && this.isEatingKing(piece, startTile, endTile)){
-                console.log("Yeah, I get here");
-                this.eatKing(startTile, endTile);
-            }
             if(piece.type == "white" && endTile.y == 7){
                 piece.isKing = true;
                 console.log("white king");
@@ -100,7 +96,18 @@ export class MyGameBoard {
                 piece.isKing = true;
                 console.log("black king");
             }
-            if(this.isEating(piece, startTile, endTile, playerBlack)){
+
+            if(piece.isKing && this.isEatingKing(piece, startTile, endTile)){
+                this.eatKing(startTile, endTile);
+                if(this.doubleJump(piece)){
+                    this.orchestrator.setDoubleJump(true);
+                }
+                else{
+                    this.orchestrator.setDoubleJump(false);
+                }
+            }
+
+            else if(this.isEating(piece, startTile, endTile, playerBlack)){
                 this.eat(piece, startTile, endTile, playerBlack);
                 if(this.doubleJump(piece)){
                     this.orchestrator.setDoubleJump(true);
@@ -169,7 +176,7 @@ export class MyGameBoard {
     }
 
     
-    eat(piece, startTile, endTile, playerBlack) {
+    eat(piece, startTile, endTile) {
         let jumpedX = (startTile.x + endTile.x) / 2;
         let jumpedY = (startTile.y + endTile.y) / 2;
         var piece = this.getTileByCoords(jumpedX, jumpedY).getPiece();
