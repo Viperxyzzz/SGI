@@ -88,6 +88,10 @@ export class MyGameBoard {
         if(this.isValidMove(piece, startTile, endTile, playerBlack)){
             this.removePiecefromTile(piece, startTile);
             this.addPiecetoTile(piece, endTile);
+            if(piece.isKing && this.isEatingKing(piece, startTile, endTile)){
+                console.log("Yeah, I get here");
+                this.eatKing(startTile, endTile);
+            }
             if(piece.type == "white" && endTile.y == 7){
                 piece.isKing = true;
                 console.log("white king");
@@ -117,6 +121,7 @@ export class MyGameBoard {
     }
 
     isEating(piece, startTile, endTile, playerBlack) {
+        console.log("Heyy");
         if(Math.abs(startTile.x - endTile.x) != 2){
             return false;
         }
@@ -144,7 +149,7 @@ export class MyGameBoard {
                 }
             }
         }
-        return true;
+        return false;
     }
 
     //should only by used inside a isEating() == true
@@ -152,6 +157,15 @@ export class MyGameBoard {
         let jumpedX = (startTile.x + endTile.x) / 2;
         let jumpedY = (startTile.y + endTile.y) / 2;
         return this.getTileByCoords(jumpedX,jumpedY).getPiece();
+    }
+
+    getEatedByKingPiece(startTile, endTile){
+        let dx = endTile.x - startTile.x;
+        let dy = endTile.y - startTile.y;
+        let x = endTile.x - (dx / Math.abs(dx));
+        let y = endTile.y - (dy / Math.abs(dy));
+        let tile = this.getTileByCoords(x, y);
+        return tile.getPiece();
     }
 
     
@@ -169,6 +183,25 @@ export class MyGameBoard {
             this.auxBoardWhite.addPiece(piece);
         }
     }
+
+    eatKing(startTile, endTile){
+        let dx = endTile.x - startTile.x;
+        let dy = endTile.y - startTile.y;
+        let x = endTile.x - (dx / Math.abs(dx));
+        let y = endTile.y - (dy / Math.abs(dy));
+        let tile = this.getTileByCoords(x, y);
+        let piece = tile.getPiece();
+        this.removePiecefromTile(piece, tile);
+        if(piece.type == "black"){
+            console.log("adding to auxiliar board black ");
+            this.auxBoardBlack.addPiece(piece);
+        }
+        else{
+            console.log("adding to auxiliar board white ");
+            this.auxBoardWhite.addPiece(piece);
+        }
+    }
+
 
     doubleJump(piece){
         let tile = piece.getTile();

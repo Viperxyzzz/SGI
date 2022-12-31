@@ -407,8 +407,9 @@ export class MyGameOrchestrator {
                 this.pickedTile = obj;
                 if(this.gameBoard.isValidMove(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.isPayerBlack)){
                     let isEating = this.gameBoard.isEating(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile);
-                    if(isEating){
-                        var eatedPiece = this.gameBoard.getEatedPiece(this.pickedPiece.getTile(), this.pickedTile);
+                    let isEatingKing = this.gameBoard.isEatingKing(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile);
+                    if(isEating || isEatingKing){
+                        var eatedPiece = isEating ? this.gameBoard.getEatedPiece(this.pickedPiece.getTile(), this.pickedTile) : this.gameBoard.getEatedByKingPiece(this.pickedPiece.getTile(), this.pickedTile);
                         //add auxboard based on color
                         console.log("Eating piece: " + eatedPiece);
                         if(eatedPiece.type == "white"){
