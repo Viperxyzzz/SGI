@@ -96,7 +96,18 @@ export class MyGameBoard {
                 piece.isKing = true;
                 console.log("black king");
             }
-            if(this.isEating(piece, startTile, endTile, playerBlack)){
+
+            if(piece.isKing && this.isEatingKing(piece, startTile, endTile)){
+                this.eatKing(startTile, endTile);
+                if(this.doubleJump(piece)){
+                    this.orchestrator.setDoubleJump(true);
+                }
+                else{
+                    this.orchestrator.setDoubleJump(false);
+                }
+            }
+
+            else if(this.isEating(piece, startTile, endTile, playerBlack)){
                 this.eat(piece, startTile, endTile, playerBlack);
                 if(this.doubleJump(piece)){
                     this.orchestrator.setDoubleJump(true);
@@ -117,6 +128,7 @@ export class MyGameBoard {
     }
 
     isEating(piece, startTile, endTile, playerBlack) {
+        console.log("Heyy");
         if(Math.abs(startTile.x - endTile.x) != 2){
             return false;
         }
@@ -144,7 +156,7 @@ export class MyGameBoard {
                 }
             }
         }
-        return true;
+        return false;
     }
 
     //should only by used inside a isEating() == true
@@ -154,8 +166,17 @@ export class MyGameBoard {
         return this.getTileByCoords(jumpedX,jumpedY).getPiece();
     }
 
+    getEatedByKingPiece(startTile, endTile){
+        let dx = endTile.x - startTile.x;
+        let dy = endTile.y - startTile.y;
+        let x = endTile.x - (dx / Math.abs(dx));
+        let y = endTile.y - (dy / Math.abs(dy));
+        let tile = this.getTileByCoords(x, y);
+        return tile.getPiece();
+    }
+
     
-    eat(piece, startTile, endTile, playerBlack) {
+    eat(piece, startTile, endTile) {
         let jumpedX = (startTile.x + endTile.x) / 2;
         let jumpedY = (startTile.y + endTile.y) / 2;
         var piece = this.getTileByCoords(jumpedX, jumpedY).getPiece();
@@ -169,6 +190,25 @@ export class MyGameBoard {
             this.auxBoardWhite.addPiece(piece);
         }
     }
+
+    eatKing(startTile, endTile){
+        let dx = endTile.x - startTile.x;
+        let dy = endTile.y - startTile.y;
+        let x = endTile.x - (dx / Math.abs(dx));
+        let y = endTile.y - (dy / Math.abs(dy));
+        let tile = this.getTileByCoords(x, y);
+        let piece = tile.getPiece();
+        this.removePiecefromTile(piece, tile);
+        if(piece.type == "black"){
+            console.log("adding to auxiliar board black ");
+            this.auxBoardBlack.addPiece(piece);
+        }
+        else{
+            console.log("adding to auxiliar board white ");
+            this.auxBoardWhite.addPiece(piece);
+        }
+    }
+
 
     doubleJump(piece){
         let tile = piece.getTile();

@@ -81,8 +81,6 @@ export class MyKeyframeAnimation extends MyAnimation {
         let rotationX = currFrame.rotx*Math.PI/180 + (nextFrame.rotx - currFrame.rotx)*Math.PI/180*(this.elapsedTime - currFrame.instant) / (nextFrame.instant - currFrame.instant);
         let rotationY = currFrame.roty*Math.PI/180 + (nextFrame.roty - currFrame.roty)*Math.PI/180*(this.elapsedTime - currFrame.instant) / (nextFrame.instant - currFrame.instant);
         let rotationZ = currFrame.rotz*Math.PI/180 + (nextFrame.rotz - currFrame.rotz)*Math.PI/180*(this.elapsedTime - currFrame.instant) / (nextFrame.instant - currFrame.instant);
-        // console.log(rotationX, rotationY, rotationZ, "TESTE");
-        // console.log(currFrame.rotx);
 
 
         let scaleX = currFrame.scale[0] + (nextFrame.scale[0] - currFrame.scale[0])*(this.elapsedTime - currFrame.instant) / (nextFrame.instant - currFrame.instant);

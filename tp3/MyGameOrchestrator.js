@@ -35,7 +35,9 @@ export class MyGameOrchestrator {
         this.piece = null;
         this.undoPlay = false;
         this.score = [0,0];
+        this.playingMovie = false;
 
+        this.sequenceIndex = 0;
 
 
         this.startTime = Date.now() / 1000;
@@ -101,7 +103,7 @@ export class MyGameOrchestrator {
     update(t) {
         this.animator.update(t);
 
-        if(this.isMoving){
+        if(this.isMoving && this.state != "MOVIE"){
             this.scene.lights[4].setPosition(9 + (this.movingPiece.getTile().x + 0.5) * 0.3 + (this.movingPiece.animation.transX) * 0.3, 2, 15.9 - (this.movingPiece.getTile().y + 0.5) * 0.3 - (this.movingPiece.animation.transY) * 0.3, 1);
             if(this.movingPiece.animation.ended){
                 this.isMoving = false;
@@ -141,6 +143,34 @@ export class MyGameOrchestrator {
             }
         }
 
+        if(this.state == "MOVIE"){
+            if(this.sequenceIndex == this.gameSequence.sequence.length){
+                this.state = "NEXT_TURN";
+                this.playingMovie = false;
+                this.sequenceIndex = 0;
+                this.gameBoard.resetBoard();
+            }
+        }
+
+        if(this.state == "MOVIE" && this.isMoving){
+            if(this.movingPiece.animation.ended){
+                this.isMoving = false;
+                let move = this.gameSequence.sequence[this.sequenceIndex];
+                this.pickedPiece = move.piece;
+                this.gameBoard.movePiece(move.piece,move.tileFrom,move.tileTo,move.isPlayerBlack);
+                this.movingPiece = null;
+                this.sequenceIndex++;
+
+                // this.gameSequence.sequenceIndex++;
+                // if(this.gameSequence.sequenceIndex < this.gameSequence.sequence.length){
+                //     this.movePiece(this.gameSequence.sequence[this.gameSequence.sequenceIndex]);
+                // }
+                // else{
+                //     this.state = "NEXT_TURN";
+                // }
+            }
+
+        }
 
         //state machine
         switch(this.state){
@@ -180,14 +210,43 @@ export class MyGameOrchestrator {
     }
 
     movie(){
-        this.gameBoard.resetBoard();
-
-        for(let i = 0; i < this.gameSequence.sequence.length; i++){
-            let move = this.gameSequence.sequence[i];
-            this.gameBoard.movePiece(move.piece,move.tileFrom,move.tileTo,move.isPlayerBlack);
+        if(this.sequenceIndex == this.gameSequence.sequence.length){
+            console.log(this.gameSequence.sequence);
+            console.log("Sequence index " + this.sequenceIndex);
+            this.state = "NEXT_TURN";
+            this.playingMovie = false;
+            this.sequenceIndex = 0;
+            this.gameBoard.resetBoard();
+            return;
         }
+        if(this.playingMovie == false){
+            this.gameBoard.resetBoard();
+            this.playingMovie = true;
+            this.animator.animations = [];
+            console.log(this.animator);
+        }
+        if(this.isMoving && this.state == "MOVIE")
+            return;
+        if(this.state != "MOVIE")
+            return;
         
-        this.isPayerBlack = true;
+    
+        let move = this.gameSequence.sequence[this.sequenceIndex];
+        console.log("CURRENT INDEX " + this.sequenceIndex);
+        console.log("ADDING MOVE: " + move.piece.id + " " + move.tileFrom.id + " " + move.tileTo.id);
+        this.animator.addAnimation(move.piece.addAnimation(move.piece, move.tileFrom, move.tileTo));
+        console.log(move.piece);
+        this.movingPiece = move.piece;
+        this.isMoving = true;
+
+        // for(let i = 0; i < this.gameSequence.sequence.length; i++){
+        //     let move = this.gameSequence.sequence[i];
+        //     this.gameBoard.addAnimation(move.piece,move.tileFrom,move.tileTo);
+        //     this.movingPiece = move.piece;
+        //     this.isMoving = true;
+        // }
+        
+        // this.isPayerBlack = true;
     }
 
     undo(){
@@ -437,8 +496,9 @@ export class MyGameOrchestrator {
                 this.pickedTile = obj;
                 if(this.gameBoard.isValidMove(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.isPayerBlack)){
                     let isEating = this.gameBoard.isEating(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile);
-                    if(isEating){
-                        var eatedPiece = this.gameBoard.getEatedPiece(this.pickedPiece.getTile(), this.pickedTile);
+                    let isEatingKing = this.gameBoard.isEatingKing(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile);
+                    if(isEating || isEatingKing){
+                        var eatedPiece = isEating ? this.gameBoard.getEatedPiece(this.pickedPiece.getTile(), this.pickedTile) : this.gameBoard.getEatedByKingPiece(this.pickedPiece.getTile(), this.pickedTile);
                         //add auxboard based on color
                         console.log("Eating piece: " + eatedPiece);
                         if(eatedPiece.type == "white"){

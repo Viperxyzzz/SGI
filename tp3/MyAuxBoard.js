@@ -6,7 +6,7 @@ import { MyCube } from './primitives/MyCube.js';
 import { MyPiece } from './MyPiece.js';
 
 export class MyAuxBoard {
-    constructor(scene, x, y, z, color) {
+    constructor(scene, x, y, z) {
         this.scene = scene;
         this.board = new MyCube(this.scene);
         this.x = x;
@@ -33,11 +33,17 @@ export class MyAuxBoard {
         this.woodTexture.setShininess(120);
         this.woodTexture.loadTexture('scenes/images/woodenBox.jpg');
 
+        console.log("Aux board created: " + x + " " + y + " " + z + " ");
+
     }
 
     addPiece(piece){
+        console.log("Piece added to aux board: " + piece.id + " " + piece.type + "")
         this.pieces.push(piece);
         this.piecesPosition[piece.id] = [this.lastPieceX, this.lastPieceY];
+        console.log("this.lastPieceX",this.lastPieceX,"this.lastPieceY",this.lastPieceY)
+        console.log("auxBoard.x",this.x,"auxBoard.y",this.y,"auxBoard.z",this.z)
+        console.log("Piece",piece.id," final coords are " + (this.lastPieceX + this.x) + " " + (this.lastPieceY + this.y) + " " + this.z);
         this.lastPieceY++;
         if(this.lastPieceY == 5){
             this.lastPieceY = 0;
@@ -56,7 +62,7 @@ export class MyAuxBoard {
     }
 
     getNextPiecePosition(){
-        return [this.lastPieceX + this.x, this.lastPieceY + this.y];
+        return [this.lastPieceX , this.lastPieceY ];
     }
 
     display() {

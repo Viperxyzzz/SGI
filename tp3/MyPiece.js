@@ -70,13 +70,19 @@ export class MyPiece {
     }
 
     addEatedAnimation(auxBoard) {
+        console.log("EatedAnimation added to " + this.id + " " + this.type);
+        console.log("Initial coords: " + this.tilePointer.x + " " + this.tilePointer.y + " " + 0);
         let nextPiecePosition = auxBoard.getNextPiecePosition();
-        let dx = nextPiecePosition[0] - this.tilePointer.x;
-        let dy = nextPiecePosition[1] - this.tilePointer.y;
+        console.log("nextPiecePosition[0]: " + nextPiecePosition[0] + " nextPiecePosition[1]: " + nextPiecePosition[1])
+        console.log("auxBoard.x: " + auxBoard.x + " auxBoard.y: " + auxBoard.y)
+        console.log("Final coords are: " + (nextPiecePosition[0] + auxBoard.x) + " " + (nextPiecePosition[1] + auxBoard.y) + " " + auxBoard.z);
+        let dx = (nextPiecePosition[0] + auxBoard.x) - this.tilePointer.x;
+        let dy = (nextPiecePosition[1] + auxBoard.y) - this.tilePointer.y;
         let dz = auxBoard.z - 0;
         let keyframe = new KeyFrame(0, [0, 0, 0], 0, 0, 0, [1, 1, 1]);
-        let keyframe1 = new KeyFrame(1000, [dx - 0.5, -dy - 1, dz / 2], 0, 0, 0, [1, 1, 1]);
-
+        console.log("Translate needed to achieve the final coords: " + dx + " " + dy + " " + dz);
+        let keyframe1 = new KeyFrame(1000, [dx, -dy, dz / 2], 0, 0, 0, [1, 1, 1]);
+        console.log("Final coords of animation: " + dx + " " + (-dy) + " " + dz);
         let keyframes = [keyframe, keyframe1];
 
         var animation = new MyKeyframeAnimation(this.scene, keyframes);
@@ -117,7 +123,7 @@ export class MyPiece {
     display() {
         let m4 = mat4.create();
         if(this.isKing)
-            mat4.scale(m4, m4, [1, 1, 3]);
+            mat4.scale(m4, m4, [1, 1, 2]);
         if(this.tilePointer == null){
             let x = this.auxBoard.piecesPosition[this.id][0];
             let y = this.auxBoard.piecesPosition[this.id][1];
@@ -155,7 +161,10 @@ export class MyPiece {
         this.geometry.display();
         this.scene.popMatrix();
         m4 = mat4.create();
-        mat4.translate(m4, m4, [this.tilePointer.x + 0.5, this.tilePointer.y + 0.5, 0.301]);
+        if(this.isKing)
+            mat4.translate(m4, m4, [this.tilePointer.x + 0.5, this.tilePointer.y + 0.5, 0.601]);
+        else
+            mat4.translate(m4, m4, [this.tilePointer.x + 0.5, this.tilePointer.y + 0.5, 0.301]);
         mat4.scale(m4, m4, [0.5, 0.5, 0.5]);
         mat4.rotate(m4, m4, Math.PI, [1, 0, 0]);
 
