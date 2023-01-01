@@ -160,11 +160,24 @@ export class MyPiece {
         }
         this.geometry.display();
         this.scene.popMatrix();
+        if(this.animation != null){
+            this.animation.apply();
+        }
         m4 = mat4.create();
-        if(this.isKing)
-            mat4.translate(m4, m4, [this.tilePointer.x + 0.5, this.tilePointer.y + 0.5, 0.601]);
-        else
-            mat4.translate(m4, m4, [this.tilePointer.x + 0.5, this.tilePointer.y + 0.5, 0.301]);
+        if(this.tilePointer == null){
+            let x = this.auxBoard.piecesPosition[this.id][0];
+            let y = this.auxBoard.piecesPosition[this.id][1];
+            mat4.translate(m4, m4, [x + 0.5, -y - 0.5, this.auxBoard.z / 2]);
+            if(this.isKing){
+                mat4.translate(m4, m4, [0, 0, -0.66]);
+            }
+        }
+        else{
+            if(this.isKing)
+                mat4.translate(m4, m4, [this.tilePointer.x + 0.5, this.tilePointer.y + 0.5, 0.601]);
+            else
+                mat4.translate(m4, m4, [this.tilePointer.x + 0.5, this.tilePointer.y + 0.5, 0.301]);
+        }
         mat4.scale(m4, m4, [0.5, 0.5, 0.5]);
         mat4.rotate(m4, m4, Math.PI, [1, 0, 0]);
 
@@ -177,9 +190,6 @@ export class MyPiece {
             this.materialWhite.apply();
         }
 
-        if(this.animation != null){
-            this.animation.apply();
-        }
         this.top.display();
         this.scene.popMatrix();
         // clear the currently registered id and associated object
