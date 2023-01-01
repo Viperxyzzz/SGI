@@ -10,7 +10,7 @@ export class MyAnimator {
     }
     
     reset() {
-        this.sequence = [];
+        this.animations = [];
     }
 
     start() {
