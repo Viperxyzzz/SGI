@@ -64,8 +64,6 @@ export class XMLscene extends CGFscene {
     initsceneCameras(){
         this.selectedCamera = this.graph.default;
         this.camera = this.graph.cameras[this.graph.default];
-        // this.cameraWhite = {"target": this.graph.cameras["whiteCamera"].target[2], "position" : this.graph.cameras["whiteCamera"].position[2]};
-        // this.cameraBlack = {"target": this.graph.cameras["whiteCamera"].target[2], "position" : this.graph.cameras["defaultCamera"].position[2]};
         this.interface.setActiveCamera(this.camera);
     }
 
@@ -94,7 +92,7 @@ export class XMLscene extends CGFscene {
                 this.lights[i].setDiffuse(light[4][0], light[4][1], light[4][2], light[4][3]);
                 this.lights[i].setSpecular(light[5][0], light[5][1], light[5][2], light[5][3]);
 
-                if (light[0] == "spot") {
+                if (light[1] == "spot") {
                     this.lights[i].setSpotCutOff(light[6]);
                     this.lights[i].setSpotExponent(light[7]);
                     this.lights[i].setSpotDirection(light[8][0], light[8][1], light[8][2]);

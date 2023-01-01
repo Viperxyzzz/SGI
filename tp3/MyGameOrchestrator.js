@@ -102,6 +102,7 @@ export class MyGameOrchestrator {
         this.animator.update(t);
 
         if(this.isMoving){
+            this.scene.lights[4].setPosition(9 + (this.movingPiece.getTile().x + 0.5) * 0.3 + (this.movingPiece.animation.transX) * 0.3, 2, 15.9 - (this.movingPiece.getTile().y + 0.5) * 0.3 - (this.movingPiece.animation.transY) * 0.3, 1);
             if(this.movingPiece.animation.ended){
                 this.isMoving = false;
                 this.movingPiece = null;
@@ -207,6 +208,7 @@ export class MyGameOrchestrator {
             }
             this.isPayerBlack = move.isPlayerBlack;
         }
+        this.state = "NEXT_TURN";
     }
 
 
@@ -409,6 +411,7 @@ export class MyGameOrchestrator {
                 this.pickedPiece = null;
                 this.clearPossibleMoves();
                 console.warn("Select a valid tile to move the piece");
+                this.scene.lights[4].setPosition(9, -500, 15.9, 1);
             }
             else{
                 // verify if the piece equals turn player
@@ -423,6 +426,7 @@ export class MyGameOrchestrator {
                         this.piece = this.pickedPiece;
                     }
                     this.state = "POSSIBLE_MOVES";
+                    this.scene.lights[4].setPosition(9 + (this.piece.getTile().x + 0.5) * 0.3, 2, 15.9 - (this.piece.getTile().y + 0.5) * 0.3, 1);
                 }
 
             }
@@ -450,7 +454,6 @@ export class MyGameOrchestrator {
                     else{
                         this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard,this.isPayerBlack));
                     }
-
                     this.animator.addAnimation(this.pickedPiece.addAnimation(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile));
                     this.movingPiece = this.pickedPiece;
                     this.isMoving = true;
@@ -461,6 +464,7 @@ export class MyGameOrchestrator {
             }
             else{
                 console.log("Select a piece first");
+                this.scene.lights[4].setPosition(9, -500, 15.9, 1);
             }
         }
         else if(obj instanceof MyCube){
@@ -473,9 +477,12 @@ export class MyGameOrchestrator {
             else if(customId == 999){
                 this.state = "CAMERA_ANIMATION";
             }
+            this.scene.lights[4].setPosition(9, -500, 15.9, 1);
         }
         else {
             console.warn("Error: Picked object is not a piece or a tile");
+            this.scene.lights[4].setPosition(9, -500, 15.9, 1);
+
         }
     }
 }

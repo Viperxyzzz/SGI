@@ -22,12 +22,12 @@ export class MyTile {
         this.materialWhite.setAmbient(0, 0, 0, 1);
         this.materialWhite.setDiffuse(1, 1, 1, 1);
         this.materialWhite.setSpecular(0, 0, 0, 1);
-        this.materialWhite.setShininess(10.0);
+        this.materialWhite.setShininess(1);
         
 
         this.materialGreen = new CGFappearance(this.scene);
         this.materialGreen.setAmbient(0, 0, 0, 1);
-        this.materialGreen.setDiffuse(0, 1, 0, 1);
+        this.materialGreen.setDiffuse(0, 0.3, 0, 1);
         this.materialGreen.setSpecular(0, 0, 0, 1);
         this.materialGreen.setShininess(10.0);
 

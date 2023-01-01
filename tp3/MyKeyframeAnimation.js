@@ -97,6 +97,9 @@ export class MyKeyframeAnimation extends MyAnimation {
         // console.log(this.matrix);
 
         this.previousTime = t;
+        this.transX = transX;
+        this.transY = transY;
+        this.transZ = transZ;
 
     }
 }

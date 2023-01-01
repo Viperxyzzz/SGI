@@ -1,17 +1,19 @@
-import { CGFscene } from '../lib/CGF.js';
+import { CGFscene, CGFtexture } from '../lib/CGF.js';
 import { CGFappearance } from '../lib/CGF.js';
 import { MyCylinder } from "./primitives/MyCylinder.js";
 import { MySphere } from './primitives/MySphere.js';
 import { MyKeyframeAnimation } from "./MyKeyframeAnimation.js";
 import { KeyFrame } from './KeyFrame.js';
+import { MyCircle } from './primitives/MyCircle.js';
 export class MyPiece {
     constructor(scene, id, type) {
         this.scene = scene;
-        console.log("Piece created: " + id + " " + type);
+        // console.log("Piece created: " + id + " " + type);
         this.id = id;
         this.type = type;
-        this.geometry = new MyCylinder(scene, 0.5, 0.5, 0.1, 20, 20);
-        this.top = new MyCylinder(scene, 0.5, 0, 0.1, 20, 20);
+        this.geometry = new MyCylinder(scene, 0.5, 0.5, 0.3, 20, 20);
+        // this.top = new MySphere(scene, 0.5, 20, 20);
+        this.top = new MyCircle(scene, 20);
         this.selectable = true;
         this.tilePointer = null;
         this.auxBoard = null;
@@ -20,12 +22,14 @@ export class MyPiece {
         this.dx = 0;
         this.dy = 0;
         this.createMaterials();
+        // this.blackText = new CGFtexture(this.scene, "scenes/images/black.png");
+        // this.whiteText = new CGFtexture(this.scene, "scenes/images/white.png");
     }
 
     createMaterials() {
         this.materialBlack = new CGFappearance(this.scene);
         this.materialBlack.setAmbient(0, 0, 0, 1);
-        this.materialBlack.setDiffuse(0, 0.8, 0.3, 1);
+        this.materialBlack.setDiffuse(0.3, 0.3, 0.3, 1);
         this.materialBlack.setSpecular(0, 0, 0, 1);
         this.materialBlack.setShininess(10.0);
 
@@ -139,14 +143,34 @@ export class MyPiece {
         // with this uniqueId
         this.scene.pushMatrix();
         this.scene.multMatrix(m4);
-        if(this.type == "black")
+        if(this.type == "black"){
             this.materialBlack.apply();
-        else
+        }
+        else{
             this.materialWhite.apply();
+        }
         if(this.animation != null){
             this.animation.apply();
         }
         this.geometry.display();
+        this.scene.popMatrix();
+        m4 = mat4.create();
+        mat4.translate(m4, m4, [this.tilePointer.x + 0.5, this.tilePointer.y + 0.5, 0.301]);
+        mat4.scale(m4, m4, [0.5, 0.5, 0.5]);
+        mat4.rotate(m4, m4, Math.PI, [1, 0, 0]);
+
+        this.scene.pushMatrix();
+        this.scene.multMatrix(m4);
+        if(this.type == "black"){
+            this.materialBlack.apply();
+        }
+        else{
+            this.materialWhite.apply();
+        }
+
+        if(this.animation != null){
+            this.animation.apply();
+        }
         this.top.display();
         this.scene.popMatrix();
         // clear the currently registered id and associated object
