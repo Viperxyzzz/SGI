@@ -64,8 +64,8 @@ export class MyGameBoard {
             }
         }
         this.display();
-        // this.auxBoardBlack.resetBoard();
-        // this.auxBoardWhite.resetBoard();
+        this.auxBoardBlack.resetBoard();
+        this.auxBoardWhite.resetBoard();
     }
 
     addPiecetoTile(piece, tile) {

@@ -56,6 +56,8 @@ export class MyAuxBoard {
         this.pieces = [];
         this.lastPieceX = 0;
         this.lastPieceY = 0;
+        this.piecesPosition = [];
+        this.myText.text = this.pieces.length.toString();
     }
 
     removePiece(){

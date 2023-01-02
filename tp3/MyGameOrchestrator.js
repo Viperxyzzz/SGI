@@ -192,6 +192,21 @@ export class MyGameOrchestrator {
             case "GAME_OVER":
                 this.gameBoard.resetBoard();
                 this.gameBoard.initBoard();
+                this.scene.started = false;
+                this.elapsedTime = 0;
+                this.pickedPiece = null;
+                this.pickedTile = null;
+                this.movingPiece = null;
+                this.isMoving = false;
+                this.state = "NEXT_TURN";
+                this.hasDoubleJump = false;
+                this.piece = null;
+                this.undoPlay = false;
+                this.score = [0,0];
+                this.playingMovie = false;
+                this.startTime = Date.now() / 1000;
+                this.lastTime = this.startTime;
+                this.elapsedTimeObject = new MyText(this.scene, this.elapsedTime.toString());
                 break;
             default:
                 break;
