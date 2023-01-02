@@ -188,6 +188,7 @@ export class XMLscene extends CGFscene {
 
     update(t) {
         this.handleKeyPress();
+
         if (this.graph.highlightShader != null)
             this.graph.highlightShader.setUniformsValues({ timeFactor: t / 500 % 500 });
 
