@@ -516,6 +516,7 @@ export class MyGameOrchestrator {
                     this.isMoving = true;
                     this.scene.setPickEnabled(false);
                 }
+                this.pickedPiece.unsetTexture();
                 this.pickedPiece = null;
                 this.pickedTile = null;
                 this.clearPossibleMoves();

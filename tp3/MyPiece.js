@@ -46,6 +46,14 @@ export class MyPiece {
         this.materialRed.setShininess(10.0);
     }
 
+    setTexture(){
+        this.texture = new CGFtexture(this.scene, "scenes/images/wood.jpg");
+    }
+
+    unsetTexture(){
+        this.texture = null;
+    }
+
     getType() {
         return this.type;
     }
