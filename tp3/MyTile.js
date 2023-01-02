@@ -10,7 +10,7 @@ export class MyTile {
         this.y = y;
         this.id = id;
         this.tile = new MyRectangle(this.scene, this.id, this.x, this.x + 1, this.y, this.y + 1);
-        this.selectable = true;
+        // this.selectable = true;
         this.materialBlack = new CGFappearance(this.scene);
         this.materialBlack.setAmbient(0, 0, 0, 1);
         this.materialBlack.setDiffuse(0, 0, 0, 1);
@@ -22,12 +22,12 @@ export class MyTile {
         this.materialWhite.setAmbient(0, 0, 0, 1);
         this.materialWhite.setDiffuse(1, 1, 1, 1);
         this.materialWhite.setSpecular(0, 0, 0, 1);
-        this.materialWhite.setShininess(10.0);
+        this.materialWhite.setShininess(1);
         
 
         this.materialGreen = new CGFappearance(this.scene);
         this.materialGreen.setAmbient(0, 0, 0, 1);
-        this.materialGreen.setDiffuse(0, 1, 0, 1);
+        this.materialGreen.setDiffuse(0, 0.3, 0, 1);
         this.materialGreen.setSpecular(0, 0, 0, 1);
         this.materialGreen.setShininess(10.0);
 
@@ -35,6 +35,7 @@ export class MyTile {
             this.setMaterialApplied("black");
         else
             this.setMaterialApplied("white");
+        this.transformation = null;
     }
 
 
@@ -67,7 +68,7 @@ export class MyTile {
     }
 
     display() {
-        if(this.selectable){
+        if(this.scene.pickEnabled){
             this.scene.registerForPick(this.id, this);
         }
         this.scene.pushMatrix();
@@ -82,11 +83,12 @@ export class MyTile {
         }
 
         this.tile.display();
-        if(this.pointerPiece != null)
+        if(this.pointerPiece != null){
             this.pointerPiece.display();
+        }
         this.scene.popMatrix();
 
-        if(this.selectable)
+        if(this.scene.pickEnabled)
             this.scene.clearPickRegistration();
     }   
 

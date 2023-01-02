@@ -49,6 +49,7 @@ export class MySceneGraph {
         // File reading 
         this.reader = new CGFXMLreader();
 
+        this.xml_file = filename;
         /*
          * Read the contents of the xml file, and refer to this class for loading and error handlers.
          * After the file is read, the reader calls onXMLReady on this object.
@@ -1053,9 +1054,11 @@ export class MySceneGraph {
                 let scaleCoords = this.parseScaleCoordinates3D(scale);
 
                 let keyframe = new KeyFrame(instant, transPoint, angleX, angleY, angleZ, scaleCoords);
+                console.log(keyframe);
                 keyframes.push(keyframe);
                 
             }
+            console.log(keyframes);
 
             var animation = new MyKeyframeAnimation(this.scene, keyframes);
             this.animations[animationID] = animation;
@@ -1455,7 +1458,7 @@ export class MySceneGraph {
 
         if(component.isHighlighted == true){
             let highlight = component.getHighlight();
-            console.log(highlight);
+            // console.log(highlight);
             let targetColor = [highlight['red'],highlight['green'],highlight['blue'],1.0];
             this.highlightShader.setUniformsValues({targetColor: targetColor});
             this.highlightShader.setUniformsValues({normScale : highlight['length_h']});

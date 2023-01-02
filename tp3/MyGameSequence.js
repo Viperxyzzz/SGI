@@ -13,7 +13,7 @@ export class MyGameSequence {
 
     undo() {
         if (this.sequence.length > 0) {
-            this.sequence.pop();
+            return this.sequence.pop();
         }
     }
 

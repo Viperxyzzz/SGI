@@ -16,6 +16,7 @@ export class MyKeyframeAnimation extends MyAnimation {
         this.currentFrame = -1;
         this.isActive = false;
         this.matrix = mat4.create();
+        this.ended = false;
 
         this.keyframes.sort((a,b) => a.instant - b.instant);
 
@@ -38,6 +39,7 @@ export class MyKeyframeAnimation extends MyAnimation {
             this.isActive = true;
         }
         else if(this.keyframes[this.keyframes.length-1].instant < this.elapsedTime && this.isActive==false){
+            this.ended = true;
             return;
         }
         else{
@@ -57,7 +59,7 @@ export class MyKeyframeAnimation extends MyAnimation {
                 break;
             }
         }
-        
+
         this.interpolate(this.keyframes[this.currentFrame - 1], this.keyframes[this.currentFrame], t);
 
     }
@@ -79,8 +81,6 @@ export class MyKeyframeAnimation extends MyAnimation {
         let rotationX = currFrame.rotx*Math.PI/180 + (nextFrame.rotx - currFrame.rotx)*Math.PI/180*(this.elapsedTime - currFrame.instant) / (nextFrame.instant - currFrame.instant);
         let rotationY = currFrame.roty*Math.PI/180 + (nextFrame.roty - currFrame.roty)*Math.PI/180*(this.elapsedTime - currFrame.instant) / (nextFrame.instant - currFrame.instant);
         let rotationZ = currFrame.rotz*Math.PI/180 + (nextFrame.rotz - currFrame.rotz)*Math.PI/180*(this.elapsedTime - currFrame.instant) / (nextFrame.instant - currFrame.instant);
-        // console.log(rotationX, rotationY, rotationZ, "TESTE");
-        // console.log(currFrame.rotx);
 
 
         let scaleX = currFrame.scale[0] + (nextFrame.scale[0] - currFrame.scale[0])*(this.elapsedTime - currFrame.instant) / (nextFrame.instant - currFrame.instant);
@@ -95,6 +95,9 @@ export class MyKeyframeAnimation extends MyAnimation {
         // console.log(this.matrix);
 
         this.previousTime = t;
+        this.transX = transX;
+        this.transY = transY;
+        this.transZ = transZ;
 
     }
 }
