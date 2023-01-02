@@ -90,9 +90,10 @@ export class MyGameOrchestrator {
     }
 
     update(t) {
-        if(this.scene.started){
+        if(this.scene.started && this.state != "MOVIE" && !this.isMoving){
             this.scene.setPickEnabled(true);
         }
+
         this.animator.update(t);
         console.log(this.elapsedTime);
         if(!this.isMoving && this.scene.started){
@@ -509,6 +510,7 @@ export class MyGameOrchestrator {
                     this.animator.addAnimation(this.pickedPiece.addAnimation(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile));
                     this.movingPiece = this.pickedPiece;
                     this.isMoving = true;
+                    this.scene.setPickEnabled(false);
                 }
                 this.pickedPiece = null;
                 this.pickedTile = null;
