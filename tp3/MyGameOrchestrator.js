@@ -75,7 +75,7 @@ export class MyGameOrchestrator {
         this.appearance = new CGFappearance(this.scene);
 
         //setting up time
-        this.timeout = 30;
+        this.timeout = 5;
         this.elapsedTime = 0;
         this.startTime = Date.now() / 1000;
         this.lastTime = this.startTime;
@@ -94,8 +94,10 @@ export class MyGameOrchestrator {
             this.scene.setPickEnabled(true);
         }
         this.animator.update(t);
-        if(!this.isMoving && this.scene.started)
+        console.log(this.elapsedTime);
+        if(!this.isMoving && this.scene.started){
             this.elapsedTime = Math.floor((Date.now() / 1000) - this.startTime);
+        }
         // this.elapsedTime = Math.floor(t - this.startTime);
         this.elapsedTimeObject.text = this.elapsedTime.toString();
         if(this.isMoving && this.state != "MOVIE"){
@@ -192,8 +194,9 @@ export class MyGameOrchestrator {
             case "GAME_OVER":
                 this.gameBoard.resetBoard();
                 this.gameBoard.initBoard();
-                this.scene.started = false;
+                
                 this.elapsedTime = 0;
+                this.timeout = 5;
                 this.pickedPiece = null;
                 this.pickedTile = null;
                 this.movingPiece = null;
