@@ -40,10 +40,6 @@ export class MyGameOrchestrator {
         this.sequenceIndex = 0;
 
 
-        this.startTime = Date.now() / 1000;
-        this.lastTime = this.startTime;
-
-
         /*setting up text */
         this.scene.textTexture = new CGFtexture(this.scene, "scenes/images/oolite-font.trans.png");
         this.scene.textShader = new CGFshader(this.scene.gl, "shaders/font.vert", "shaders/font.frag");
@@ -53,7 +49,7 @@ export class MyGameOrchestrator {
         this.auxBoardWhite = new MyAuxBoard(scene, 9, 0 ,2);
         this.gameBoard = new MyGameBoard(scene, this.auxBoardWhite, this.auxBoardBlack);
         this.gameBoard.setOrchestrator(this);
-        
+
         //textures and materials for the several objects
         this.undoAppearance = new CGFappearance(this.scene);
         this.undoAppearance.setAmbient(0.4, 0.2, 0.1, 0.5);
@@ -76,30 +72,17 @@ export class MyGameOrchestrator {
         this.cameraAppearance.setShininess(5);
         this.cameraAppearance.loadTexture("scenes/images/eye.png");
 
-
-        // this.scene.gl.clearColor(0.1, 0.1, 0.1, 1.0);
-		// this.scene.gl.clearDepth(1000.0);
-		// this.scene.gl.enable(this.scene.gl.DEPTH_TEST);
-		// this.scene.gl.enable(this.scene.gl.CULL_FACE);
-		// this.scene.gl.depthFunc(this.scene.gl.LEQUAL);
-
-
         this.appearance = new CGFappearance(this.scene);
 
-		// // font texture: 16 x 16 characters
-		// // http://jens.ayton.se/oolite/files/font-tests/rgba/oolite-font.png
-		// this.fontTexture = new CGFtexture(this.scene, "scenes/images/oolite-font.trans.png");
-		// this.appearance.setTexture(this.fontTexture);
-		
-		// // // instatiate text shader (used to simplify access via row/column coordinates)
-		// // // check the two files to see how it is done
-		// this.textShader=new CGFshader(this.scene.gl, "shaders/font.vert", "shaders/font.frag");
+        //setting up time
+        this.timeout = 30;
+        this.elapsedTime = 0;
+        this.startTime = Date.now() / 1000;
+        this.lastTime = this.startTime;
 
-		// // // set number of rows and columns in font texture
-		// this.textShader.setUniformsValues({'dims': [16, 16]});
 
-        // // // plane where texture character will be rendered
-		// this.quad = new MyQuad(this.scene);
+        //time object
+        this.elapsedTimeObject = new MyText(this.scene, this.elapsedTime.toString());
     }
 
     setDoubleJump(bool){
@@ -108,10 +91,15 @@ export class MyGameOrchestrator {
 
     update(t) {
         this.animator.update(t);
-
+        if(!this.isMoving)
+            this.elapsedTime = Math.floor((Date.now() / 1000) - this.startTime);
+        // this.elapsedTime = Math.floor(t - this.startTime);
+        this.elapsedTimeObject.text = this.elapsedTime.toString();
         if(this.isMoving && this.state != "MOVIE"){
             this.scene.lights[4].setPosition(9 + (this.movingPiece.getTile().x + 0.5) * 0.3 + (this.movingPiece.animation.transX) * 0.3, 2, 15.9 - (this.movingPiece.getTile().y + 0.5) * 0.3 - (this.movingPiece.animation.transY) * 0.3, 1);
             if(this.movingPiece.animation.ended){
+                this.elapsedTime = 0;
+                this.startTime = Date.now() / 1000;
                 this.isMoving = false;
                 this.movingPiece = null;
                 let move = this.gameSequence.sequence[this.gameSequence.sequence.length - 1];
@@ -187,6 +175,10 @@ export class MyGameOrchestrator {
                 //this.theme = new MySceneGraph("scenes/tp3/board.xml", scene);
                 break;
             case "NEXT_TURN":
+                if(this.elapsedTime >= this.timeout){
+                    this.elapsedTime = 0;
+                    this.gameBoard.resetBoard();
+                }
                 this.display();
                 break;
             case "POSSIBLE_MOVES":
@@ -447,6 +439,7 @@ export class MyGameOrchestrator {
             this.auxBoardBlack.display();
             this.auxBoardWhite.display();
             this.drawObjects();
+            this.elapsedTimeObject.display();
         this.scene.popMatrix();
 
     }
