@@ -94,7 +94,7 @@ export class MyGameOrchestrator {
             this.scene.setPickEnabled(true);
         }
         this.animator.update(t);
-        if(!this.isMoving)
+        if(!this.isMoving && this.scene.started)
             this.elapsedTime = Math.floor((Date.now() / 1000) - this.startTime);
         // this.elapsedTime = Math.floor(t - this.startTime);
         this.elapsedTimeObject.text = this.elapsedTime.toString();
@@ -140,15 +140,6 @@ export class MyGameOrchestrator {
             }
         }
 
-        if(this.state == "MOVIE"){
-            if(this.sequenceIndex == this.gameSequence.sequence.length){
-                this.state = "NEXT_TURN";
-                this.playingMovie = false;
-                this.sequenceIndex = 0;
-                this.gameBoard.resetBoard();
-            }
-        }
-
         if(this.state == "MOVIE" && this.isMoving){
             if(this.movingPiece.animation.ended){
                 this.isMoving = false;
@@ -157,16 +148,7 @@ export class MyGameOrchestrator {
                 this.gameBoard.movePiece(move.piece,move.tileFrom,move.tileTo,move.isPlayerBlack);
                 this.movingPiece = null;
                 this.sequenceIndex++;
-
-                // this.gameSequence.sequenceIndex++;
-                // if(this.gameSequence.sequenceIndex < this.gameSequence.sequence.length){
-                //     this.movePiece(this.gameSequence.sequence[this.gameSequence.sequenceIndex]);
-                // }
-                // else{
-                //     this.state = "NEXT_TURN";
-                // }
             }
-            this.state = "NEXT_TURN";
         }
 
         //state machine
@@ -179,8 +161,13 @@ export class MyGameOrchestrator {
                 break;
             case "NEXT_TURN":
                 if(this.elapsedTime >= this.timeout){
-                    this.elapsedTime = 0;
-                    this.gameBoard.resetBoard();
+                    this.state = "GAME_OVER";
+                    // console.log("timeout");
+                    // this.elapsedTime = 0;
+                    // this.gameBoard.resetBoard();
+                    // this.gameBoard.initBoard();
+                    // this.gameSequence = new MyGameSequence(this.scene);
+                    // this.animator = new MyAnimator(this.scene, this, this.gameSequence);
                 }
                 this.display();
                 break;
@@ -203,12 +190,9 @@ export class MyGameOrchestrator {
                 this.hasGameEnded();
                 break;
             case "GAME_OVER":
-                console.log("Game Over");
-                console.log("PLAYER " + this.gameBoard.winner + " WON!");
                 this.gameBoard.resetBoard();
                 break;
             default:
-                console.log("Error: Invalid state");
                 break;
         }
     }
@@ -240,43 +224,39 @@ export class MyGameOrchestrator {
     }
 
     movie(){
+        console.log(this.sequenceIndex + " time entering here");
         if(this.sequenceIndex == this.gameSequence.sequence.length){
-            console.log(this.gameSequence.sequence);
-            console.log("Sequence index " + this.sequenceIndex);
             this.state = "NEXT_TURN";
             this.playingMovie = false;
             this.sequenceIndex = 0;
-            this.gameBoard.resetBoard();
+            console.log('Sequence index was equal to sequence length');
             return;
         }
         if(this.playingMovie == false){
             this.gameBoard.resetBoard();
+            this.gameBoard.initBoard();
             this.playingMovie = true;
             this.animator.animations = [];
-            console.log(this.animator);
+            this.state = "MOVIE";
+            console.log("yeah we enter here of course");
         }
-        if(this.isMoving && this.state == "MOVIE")
+        if(this.isMoving && this.state == "MOVIE"){
+            console.log("is this the problem");
             return;
-        if(this.state != "MOVIE")
+        }
+        if(this.state != "MOVIE"){
+            console.log("is this the problem2");
             return;
+        }
+
         
     
         let move = this.gameSequence.sequence[this.sequenceIndex];
-        console.log("CURRENT INDEX " + this.sequenceIndex);
-        console.log("ADDING MOVE: " + move.piece.id + " " + move.tileFrom.id + " " + move.tileTo.id);
-        this.animator.addAnimation(move.piece.addAnimation(move.piece, move.tileFrom, move.tileTo));
-        console.log(move.piece);
+        move.piece.animation = null;
+        let animation = move.piece.addAnimation(move.piece, move.tileFrom, move.tileTo);
+        this.animator.addAnimation(animation);
         this.movingPiece = move.piece;
         this.isMoving = true;
-
-        // for(let i = 0; i < this.gameSequence.sequence.length; i++){
-        //     let move = this.gameSequence.sequence[i];
-        //     this.gameBoard.addAnimation(move.piece,move.tileFrom,move.tileTo);
-        //     this.movingPiece = move.piece;
-        //     this.isMoving = true;
-        // }
-        
-        // this.isPayerBlack = true;
     }
 
     undo(){
@@ -546,6 +526,7 @@ export class MyGameOrchestrator {
                         this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard,this.isPayerBlack));
                     }
                     this.animator.addAnimation(this.pickedPiece.addAnimation(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile));
+                    console.log(this.pickedPiece);
                     this.movingPiece = this.pickedPiece;
                     this.isMoving = true;
                 }

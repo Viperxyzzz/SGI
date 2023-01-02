@@ -134,7 +134,6 @@ export class MyGameBoard {
     }
 
     isEating(piece, startTile, endTile, playerBlack) {
-        console.log("Heyy");
         if(Math.abs(startTile.x - endTile.x) != 2){
             return false;
         }
