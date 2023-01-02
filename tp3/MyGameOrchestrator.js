@@ -131,7 +131,7 @@ export class MyGameOrchestrator {
                     // }
 
                     // this.scene.cameraAnimation = true;
-                    this.scene.rotateCamera();
+                    this.state = "CAMERA_ANIMATION";
 
                 }
             }
@@ -163,7 +163,7 @@ export class MyGameOrchestrator {
                 //     this.state = "NEXT_TURN";
                 // }
             }
-
+            this.state = "NEXT_TURN";
         }
 
         //state machine
@@ -194,16 +194,27 @@ export class MyGameOrchestrator {
                 break;
             case "CAMERA_ANIMATION":
                 this.scene.rotateCamera();
-                this.state = "NEXT_TURN";
+                this.state = "HAS_GAME_ENDED";
                 break;
             case "HAS_GAME_ENDED":
+                this.hasGameEnded();
                 break;
             case "GAME_OVER":
                 console.log("Game Over");
+                console.log("PLAYER " + this.gameBoard.winner + " WON!");
                 break;
             default:
                 console.log("Error: Invalid state");
                 break;
+        }
+    }
+
+    hasGameEnded(){
+        if(this.gameBoard.checkGameOver()){
+            this.state = "GAME_OVER";
+        }
+        else{
+            this.state = "NEXT_TURN";
         }
     }
 

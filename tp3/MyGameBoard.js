@@ -37,12 +37,16 @@ export class MyGameBoard {
             for (let j = 0; j < 8; j++){
                 if(j < 3){
                     if(this.board[i][j].getMaterialApplied() == "black"){
-                        this.addPiecetoTile(new MyPiece(this.scene, i * 8 + j + 1, "white"), this.board[i][j]);
+                        let piece = new MyPiece(this.scene, i * 8 + j + 1, "white");
+                        piece.originalTile = this.board[i][j];
+                        this.addPiecetoTile(piece, this.board[i][j]);
                     }
                 }
                 else if(j > 4){
                     if(this.board[i][j].getMaterialApplied() == "black"){
-                        this.addPiecetoTile(new MyPiece(this.scene, i * 8 + j + 1, "black"), this.board[i][j]);
+                        let piece = new MyPiece(this.scene, i * 8 + j + 1, "black");
+                        piece.originalTile = this.board[i][j];
+                        this.addPiecetoTile(piece, this.board[i][j]);
                     }
                 }
             }
@@ -53,13 +57,16 @@ export class MyGameBoard {
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++){
                 if(this.getTileByCoords(i, j).getPiece() != null){
-                    this.removePiecefromTile(this.getTileByCoords(i, j).getPiece(), this.getTileByCoords(i, j));
+                    console.log(this.getTileByCoords(i, j).getPiece().originalTile);
+                    this.addPiecetoTile(this.getTileByCoords(i, j).getPiece(), this.getTileByCoords(i, j).getPiece().originalTile);
+                    // this.removePiecefromTile(this.getTileByCoords(i, j).getPiece(), this.getTileByCoords(i, j));
+                    this.getTileByCoords(i, j).unsetPiece();
                 }
             }
         }
-        this.auxBoardBlack.resetBoard();
-        this.auxBoardWhite.resetBoard();
-        this.initBoard();
+        this.display();
+        // this.auxBoardBlack.resetBoard();
+        // this.auxBoardWhite.resetBoard();
     }
 
     addPiecetoTile(piece, tile) {
@@ -311,6 +318,132 @@ export class MyGameBoard {
         }
         return true;
     }
+
+    checkGameOver(){
+        let blackPieces = 0;
+        let whitePieces = 0;
+
+        for(let i = 0; i < 8; i++){
+            for(let j = 0; j < 8; j++){
+                if(this.board[i][j].getPiece() != null){
+                    if(this.board[i][j].getPiece().type == "black"){
+                        if(this.checkPossibleMoves(this.board[i][j].getPiece())){
+                            return false;
+                        }
+                        blackPieces++;
+                    }
+                    else{
+                        if(this.checkPossibleMoves(this.board[i][j].getPiece())){
+                            return false;
+                        }
+                        whitePieces++;
+                    }
+                }
+            }
+        }
+
+        if(blackPieces == 0){
+            this.gameOver = true;
+            this.winner = "white";
+            return true;
+        }
+        else if(whitePieces == 0){
+            this.gameOver = true;
+            this.winner = "black";
+            return true;
+        }
+        return false;
+    }
+
+    checkPossibleMoves(pickedPiece){
+        this.tempCaptured = [];
+
+        if(this.orchestrator.isPayerBlack){
+
+            //check the squares to the top-left and top-right of the current position
+            if(pickedPiece.getTile().x - 1 >= 0 && pickedPiece.getTile().x - 1 <= 7 && pickedPiece.getTile().y - 1 >= 0 && pickedPiece.getTile().y - 1 <= 7 && this.getTileByCoords(pickedPiece.getTile().x - 1, pickedPiece.getTile().y - 1).getPiece() == null){
+                return 1;
+            }
+            if (pickedPiece.getTile().x + 1 <= 7 && pickedPiece.getTile().x + 1 >= 0 && pickedPiece.getTile().y - 1 >= 0 && pickedPiece.getTile().y - 1 <= 7 && this.getTileByCoords(pickedPiece.getTile().x + 1, pickedPiece.getTile().y - 1).getPiece() == null){
+                return 1;
+            }
+
+            // Check for pieces that can be captured by jumping
+            if(pickedPiece.getTile().x - 2 >= 0 && pickedPiece.getTile().y - 2 >= 0 && pickedPiece.getTile().x - 2 <= 7 && pickedPiece.getTile().y - 2 <= 7 && this.getTileByCoords(pickedPiece.getTile().x - 2, pickedPiece.getTile().y - 2).getPiece() == null){
+                if(this.getTileByCoords(pickedPiece.getTile().x - 1, pickedPiece.getTile().y - 1).getPiece() != null && this.getTileByCoords(pickedPiece.getTile().x - 1, pickedPiece.getTile().y - 1).getPiece().type == "white"){
+                    this.tempCaptured.push(this.getTileByCoords(pickedPiece.getTile().x - 1, pickedPiece.getTile().y - 1).getPiece());
+                    return 2;
+                }
+            }
+
+            if(pickedPiece.getTile().x + 2 <= 7 && pickedPiece.getTile().y - 2 >= 0 && pickedPiece.getTile().x + 2 >= 0 && pickedPiece.getTile().y - 2 <= 7 && this.getTileByCoords(pickedPiece.getTile().x + 2, pickedPiece.getTile().y - 2).getPiece() == null){
+                if(this.getTileByCoords(pickedPiece.getTile().x + 1, pickedPiece.getTile().y - 1).getPiece() != null && this.getTileByCoords(pickedPiece.getTile().x + 1, pickedPiece.getTile().y - 1).getPiece().type == "white"){
+                    this.tempCaptured.push(this.getTileByCoords(pickedPiece.getTile().x + 1, pickedPiece.getTile().y - 1).getPiece());
+                    return 2;
+                }
+            }
+        }
+        else{
+
+            //check the squares to the top-left and top-right of the current position
+            if(pickedPiece.getTile().x - 1 >= 0 && pickedPiece.getTile().x - 1 <= 7 && pickedPiece.getTile().y + 1 >= 0 && pickedPiece.getTile().y + 1 <= 7 && this.getTileByCoords(pickedPiece.getTile().x - 1, pickedPiece.getTile().y + 1).getPiece() == null){
+                return 1;
+            }
+            if (pickedPiece.getTile().x + 1 <= 7 && pickedPiece.getTile().y + 1 <= 7 && pickedPiece.getTile().x + 1 >= 0 && pickedPiece.getTile().y + 1 >= 0 && this.getTileByCoords(pickedPiece.getTile().x + 1, pickedPiece.getTile().y + 1).getPiece() == null){
+                return 1;
+            }
+
+            // Check for pieces that can be captured by jumping
+            if(pickedPiece.getTile().x - 2 >= 0 && pickedPiece.getTile().y + 2 <= 7 && pickedPiece.getTile().x - 2 <= 7 && pickedPiece.getTile().y + 2 >= 0 && this.getTileByCoords(pickedPiece.getTile().x - 2, pickedPiece.getTile().y + 2).getPiece() == null){
+                if(this.getTileByCoords(pickedPiece.getTile().x - 1, pickedPiece.getTile().y + 1).getPiece() != null && this.getTileByCoords(pickedPiece.getTile().x - 1, pickedPiece.getTile().y + 1).getPiece().type == "black"){
+                    this.tempCaptured.push(this.getTileByCoords(pickedPiece.getTile().x - 1, pickedPiece.getTile().y + 1).getPiece());
+                    return 2;
+                }
+            }
+
+            if(pickedPiece.getTile().x + 2 <= 7 && pickedPiece.getTile().y + 2 <= 7 && pickedPiece.getTile().x + 2 >= 0 && pickedPiece.getTile().y + 2 >= 0 && this.getTileByCoords(pickedPiece.getTile().x + 2, pickedPiece.getTile().y + 2).getPiece() == null){
+                if(this.getTileByCoords(pickedPiece.getTile().x + 1, pickedPiece.getTile().y + 1).getPiece() != null && this.getTileByCoords(pickedPiece.getTile().x + 1, pickedPiece.getTile().y + 1).getPiece().type == "black"){
+                    this.tempCaptured.push(this.getTileByCoords(pickedPiece.getTile().x + 1, pickedPiece.getTile().y + 1).getPiece());
+                    return 2;
+                }
+            }
+        }
+
+        // check if the piece is a king
+        if(pickedPiece.isKing == true){
+            this.checkKingMoves(pickedPiece, this.isPayerBlack);
+        }
+
+        return 0;
+    }
+
+    checkKingMoves(pickedPiece, isPlayerBlack){
+        for(let dx = -1; dx <= 1; dx+=2){
+            for(let dy = -1; dy <= 1; dy+=2){
+                let i = pickedPiece.getTile().x + dx;
+                let j = pickedPiece.getTile().y + dy;
+
+                while(i >= 0 && i < 8 && j >= 0 && j < 8){
+                    if(this.getTileByCoords(i, j).getPiece() != null){
+                        if(this.getTileByCoords(i, j).getPiece().type == pickedPiece.type)
+                            break;
+                        else{
+                            if(i + dx >= 0 && i + dx < 8 && j + dy >= 0 && j + dy < 8 && this.getTileByCoords(i + dx, j + dy).getPiece() == null){
+                                this.tempCaptured.push(this.getTileByCoords(i + dx, j + dy).getPiece());
+                                return 2;
+                            }
+                            else
+                                break;
+                        }
+                    }
+                    return 1;
+                    i += dx;
+                    j += dy;
+                }
+            }
+        }
+    }
+
 
 
     display() {
