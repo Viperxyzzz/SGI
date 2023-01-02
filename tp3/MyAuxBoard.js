@@ -81,10 +81,14 @@ export class MyAuxBoard {
         for(let i = 0; i < this.pieces.length; i++){
             this.pieces[i].display();
         }
-
-        this.scene.translate(1,-7,0);
+        this.scene.pushMatrix();
+        this.scene.translate(0.5,1,0);
+        this.scene.rotate(Math.PI, 0, 0, 1);
         this.myText.display();
-            
+        this.scene.popMatrix();
+        this.scene.translate(1.5,-6,0);
+        this.myText.display();
+                   
         this.scene.popMatrix();
     }
 }

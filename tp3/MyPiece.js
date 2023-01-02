@@ -73,12 +73,8 @@ export class MyPiece {
 
     addEatAnimation(auxBoard) {
         let nextPiecePosition = auxBoard.getNextPiecePosition();
-        let dx = nextPiecePosition[0] + auxBoard.x - (this.tilePointer.x);
-        let dy = nextPiecePosition[1] + auxBoard.y - (this.tilePointer.y);
-        console.log('Next Piece Position ' + nextPiecePosition);
-        console.log('dx ' + dx + ' nextPiecePosition[0] ' + nextPiecePosition[0] + ' auxBoard.x ' + auxBoard.x + ' this.tilePointer.x ' + this.tilePointer.x);
-        console.log('dy ' + dy + ' nextPiecePosition[1] ' + nextPiecePosition[1] + ' auxBoard.y ' + auxBoard.y + ' this.tilePointer.y ' + this.tilePointer.y);
-        console.log('dz ' + auxBoard.z);
+        let dx = (nextPiecePosition[0] + auxBoard.x) - (this.tilePointer.x);
+        let dy = (nextPiecePosition[1] + auxBoard.y) - (this.tilePointer.y);
         let dz = auxBoard.z - 0 / 2;
         let keyframe = new KeyFrame(0, [0, 0, 0], 0, 0, 0, [1, 1, 1]);
         let keyframe1 = new KeyFrame(1000, [dx, -dy, dz], 0, 0, 0, [1, 1, 1]);

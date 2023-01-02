@@ -403,48 +403,6 @@ export class MyGameOrchestrator {
     }
 
     display() {
-        // //this.theme.display();
-
-        // // Clear image and depth buffer every time we update the scene
-		// // this.scene.gl.viewport(0, 0, this.scene.gl.canvas.width, this.scene.gl.canvas.height);
-		// // this.scene.gl.clear(this.scene.gl.COLOR_BUFFER_BIT | this.scene.gl.DEPTH_BUFFER_BIT);
-		// // this.scene.gl.enable(this.scene.gl.DEPTH_TEST);
-
-        // // Initialize Model-View matrix as identity (no transformation
-		// this.scene.updateProjectionMatrix();
-		// this.scene.loadIdentity();
-
-        // // Apply transformations corresponding to the camera position relative to the origin
-		// this.scene.applyViewMatrix();
-		
-		// // Update all lights used
-		// this.scene.lights[0].update();
-
-        // this.scene.setActiveShaderSimple(this.textShader);
-
-        // this.scene.gl.disable(this.scene.gl.DEPTH_TEST);
-
-        // this.appearance.apply();
-        // this.scene.pushMatrix();
-        //     this.scene.loadIdentity();
-
-        //     this.scene.translate(-1,0,-50);
-        //     this.scene.scale(1.5,1.5,1.5);
-		// 	this.scene.activeShader.setUniformsValues({'charCoords': [0 + this.score[0], 3]});	
-		// 	this.quad.display();
-
-        //     this.scene.translate(1,0,0);
-		// 	this.scene.activeShader.setUniformsValues({'charCoords': [0 + this.score[1], 3]});	
-		// 	this.quad.display();
-
-        // this.scene.popMatrix();
-
-        
-		// // re-enable depth test 
-		// this.scene.gl.enable(this.scene.gl.DEPTH_TEST);
-
-        // this.scene.setActiveShaderSimple(this.scene.defaultShader);
-        
         this.scene.pushMatrix();
             this.scene.translate(9, 0.1, 13.5);
             this.scene.scale(0.3, 0.3, 0.3);
@@ -453,6 +411,11 @@ export class MyGameOrchestrator {
             // this.auxBoardWhite.display();
             this.drawObjects();
             this.elapsedTimeObject.display();
+            this.scene.pushMatrix();
+            this.scene.translate(-1,0,8);
+            this.scene.rotate(Math.PI, 0, 1, 0);
+            this.elapsedTimeObject.display();
+            this.scene.popMatrix();
         this.scene.popMatrix();
 
     }
