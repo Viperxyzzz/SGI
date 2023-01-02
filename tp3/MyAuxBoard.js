@@ -4,6 +4,7 @@ import { MyCylinder } from "./primitives/MyCylinder.js";
 import { MySphere } from './primitives/MySphere.js';
 import { MyCube } from './primitives/MyCube.js';
 import { MyPiece } from './MyPiece.js';
+import { MyText } from './MyText.js';
 
 export class MyAuxBoard {
     constructor(scene, x, y, z) {
@@ -33,7 +34,7 @@ export class MyAuxBoard {
         this.woodTexture.setShininess(120);
         this.woodTexture.loadTexture('scenes/images/woodenBox.jpg');
 
-        console.log("Aux board created: " + x + " " + y + " " + z + " ");
+        this.myText = new MyText(this.scene, this.pieces.length.toString());
 
     }
 
@@ -49,6 +50,9 @@ export class MyAuxBoard {
             this.lastPieceY = 0;
             this.lastPieceX++;
         }
+
+        this.myText.text = this.pieces.length.toString();
+        
     }
 
     resetBoard(){
@@ -72,11 +76,17 @@ export class MyAuxBoard {
         this.materialBlack.apply();
         this.woodTexture.apply();
         this.board.display();
+        
         this.scene.scale(1/2,1,1/5);
         this.scene.rotate(-Math.PI/2, 1, 0, 0);
+        
+        
         for(let i = 0; i < this.pieces.length; i++){
             this.pieces[i].display();
         }
+
+        this.scene.translate(1,-7,0);
+        this.myText.display();
             
         this.scene.popMatrix();
     }
