@@ -46,11 +46,12 @@ export class XMLscene extends CGFscene {
 
         this.axis = new CGFaxis(this);
         this.setUpdatePeriod(100);
-        this.displayAxis = true;
+        this.displayAxis = false;
         this.scaleFactor = 1;
 
         this.cameraAnimation = false;
         this.angle = 0;
+        this.started = false;
 
         this.themes = {
             0 : "demo.xml",
@@ -59,7 +60,7 @@ export class XMLscene extends CGFscene {
 
         this.selectedTheme = 0;
 
-        this.setPickEnabled(true);
+        this.setPickEnabled(false);
         this.gameOrchestrator = new MyGameOrchestrator(this);
     }
 
@@ -299,7 +300,7 @@ export class XMLscene extends CGFscene {
         this.scale(this.scaleFactor, this.scaleFactor, this.scaleFactor);
 
         for (var i = 0; i < this.lights.length; i++) {
-            this.lights[i].setVisible(true);
+            this.lights[i].setVisible(false);
             this.lights[i].enable();
         }
 
@@ -311,8 +312,8 @@ export class XMLscene extends CGFscene {
 
 
             this.setDefaultAppearance();
-
-            this.updateCameras();   
+            if(!this.started)
+                this.updateCameras();   
             this.updateLights();
 
             // Displays the scene (MySceneGraph function).

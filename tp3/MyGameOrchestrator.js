@@ -107,6 +107,9 @@ export class MyGameOrchestrator {
     }
 
     update(t) {
+        if(this.scene.started){
+            this.scene.setPickEnabled(true);
+        }
         this.animator.update(t);
 
         if(this.isMoving && this.state != "MOVIE"){
@@ -214,6 +217,23 @@ export class MyGameOrchestrator {
             default:
                 console.log("Error: Invalid state");
                 break;
+        }
+    }
+
+    startGame(){
+        console.log("Game Started");
+        this.scene.started = true;
+        this.scene.camera = this.scene.graph.cameras["blackPlayer"];
+        this.scene.selectedCamera = "blackPlayer";
+
+        for(let i = 0; i < this.scene.lights.length; i++){
+            if(i != 4 || i != 5){
+                this.scene.lights[i].disable();
+            }
+            else{
+                this.scene.lights[i].enable();
+            }
+            this.scene.lights[i].update();
         }
     }
 

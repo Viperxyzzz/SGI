@@ -10,7 +10,7 @@ export class MyTile {
         this.y = y;
         this.id = id;
         this.tile = new MyRectangle(this.scene, this.id, this.x, this.x + 1, this.y, this.y + 1);
-        this.selectable = true;
+        // this.selectable = true;
         this.materialBlack = new CGFappearance(this.scene);
         this.materialBlack.setAmbient(0, 0, 0, 1);
         this.materialBlack.setDiffuse(0, 0, 0, 1);
@@ -67,7 +67,7 @@ export class MyTile {
     }
 
     display() {
-        if(this.selectable){
+        if(this.scene.pickEnabled){
             this.scene.registerForPick(this.id, this);
         }
         this.scene.pushMatrix();
@@ -87,7 +87,7 @@ export class MyTile {
         }
         this.scene.popMatrix();
 
-        if(this.selectable)
+        if(this.scene.pickEnabled)
             this.scene.clearPickRegistration();
     }   
 

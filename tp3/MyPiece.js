@@ -14,7 +14,7 @@ export class MyPiece {
         this.geometry = new MyCylinder(scene, 0.5, 0.5, 0.3, 20, 20);
         // this.top = new MySphere(scene, 0.5, 20, 20);
         this.top = new MyCircle(scene, 20);
-        this.selectable = true;
+        // this.selectable = true;
         this.tilePointer = null;
         this.auxBoard = null;
         this.isKing = false;
@@ -123,7 +123,7 @@ export class MyPiece {
             }
         }
         // register the id of the object to be picked
-        if(this.selectable)
+        if(this.scene.pickEnabled)
             this.scene.registerForPick(this.id, this);
 
         // Now call all the game objects/components/primitives display
@@ -175,7 +175,7 @@ export class MyPiece {
         this.top.display();
         this.scene.popMatrix();
         // clear the currently registered id and associated object
-        if (this.selectable)
+        if (this.scene.pickEnabled)
             this.scene.clearPickRegistration();
     }
 }
