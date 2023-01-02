@@ -89,11 +89,6 @@ export class XMLscene extends CGFscene {
      * Initializes the scene lights with the values read from the XML file.
      */
     initLights() {
-        for(let i = 0; i < this.lights.length; i++){
-            this.lights[i] = new CGFlight(this, i);
-            this.lights[i].disable();
-            this.lights[i].update();
-        }
         var i = 0;
         // Lights index.
         // Reads the lights from the scene graph.

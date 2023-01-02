@@ -75,7 +75,7 @@ export class MyGameOrchestrator {
         this.appearance = new CGFappearance(this.scene);
 
         //setting up time
-        this.timeout = 5;
+        this.timeout = 15; 
         this.elapsedTime = 0;
         this.startTime = Date.now() / 1000;
         this.lastTime = this.startTime;
@@ -95,7 +95,6 @@ export class MyGameOrchestrator {
         }
 
         this.animator.update(t);
-        console.log(this.elapsedTime);
         if(!this.isMoving && this.scene.started){
             this.elapsedTime = Math.floor((Date.now() / 1000) - this.startTime);
         }
@@ -107,6 +106,7 @@ export class MyGameOrchestrator {
                 this.elapsedTime = 0;
                 this.startTime = Date.now() / 1000;
                 this.isMoving = false;
+                this.movingPiece.isSelected = false;
                 this.movingPiece = null;
                 let move = this.gameSequence.sequence[this.gameSequence.sequence.length - 1];
                 let value = this.gameBoard.movePiece(move.piece,move.tileFrom,move.tileTo,move.isPlayerBlack);
@@ -195,9 +195,8 @@ export class MyGameOrchestrator {
             case "GAME_OVER":
                 this.gameBoard.resetBoard();
                 this.gameBoard.initBoard();
-                
                 this.elapsedTime = 0;
-                this.timeout = 5;
+                this.timeout = 15;
                 this.pickedPiece = null;
                 this.pickedTile = null;
                 this.movingPiece = null;
@@ -244,12 +243,12 @@ export class MyGameOrchestrator {
     }
 
     movie(){
-        console.log(this.sequenceIndex + " time entering here");
+        // console.log(this.sequenceIndex + " time entering here");
         if(this.sequenceIndex == this.gameSequence.sequence.length){
             this.state = "NEXT_TURN";
             this.playingMovie = false;
             this.sequenceIndex = 0;
-            console.log('Sequence index was equal to sequence length');
+            // console.log('Sequence index was equal to sequence length');
             return;
         }
         if(this.playingMovie == false){
@@ -258,14 +257,14 @@ export class MyGameOrchestrator {
             this.playingMovie = true;
             this.animator.animations = [];
             this.state = "MOVIE";
-            console.log("yeah we enter here of course");
+            // console.log("yeah we enter here of course");
         }
         if(this.isMoving && this.state == "MOVIE"){
-            console.log("is this the problem");
+            // console.log("is this the problem");
             return;
         }
         if(this.state != "MOVIE"){
-            console.log("is this the problem2");
+            // console.log("is this the problem2");
             return;
         }
 
@@ -461,6 +460,7 @@ export class MyGameOrchestrator {
             return;
         if (obj instanceof MyPiece) {
             if(this.pickedPiece != null){
+                this.pickedPiece.isSelected = false;
                 this.pickedPiece = null;
                 this.clearPossibleMoves();
                 console.warn("Select a valid tile to move the piece");
@@ -477,6 +477,7 @@ export class MyGameOrchestrator {
                     }
                     else{
                         this.piece = this.pickedPiece;
+                        this.piece.isSelected = true;
                     }
                     this.state = "POSSIBLE_MOVES";
                     this.scene.lights[4].setPosition(9 + (this.piece.getTile().x + 0.5) * 0.3, 2, 15.9 - (this.piece.getTile().y + 0.5) * 0.3, 1);

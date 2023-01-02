@@ -21,11 +21,8 @@ export class MyPiece {
         this.animation = null;
         this.dx = 0;
         this.dy = 0;
+        this.isSelected = false;
         this.createMaterials();
-        // this.blackText = new CGFtexture(this.scene, "scenes/images/black.png");
-        // this.whiteText = new CGFtexture(this.scene, "scenes/images/white.png");
-
-        this.transformation = null;
     }
 
     createMaterials() {
@@ -41,6 +38,12 @@ export class MyPiece {
         this.materialWhite.setDiffuse(1, 1, 1, 1);
         this.materialWhite.setSpecular(0, 0, 0, 1);
         this.materialWhite.setShininess(10.0);
+
+        this.materialRed = new CGFappearance(this.scene);
+        this.materialRed.setAmbient(0, 0, 0, 1);
+        this.materialRed.setDiffuse(1, 0, 0, 1);
+        this.materialRed.setSpecular(0, 0, 0, 1);
+        this.materialRed.setShininess(10.0);
     }
 
     getType() {
@@ -136,12 +139,19 @@ export class MyPiece {
         // with this uniqueId
         this.scene.pushMatrix();
         this.scene.multMatrix(m4);
-        if(this.type == "black"){
+
+
+        if(this.isSelected){
+            this.materialRed.apply();
+        }
+        else if(this.type == "black"){
             this.materialBlack.apply();
         }
         else{
             this.materialWhite.apply();
         }
+
+
         if(this.animation != null){
             this.animation.apply();
         }
@@ -170,7 +180,11 @@ export class MyPiece {
 
         this.scene.pushMatrix();
         this.scene.multMatrix(m4);
-        if(this.type == "black"){
+
+        if(this.isSelected){
+            this.materialRed.apply();
+        }
+        else if(this.type == "black"){
             this.materialBlack.apply();
         }
         else{

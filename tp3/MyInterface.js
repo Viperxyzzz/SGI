@@ -36,7 +36,7 @@ export class MyInterface extends CGFinterface {
     addLights(){
 
         let lightsFolder = this.gui.addFolder("Lights");
-        lightsFolder.open();
+        // lightsFolder.open();
 
         for(var i in this.scene.graph.lights){
             this.scene.interfaceLights[i] = this.scene.graph.lights[i][0];
@@ -61,7 +61,7 @@ export class MyInterface extends CGFinterface {
 
     addShaders(){
         let shadersFolder = this.gui.addFolder("shaders");
-        shadersFolder.open();
+        // shadersFolder.open();
 
         for(var i in this.scene.graph.shaders){
             this.scene.interfaceShaders[i] = false;
@@ -88,7 +88,7 @@ export class MyInterface extends CGFinterface {
         this.addLights();
         this.addShaders();
         this.addGameInterface();
-        this.gui.add(this.scene, 'selectedTheme', {'Ucrânia' : 0, 'idk' : 1}).name('Theme').onChange(this.scene.changeTheme.bind(this.scene));
+        this.gui.add(this.scene, 'selectedTheme', {'Ukraine' : 0, 'Room' : 1}).name('Theme').onChange(this.scene.changeTheme.bind(this.scene));
         this.hasElements = true;
     }
 
