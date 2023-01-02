@@ -427,7 +427,10 @@ export class MyGameOrchestrator {
             this.gameBoard.display();
             // this.auxBoardBlack.display();
             // this.auxBoardWhite.display();
+            this.scene.pushMatrix();
+            this.scene.translate(1,0,5.9);
             this.drawObjects();
+            this.scene.popMatrix();
             this.elapsedTimeObject.display();
             this.scene.pushMatrix();
             this.scene.translate(-1,0,8);

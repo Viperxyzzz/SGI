@@ -17,6 +17,7 @@ export class MyAuxBoard {
 
         this.lastPieceX = 0;
         this.lastPieceY = 0;
+        this.lastPieceZ = this.z;
 
         this.pieces = [];
         this.piecesPosition = [];
@@ -46,6 +47,9 @@ export class MyAuxBoard {
         if(this.lastPieceY == 5){
             this.lastPieceY = 0;
             this.lastPieceX++;
+        }
+        if(this.lastPieceX == 2){
+            this.lastPieceX = 0;
         }
 
         this.myText.text = this.pieces.length.toString();
