@@ -1,10 +1,10 @@
 import { CGFscene } from '../lib/CGF.js';
 import { MyTile } from "./MyTile.js";
 import { MyPiece } from "./MyPiece.js";
-
+import { MyAuxBoard } from "./MyAuxBoard.js";
 
 export class MyGameBoard {
-    constructor(scene, auxBoardWhite, auxBoardBlack) {
+    constructor(scene) {
         this.scene = scene;
         this.tiles = [];
         this.selectableTiles = [];
@@ -14,8 +14,8 @@ export class MyGameBoard {
         this.board = Array(8).fill().map(() => Array(8));
         this.setTilesToBoard();
         this.initBoard();
-        this.auxBoardWhite = auxBoardWhite;
-        this.auxBoardBlack = auxBoardBlack;
+        this.auxBoardWhite = new MyAuxBoard(this.scene,-3 , 0, 2);
+        this.auxBoardBlack = new MyAuxBoard(this.scene, 9, 0, 2);
         this.orchestrator = null;
     }
 
@@ -477,11 +477,16 @@ export class MyGameBoard {
         // m4 = mat4.scale(m4, m4, [0.5, 0.5, 0.5])
         m4 = mat4.rotate(m4, m4, -Math.PI / 2, [1, 0, 0]);
         this.scene.pushMatrix();
+
+        this.auxBoardBlack.display();
+        this.auxBoardWhite.display();
         
         this.scene.multMatrix(m4);
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 this.board[i][j].display();
+                if(this.board[i][j].getPiece() != null)
+                    this.board[i][j].pointerPiece.transformation = m4;
             }
         }
         this.scene.popMatrix();

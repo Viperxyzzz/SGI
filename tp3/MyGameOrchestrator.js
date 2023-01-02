@@ -45,9 +45,9 @@ export class MyGameOrchestrator {
         this.scene.textShader = new CGFshader(this.scene.gl, "shaders/font.vert", "shaders/font.frag");
         this.scene.textShader.setUniformsValues({'dims': [16, 16]});
 
-        this.auxBoardBlack = new MyAuxBoard(scene, -3, 0 , 2);
-        this.auxBoardWhite = new MyAuxBoard(scene, 9, 0 ,2);
-        this.gameBoard = new MyGameBoard(scene, this.auxBoardWhite, this.auxBoardBlack);
+        // this.auxBoardBlack = new MyAuxBoard(scene, -3, 0 , 2);
+        // this.auxBoardWhite = new MyAuxBoard(scene, 9, 0 ,2);
+        this.gameBoard = new MyGameBoard(scene);
         this.gameBoard.setOrchestrator(this);
 
         //textures and materials for the several objects
@@ -191,6 +191,7 @@ export class MyGameOrchestrator {
                 break;
             case "GAME_OVER":
                 this.gameBoard.resetBoard();
+                this.gameBoard.initBoard();
                 break;
             default:
                 break;
@@ -267,11 +268,11 @@ export class MyGameOrchestrator {
             if(move.capturedPiece !== null){
                 this.gameBoard.addPiecetoTile(move.capturedPiece, move.tileCaptured);
                 if(move.isPlayerBlack){
-                    this.auxBoardWhite.removePiece();
+                    this.gameBoard.auxBoardWhite.removePiece();
                     this.score[0]--;
                 }
                 else{
-                    this.auxBoardBlack.removePiece();
+                    this.gameBoard.auxBoardBlack.removePiece();
                     this.score[1]--;
                 }
             }
@@ -448,8 +449,8 @@ export class MyGameOrchestrator {
             this.scene.translate(9, 0.1, 13.5);
             this.scene.scale(0.3, 0.3, 0.3);
             this.gameBoard.display();
-            this.auxBoardBlack.display();
-            this.auxBoardWhite.display();
+            // this.auxBoardBlack.display();
+            // this.auxBoardWhite.display();
             this.drawObjects();
             this.elapsedTimeObject.display();
         this.scene.popMatrix();
@@ -511,13 +512,12 @@ export class MyGameOrchestrator {
                     if(isEating || isEatingKing){
                         var eatedPiece = isEating ? this.gameBoard.getEatedPiece(this.pickedPiece.getTile(), this.pickedTile) : this.gameBoard.getEatedByKingPiece(this.pickedPiece.getTile(), this.pickedTile);
                         //add auxboard based on color
-                        console.log("Eating piece: " + eatedPiece);
                         if(eatedPiece.type == "white"){
-                            this.animator.addAnimation(eatedPiece.addEatAnimation(this.auxBoardWhite));
+                            this.animator.addAnimation(eatedPiece.addEatAnimation(this.gameBoard.auxBoardWhite));
                             this.score[0]++;
                         }
                         else{
-                            this.animator.addAnimation(eatedPiece.addEatAnimation(this.auxBoardBlack));
+                            this.animator.addAnimation(eatedPiece.addEatAnimation(this.gameBoard.auxBoardBlack));
                             this.score[1]++;
                         }
                         this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard,this.isPayerBlack, eatedPiece, eatedPiece.getTile()));
@@ -526,7 +526,6 @@ export class MyGameOrchestrator {
                         this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard,this.isPayerBlack));
                     }
                     this.animator.addAnimation(this.pickedPiece.addAnimation(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile));
-                    console.log(this.pickedPiece);
                     this.movingPiece = this.pickedPiece;
                     this.isMoving = true;
                 }

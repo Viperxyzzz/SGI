@@ -5,6 +5,7 @@ import { MySphere } from './primitives/MySphere.js';
 import { MyCube } from './primitives/MyCube.js';
 import { MyPiece } from './MyPiece.js';
 import { MyText } from './MyText.js';
+import { MyTile } from './MyTile.js';
 
 export class MyAuxBoard {
     constructor(scene, x, y, z) {
@@ -39,12 +40,8 @@ export class MyAuxBoard {
     }
 
     addPiece(piece){
-        console.log("Piece added to aux board: " + piece.id + " " + piece.type + "")
         this.pieces.push(piece);
         this.piecesPosition[piece.id] = [this.lastPieceX, this.lastPieceY];
-        console.log("this.lastPieceX",this.lastPieceX,"this.lastPieceY",this.lastPieceY)
-        console.log("auxBoard.x",this.x,"auxBoard.y",this.y,"auxBoard.z",this.z)
-        console.log("Piece",piece.id," final coords are " + (this.lastPieceX + this.x) + " " + (this.lastPieceY + this.y) + " " + this.z);
         this.lastPieceY++;
         if(this.lastPieceY == 5){
             this.lastPieceY = 0;
