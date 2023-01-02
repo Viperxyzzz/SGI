@@ -24,6 +24,8 @@ export class MyPiece {
         this.createMaterials();
         // this.blackText = new CGFtexture(this.scene, "scenes/images/black.png");
         // this.whiteText = new CGFtexture(this.scene, "scenes/images/white.png");
+
+        this.transformation = null;
     }
 
     createMaterials() {
@@ -71,8 +73,11 @@ export class MyPiece {
 
     addEatAnimation(auxBoard) {
         let nextPiecePosition = auxBoard.getNextPiecePosition();
+        let dx = (nextPiecePosition[0] + auxBoard.x) - (this.tilePointer.x);
+        let dy = (nextPiecePosition[1] + auxBoard.y) - (this.tilePointer.y);
+        let dz = auxBoard.z - 0 / 2;
         let keyframe = new KeyFrame(0, [0, 0, 0], 0, 0, 0, [1, 1, 1]);
-        let keyframe1 = new KeyFrame(1000, [nextPiecePosition[0] + auxBoard.x - this.tilePointer.x, nextPiecePosition[1] + auxBoard.y - this.tilePointer.y, auxBoard.z - 0], 0, 0, 0, [1, 1, 1]);
+        let keyframe1 = new KeyFrame(1000, [dx, -dy, dz], 0, 0, 0, [1, 1, 1]);
         let keyframes = [keyframe, keyframe1];
 
         var animation = new MyKeyframeAnimation(this.scene, keyframes);

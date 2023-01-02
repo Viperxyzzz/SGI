@@ -35,6 +35,7 @@ export class MyTile {
             this.setMaterialApplied("black");
         else
             this.setMaterialApplied("white");
+        this.transformation = null;
     }
 
 

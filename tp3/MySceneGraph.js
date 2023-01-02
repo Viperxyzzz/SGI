@@ -58,24 +58,6 @@ export class MySceneGraph {
         this.reader.open('scenes/' + filename, this);
     }
 
-    reinit(filename) {
-        this.cameras = [];
-
-        this.defaultCamera = null;
-
-        this.nodes = [];
-        this.board = null;
-
-        this.textures = [];
-        this.materials = [];
-        this.animations = [];
-
-        this.idRoot = null;
-
-        this.xml_file = filename;
-        this.reader.open('scenes/' + filename, this);
-    }
-
     /*
      * Callback to be executed after successful reading
      */

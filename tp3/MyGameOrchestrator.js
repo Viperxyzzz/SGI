@@ -45,9 +45,9 @@ export class MyGameOrchestrator {
         this.scene.textShader = new CGFshader(this.scene.gl, "shaders/font.vert", "shaders/font.frag");
         this.scene.textShader.setUniformsValues({'dims': [16, 16]});
 
-        this.auxBoardBlack = new MyAuxBoard(scene, -3, 0 , 2);
-        this.auxBoardWhite = new MyAuxBoard(scene, 9, 0 ,2);
-        this.gameBoard = new MyGameBoard(scene, this.auxBoardWhite, this.auxBoardBlack);
+        // this.auxBoardBlack = new MyAuxBoard(scene, -3, 0 , 2);
+        // this.auxBoardWhite = new MyAuxBoard(scene, 9, 0 ,2);
+        this.gameBoard = new MyGameBoard(scene);
         this.gameBoard.setOrchestrator(this);
 
         //textures and materials for the several objects
@@ -75,7 +75,7 @@ export class MyGameOrchestrator {
         this.appearance = new CGFappearance(this.scene);
 
         //setting up time
-        this.timeout = 30;
+        this.timeout = 5;
         this.elapsedTime = 0;
         this.startTime = Date.now() / 1000;
         this.lastTime = this.startTime;
@@ -90,12 +90,15 @@ export class MyGameOrchestrator {
     }
 
     update(t) {
-        if(this.scene.started){
+        if(this.scene.started && this.state != "MOVIE" && !this.isMoving){
             this.scene.setPickEnabled(true);
         }
+
         this.animator.update(t);
-        if(!this.isMoving)
+        console.log(this.elapsedTime);
+        if(!this.isMoving && this.scene.started){
             this.elapsedTime = Math.floor((Date.now() / 1000) - this.startTime);
+        }
         // this.elapsedTime = Math.floor(t - this.startTime);
         this.elapsedTimeObject.text = this.elapsedTime.toString();
         if(this.isMoving && this.state != "MOVIE"){
@@ -140,15 +143,6 @@ export class MyGameOrchestrator {
             }
         }
 
-        if(this.state == "MOVIE"){
-            if(this.sequenceIndex == this.gameSequence.sequence.length){
-                this.state = "NEXT_TURN";
-                this.playingMovie = false;
-                this.sequenceIndex = 0;
-                this.gameBoard.resetBoard();
-            }
-        }
-
         if(this.state == "MOVIE" && this.isMoving){
             if(this.movingPiece.animation.ended){
                 this.isMoving = false;
@@ -157,16 +151,7 @@ export class MyGameOrchestrator {
                 this.gameBoard.movePiece(move.piece,move.tileFrom,move.tileTo,move.isPlayerBlack);
                 this.movingPiece = null;
                 this.sequenceIndex++;
-
-                // this.gameSequence.sequenceIndex++;
-                // if(this.gameSequence.sequenceIndex < this.gameSequence.sequence.length){
-                //     this.movePiece(this.gameSequence.sequence[this.gameSequence.sequenceIndex]);
-                // }
-                // else{
-                //     this.state = "NEXT_TURN";
-                // }
             }
-            this.state = "NEXT_TURN";
         }
 
         //state machine
@@ -179,8 +164,13 @@ export class MyGameOrchestrator {
                 break;
             case "NEXT_TURN":
                 if(this.elapsedTime >= this.timeout){
-                    this.elapsedTime = 0;
-                    this.gameBoard.resetBoard();
+                    this.state = "GAME_OVER";
+                    // console.log("timeout");
+                    // this.elapsedTime = 0;
+                    // this.gameBoard.resetBoard();
+                    // this.gameBoard.initBoard();
+                    // this.gameSequence = new MyGameSequence(this.scene);
+                    // this.animator = new MyAnimator(this.scene, this, this.gameSequence);
                 }
                 this.display();
                 break;
@@ -203,12 +193,26 @@ export class MyGameOrchestrator {
                 this.hasGameEnded();
                 break;
             case "GAME_OVER":
-                console.log("Game Over");
-                console.log("PLAYER " + this.gameBoard.winner + " WON!");
                 this.gameBoard.resetBoard();
+                this.gameBoard.initBoard();
+                
+                this.elapsedTime = 0;
+                this.timeout = 5;
+                this.pickedPiece = null;
+                this.pickedTile = null;
+                this.movingPiece = null;
+                this.isMoving = false;
+                this.state = "NEXT_TURN";
+                this.hasDoubleJump = false;
+                this.piece = null;
+                this.undoPlay = false;
+                this.score = [0,0];
+                this.playingMovie = false;
+                this.startTime = Date.now() / 1000;
+                this.lastTime = this.startTime;
+                this.elapsedTimeObject = new MyText(this.scene, this.elapsedTime.toString());
                 break;
             default:
-                console.log("Error: Invalid state");
                 break;
         }
     }
@@ -240,43 +244,39 @@ export class MyGameOrchestrator {
     }
 
     movie(){
+        console.log(this.sequenceIndex + " time entering here");
         if(this.sequenceIndex == this.gameSequence.sequence.length){
-            console.log(this.gameSequence.sequence);
-            console.log("Sequence index " + this.sequenceIndex);
             this.state = "NEXT_TURN";
             this.playingMovie = false;
             this.sequenceIndex = 0;
-            this.gameBoard.resetBoard();
+            console.log('Sequence index was equal to sequence length');
             return;
         }
         if(this.playingMovie == false){
             this.gameBoard.resetBoard();
+            this.gameBoard.initBoard();
             this.playingMovie = true;
             this.animator.animations = [];
-            console.log(this.animator);
+            this.state = "MOVIE";
+            console.log("yeah we enter here of course");
         }
-        if(this.isMoving && this.state == "MOVIE")
+        if(this.isMoving && this.state == "MOVIE"){
+            console.log("is this the problem");
             return;
-        if(this.state != "MOVIE")
+        }
+        if(this.state != "MOVIE"){
+            console.log("is this the problem2");
             return;
+        }
+
         
     
         let move = this.gameSequence.sequence[this.sequenceIndex];
-        console.log("CURRENT INDEX " + this.sequenceIndex);
-        console.log("ADDING MOVE: " + move.piece.id + " " + move.tileFrom.id + " " + move.tileTo.id);
-        this.animator.addAnimation(move.piece.addAnimation(move.piece, move.tileFrom, move.tileTo));
-        console.log(move.piece);
+        move.piece.animation = null;
+        let animation = move.piece.addAnimation(move.piece, move.tileFrom, move.tileTo);
+        this.animator.addAnimation(animation);
         this.movingPiece = move.piece;
         this.isMoving = true;
-
-        // for(let i = 0; i < this.gameSequence.sequence.length; i++){
-        //     let move = this.gameSequence.sequence[i];
-        //     this.gameBoard.addAnimation(move.piece,move.tileFrom,move.tileTo);
-        //     this.movingPiece = move.piece;
-        //     this.isMoving = true;
-        // }
-        
-        // this.isPayerBlack = true;
     }
 
     undo(){
@@ -287,11 +287,11 @@ export class MyGameOrchestrator {
             if(move.capturedPiece !== null){
                 this.gameBoard.addPiecetoTile(move.capturedPiece, move.tileCaptured);
                 if(move.isPlayerBlack){
-                    this.auxBoardWhite.removePiece();
+                    this.gameBoard.auxBoardWhite.removePiece();
                     this.score[0]--;
                 }
                 else{
-                    this.auxBoardBlack.removePiece();
+                    this.gameBoard.auxBoardBlack.removePiece();
                     this.score[1]--;
                 }
             }
@@ -422,56 +422,19 @@ export class MyGameOrchestrator {
     }
 
     display() {
-        // //this.theme.display();
-
-        // // Clear image and depth buffer every time we update the scene
-		// // this.scene.gl.viewport(0, 0, this.scene.gl.canvas.width, this.scene.gl.canvas.height);
-		// // this.scene.gl.clear(this.scene.gl.COLOR_BUFFER_BIT | this.scene.gl.DEPTH_BUFFER_BIT);
-		// // this.scene.gl.enable(this.scene.gl.DEPTH_TEST);
-
-        // // Initialize Model-View matrix as identity (no transformation
-		// this.scene.updateProjectionMatrix();
-		// this.scene.loadIdentity();
-
-        // // Apply transformations corresponding to the camera position relative to the origin
-		// this.scene.applyViewMatrix();
-		
-		// // Update all lights used
-		// this.scene.lights[0].update();
-
-        // this.scene.setActiveShaderSimple(this.textShader);
-
-        // this.scene.gl.disable(this.scene.gl.DEPTH_TEST);
-
-        // this.appearance.apply();
-        // this.scene.pushMatrix();
-        //     this.scene.loadIdentity();
-
-        //     this.scene.translate(-1,0,-50);
-        //     this.scene.scale(1.5,1.5,1.5);
-		// 	this.scene.activeShader.setUniformsValues({'charCoords': [0 + this.score[0], 3]});	
-		// 	this.quad.display();
-
-        //     this.scene.translate(1,0,0);
-		// 	this.scene.activeShader.setUniformsValues({'charCoords': [0 + this.score[1], 3]});	
-		// 	this.quad.display();
-
-        // this.scene.popMatrix();
-
-        
-		// // re-enable depth test 
-		// this.scene.gl.enable(this.scene.gl.DEPTH_TEST);
-
-        // this.scene.setActiveShaderSimple(this.scene.defaultShader);
-        
         this.scene.pushMatrix();
             this.scene.translate(9, 0.1, 13.5);
             this.scene.scale(0.3, 0.3, 0.3);
             this.gameBoard.display();
-            this.auxBoardBlack.display();
-            this.auxBoardWhite.display();
+            // this.auxBoardBlack.display();
+            // this.auxBoardWhite.display();
             this.drawObjects();
             this.elapsedTimeObject.display();
+            this.scene.pushMatrix();
+            this.scene.translate(-1,0,8);
+            this.scene.rotate(Math.PI, 0, 1, 0);
+            this.elapsedTimeObject.display();
+            this.scene.popMatrix();
         this.scene.popMatrix();
 
     }
@@ -531,13 +494,12 @@ export class MyGameOrchestrator {
                     if(isEating || isEatingKing){
                         var eatedPiece = isEating ? this.gameBoard.getEatedPiece(this.pickedPiece.getTile(), this.pickedTile) : this.gameBoard.getEatedByKingPiece(this.pickedPiece.getTile(), this.pickedTile);
                         //add auxboard based on color
-                        console.log("Eating piece: " + eatedPiece);
                         if(eatedPiece.type == "white"){
-                            this.animator.addAnimation(eatedPiece.addEatAnimation(this.auxBoardWhite));
+                            this.animator.addAnimation(eatedPiece.addEatAnimation(this.gameBoard.auxBoardWhite));
                             this.score[0]++;
                         }
                         else{
-                            this.animator.addAnimation(eatedPiece.addEatAnimation(this.auxBoardBlack));
+                            this.animator.addAnimation(eatedPiece.addEatAnimation(this.gameBoard.auxBoardBlack));
                             this.score[1]++;
                         }
                         this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard,this.isPayerBlack, eatedPiece, eatedPiece.getTile()));
@@ -548,6 +510,7 @@ export class MyGameOrchestrator {
                     this.animator.addAnimation(this.pickedPiece.addAnimation(this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile));
                     this.movingPiece = this.pickedPiece;
                     this.isMoving = true;
+                    this.scene.setPickEnabled(false);
                 }
                 this.pickedPiece = null;
                 this.pickedTile = null;

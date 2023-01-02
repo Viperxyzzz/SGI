@@ -5,6 +5,7 @@ import { MySphere } from './primitives/MySphere.js';
 import { MyCube } from './primitives/MyCube.js';
 import { MyPiece } from './MyPiece.js';
 import { MyText } from './MyText.js';
+import { MyTile } from './MyTile.js';
 
 export class MyAuxBoard {
     constructor(scene, x, y, z) {
@@ -39,12 +40,8 @@ export class MyAuxBoard {
     }
 
     addPiece(piece){
-        console.log("Piece added to aux board: " + piece.id + " " + piece.type + "")
         this.pieces.push(piece);
         this.piecesPosition[piece.id] = [this.lastPieceX, this.lastPieceY];
-        console.log("this.lastPieceX",this.lastPieceX,"this.lastPieceY",this.lastPieceY)
-        console.log("auxBoard.x",this.x,"auxBoard.y",this.y,"auxBoard.z",this.z)
-        console.log("Piece",piece.id," final coords are " + (this.lastPieceX + this.x) + " " + (this.lastPieceY + this.y) + " " + this.z);
         this.lastPieceY++;
         if(this.lastPieceY == 5){
             this.lastPieceY = 0;
@@ -59,6 +56,8 @@ export class MyAuxBoard {
         this.pieces = [];
         this.lastPieceX = 0;
         this.lastPieceY = 0;
+        this.piecesPosition = [];
+        this.myText.text = this.pieces.length.toString();
     }
 
     removePiece(){
@@ -84,10 +83,14 @@ export class MyAuxBoard {
         for(let i = 0; i < this.pieces.length; i++){
             this.pieces[i].display();
         }
-
-        this.scene.translate(1,-7,0);
+        this.scene.pushMatrix();
+        this.scene.translate(0.5,1,0);
+        this.scene.rotate(Math.PI, 0, 0, 1);
         this.myText.display();
-            
+        this.scene.popMatrix();
+        this.scene.translate(1.5,-6,0);
+        this.myText.display();
+                   
         this.scene.popMatrix();
     }
 }

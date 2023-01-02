@@ -1,6 +1,7 @@
 import { CGFscene } from '../lib/CGF.js';
-import { CGFaxis,CGFcamera } from '../lib/CGF.js';
+import { CGFaxis,CGFcamera, CGFlight } from '../lib/CGF.js';
 import { MyGameOrchestrator } from './MyGameOrchestrator.js';
+import { MySceneGraph } from './MySceneGraph.js';
 
 
 var DEGREE_TO_RAD = Math.PI / 180;
@@ -88,6 +89,11 @@ export class XMLscene extends CGFscene {
      * Initializes the scene lights with the values read from the XML file.
      */
     initLights() {
+        for(let i = 0; i < this.lights.length; i++){
+            this.lights[i] = new CGFlight(this, i);
+            this.lights[i].disable();
+            this.lights[i].update();
+        }
         var i = 0;
         // Lights index.
         // Reads the lights from the scene graph.
@@ -155,7 +161,9 @@ export class XMLscene extends CGFscene {
 
     changeTheme(){
         this.sceneInited = false;
-        this.graph.reinit(this.themes[this.selectedTheme]);
+        // this.graph.reinit(this.themes[this.selectedTheme]);
+        this.graph = new MySceneGraph(this.themes[this.selectedTheme], this);
+
     }
 
     /** Handler called when the graph is finally loaded. 

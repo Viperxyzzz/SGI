@@ -88,7 +88,7 @@ export class MyInterface extends CGFinterface {
         this.addLights();
         this.addShaders();
         this.addGameInterface();
-        this.gui.add(this.scene, 'selectedTheme', {'Ucránia' : 0, 'idk' : 1}).name('Theme').onChange(this.scene.changeTheme.bind(this.scene));
+        this.gui.add(this.scene, 'selectedTheme', {'Ucrânia' : 0, 'idk' : 1}).name('Theme').onChange(this.scene.changeTheme.bind(this.scene));
         this.hasElements = true;
     }
 
