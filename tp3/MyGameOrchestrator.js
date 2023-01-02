@@ -205,6 +205,7 @@ export class MyGameOrchestrator {
             case "GAME_OVER":
                 console.log("Game Over");
                 console.log("PLAYER " + this.gameBoard.winner + " WON!");
+                this.gameBoard.resetBoard();
                 break;
             default:
                 console.log("Error: Invalid state");

@@ -57,7 +57,6 @@ export class MyGameBoard {
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++){
                 if(this.getTileByCoords(i, j).getPiece() != null){
-                    console.log(this.getTileByCoords(i, j).getPiece().originalTile);
                     this.addPiecetoTile(this.getTileByCoords(i, j).getPiece(), this.getTileByCoords(i, j).getPiece().originalTile);
                     // this.removePiecefromTile(this.getTileByCoords(i, j).getPiece(), this.getTileByCoords(i, j));
                     this.getTileByCoords(i, j).unsetPiece();
@@ -320,34 +319,60 @@ export class MyGameBoard {
     }
 
     checkGameOver(){
-        let blackPieces = 0;
-        let whitePieces = 0;
+        let blackPieces = [];
+        let whitePieces = [];
+        let blackCanMove = false;
+        let whiteCanMove = false;
 
         for(let i = 0; i < 8; i++){
             for(let j = 0; j < 8; j++){
                 if(this.board[i][j].getPiece() != null){
                     if(this.board[i][j].getPiece().type == "black"){
-                        if(this.checkPossibleMoves(this.board[i][j].getPiece())){
-                            return false;
-                        }
-                        blackPieces++;
+                        // if(this.checkPossibleMoves(this.board[i][j].getPiece())){
+                        //     console.log("BLACK CAN MOVE");
+                        //     return false;
+                        // }
+                        blackPieces.push(this.board[i][j].getPiece());
                     }
                     else{
-                        if(this.checkPossibleMoves(this.board[i][j].getPiece())){
-                            return false;
-                        }
-                        whitePieces++;
+                        // if(this.checkPossibleMoves(this.board[i][j].getPiece())){
+                        //     console.log("WHITE CAN MOVE");
+                        //     return false;
+                        // }
+                        whitePieces.push(this.board[i][j].getPiece());
                     }
                 }
             }
         }
 
-        if(blackPieces == 0){
+        if(blackPieces.length == 0){
             this.gameOver = true;
             this.winner = "white";
             return true;
         }
-        else if(whitePieces == 0){
+        else if(whitePieces.length == 0){
+            this.gameOver = true;
+            this.winner = "black";
+            return true;
+        }
+
+        for(let i = 0; i < blackPieces.length; i++){
+            if(this.checkPossibleMoves(blackPieces[i])){
+                blackCanMove = true;
+            }
+        }
+
+        for(let i = 0; i < whitePieces.length; i++){
+            if(this.checkPossibleMoves(whitePieces[i])){
+                whiteCanMove = true;
+            }
+        }
+        if(!blackCanMove){
+            this.gameOver = true;
+            this.winner = "white";
+            return true;
+        }
+        else if(!whiteCanMove){
             this.gameOver = true;
             this.winner = "black";
             return true;
