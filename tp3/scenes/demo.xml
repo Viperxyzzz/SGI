@@ -2,14 +2,14 @@
     <scene root="demoRoot" axis_length="5"/>
 
     <views default="defaultCamera">
-        <perspective id="blackPlayer" near="0.1" far="500" angle="45">
+        <!-- <perspective id="blackPlayer" near="0.1" far="500" angle="45">
             <from x="30" y="25" z="45" />
             <to x="0" y="-2" z="0" />
-        </perspective> 
-        <!-- <perspective id="defaultCamera" near="0.1" far="500" angle="45">
+        </perspective>  -->
+        <perspective id="defaultCamera" near="0.1" far="500" angle="45">
             <from x="30" y="25" z="45" />
             <to x="0" y="-2" z="0" />
-        </perspective> -->
+        </perspective>
 
         <ortho id="boardCamera" near="0.1" far="500" left="-5" right="5" top="5" bottom="-5">
             <from x="9" y="5" z="13.5" />
@@ -17,7 +17,7 @@
             <up x="0" y="0" z="1" />
         </ortho>
 
-        <perspective id="defaultCamera" near="0.1" far="500" angle="45">
+        <perspective id="blackPlayer" near="0.1" far="500" angle="45">
             <from x="10" y="4" z="12.5" />
             <to x="10" y="0" z="15" />
         </perspective>

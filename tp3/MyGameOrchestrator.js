@@ -16,6 +16,8 @@ export class MyGameOrchestrator {
         this.undoCube = new MyCube(scene);
         this.changeCamera = new MyCube(scene);
         this.movieCube = new MyCube(scene);
+        this.scoreBlackCube = new MyCube(scene);
+        this.scoreWhiteCube = new MyCube(scene);
 
         this.gameSequence = new MyGameSequence(scene);
         this.auxBoardBlack = new MyAuxBoard(scene, -3, 0 , 2);
@@ -68,6 +70,7 @@ export class MyGameOrchestrator {
         this.cameraAppearance.setShininess(5);
         this.cameraAppearance.loadTexture("scenes/images/eye.png");
 
+
         // this.scene.gl.clearColor(0.1, 0.1, 0.1, 1.0);
 		// this.scene.gl.clearDepth(1000.0);
 		// this.scene.gl.enable(this.scene.gl.DEPTH_TEST);
@@ -75,25 +78,22 @@ export class MyGameOrchestrator {
 		// this.scene.gl.depthFunc(this.scene.gl.LEQUAL);
 
 
-        // this.appearance = new CGFappearance(this.scene);
+        this.appearance = new CGFappearance(this.scene);
 
 		// // font texture: 16 x 16 characters
 		// // http://jens.ayton.se/oolite/files/font-tests/rgba/oolite-font.png
-		// this.fontTexture = new CGFtexture(this.scene, "scenes/images/oolite-font.trans.png");
-		// this.appearance.setTexture(this.fontTexture);
-
-		// // plane where texture character will be rendered
-		// this.quad = new MyQuad(this.scene);
+		this.fontTexture = new CGFtexture(this.scene, "scenes/images/oolite-font.trans.png");
+		this.appearance.setTexture(this.fontTexture);
 		
 		// // instatiate text shader (used to simplify access via row/column coordinates)
 		// // check the two files to see how it is done
-		// this.textShader=new CGFshader(this.scene.gl, "shaders/font.vert", "shaders/font.frag");
+		this.textShader=new CGFshader(this.scene.gl, "shaders/font.vert", "shaders/font.frag");
 
 		// // set number of rows and columns in font texture
-		// this.textShader.setUniformsValues({'dims': [16, 16]});
+		this.textShader.setUniformsValues({'dims': [16, 16]});
 
-
-
+        // // plane where texture character will be rendered
+		this.quad = new MyQuad(this.scene);
     }
 
     setDoubleJump(bool){
@@ -400,39 +400,39 @@ export class MyGameOrchestrator {
 		// this.scene.gl.enable(this.scene.gl.DEPTH_TEST);
 
         // Initialize Model-View matrix as identity (no transformation
-		// this.scene.updateProjectionMatrix();
-		// this.scene.loadIdentity();
+		this.scene.updateProjectionMatrix();
+		this.scene.loadIdentity();
 
         // Apply transformations corresponding to the camera position relative to the origin
-		// this.scene.applyViewMatrix();
+		this.scene.applyViewMatrix();
 		
 		// Update all lights used
-		// this.scene.lights[0].update();
+		this.scene.lights[0].update();
 
-        // this.scene.setActiveShaderSimple(this.textShader);
+        this.scene.setActiveShaderSimple(this.textShader);
 
-        // this.scene.gl.disable(this.scene.gl.DEPTH_TEST);
+        this.scene.gl.disable(this.scene.gl.DEPTH_TEST);
 
-        // this.appearance.apply();
-        // this.scene.pushMatrix();
-        //     this.scene.loadIdentity();
+        this.appearance.apply();
+        this.scene.pushMatrix();
+            this.scene.loadIdentity();
 
-        //     this.scene.translate(-1,0,-50);
-        //     this.scene.scale(1.5,1.5,1.5);
-		// 	this.scene.activeShader.setUniformsValues({'charCoords': [0 + this.score[0], 3]});	
-		// 	this.quad.display();
+            this.scene.translate(-1,0,-50);
+            this.scene.scale(1.5,1.5,1.5);
+			this.scene.activeShader.setUniformsValues({'charCoords': [0 + this.score[0], 3]});	
+			this.quad.display();
 
-        //     this.scene.translate(1,0,0);
-		// 	this.scene.activeShader.setUniformsValues({'charCoords': [0 + this.score[1], 3]});	
-		// 	this.quad.display();
+            this.scene.translate(1,0,0);
+			this.scene.activeShader.setUniformsValues({'charCoords': [0 + this.score[1], 3]});	
+			this.quad.display();
 
-        // this.scene.popMatrix();
+        this.scene.popMatrix();
 
         
 		// re-enable depth test 
-		// this.scene.gl.enable(this.scene.gl.DEPTH_TEST);
+		this.scene.gl.enable(this.scene.gl.DEPTH_TEST);
 
-        // this.scene.setActiveShaderSimple(this.scene.defaultShader);
+        this.scene.setActiveShaderSimple(this.scene.defaultShader);
         
         this.scene.pushMatrix();
             this.scene.translate(9, 0.1, 13.5);
@@ -502,11 +502,11 @@ export class MyGameOrchestrator {
                         //add auxboard based on color
                         console.log("Eating piece: " + eatedPiece);
                         if(eatedPiece.type == "white"){
-                            this.animator.addAnimation(eatedPiece.addEatedAnimation(this.auxBoardWhite));
+                            this.animator.addAnimation(eatedPiece.addEatAnimation(this.auxBoardWhite));
                             this.score[0]++;
                         }
                         else{
-                            this.animator.addAnimation(eatedPiece.addEatedAnimation(this.auxBoardBlack));
+                            this.animator.addAnimation(eatedPiece.addEatAnimation(this.auxBoardBlack));
                             this.score[1]++;
                         }
                         this.gameSequence.addMove(new MyGameMove(this.scene, this.pickedPiece, this.pickedPiece.getTile(), this.pickedTile, this.gameBoard,this.isPayerBlack, eatedPiece, eatedPiece.getTile()));

@@ -69,18 +69,9 @@ export class MyPiece {
         this.isKing = false;
     }
 
-    addEatedAnimation(auxBoard) {
-        console.log("EatedAnimation added to " + this.id + " " + this.type);
-        console.log("Initial coords: " + this.tilePointer.x + " " + this.tilePointer.y + " " + 0);
+    addEatAnimation(auxBoard) {
         let nextPiecePosition = auxBoard.getNextPiecePosition();
-        console.log("nextPiecePosition[0]: " + nextPiecePosition[0] + " nextPiecePosition[1]: " + nextPiecePosition[1])
-        console.log("auxBoard.x: " + auxBoard.x + " auxBoard.y: " + auxBoard.y)
-        console.log("Final coords are: " + (nextPiecePosition[0] + auxBoard.x) + " " + (nextPiecePosition[1] + auxBoard.y) + " " + auxBoard.z);
-        // let dx = (nextPiecePosition[0] + auxBoard.x) - this.tilePointer.x;
-        // let dy = (nextPiecePosition[1] + auxBoard.y) - this.tilePointer.y;
-        // let dz = auxBoard.z - 0;
         let keyframe = new KeyFrame(0, [0, 0, 0], 0, 0, 0, [1, 1, 1]);
-        // console.log("Translate needed to achieve the final coords: " + dx + " " + dy + " " + dz);
         let keyframe1 = new KeyFrame(1000, [nextPiecePosition[0] + auxBoard.x - this.tilePointer.x, nextPiecePosition[1] + auxBoard.y - this.tilePointer.y, auxBoard.z - 0], 0, 0, 0, [1, 1, 1]);
         let keyframes = [keyframe, keyframe1];
 
@@ -98,14 +89,6 @@ export class MyPiece {
         let keyframe1 = new KeyFrame(1000, [dx,dy,0], 0, 0, 0, [1,1,1]);
 
         let keyframes = [keyframe,keyframe1];
-        
-        // if(eatingAnimation){
-        //     let keyframe2 = new KeyFrame(500, [dx/2,dy/2,1], 0, 0, 0, [1,1,1]);
-        //     keyframes = [keyframe,keyframe2,keyframe1];
-        // }
-        // else{
-        //     keyframes = [keyframe,keyframe1];
-        // }
 
 
 

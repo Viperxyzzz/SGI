@@ -26,8 +26,9 @@ export class MyInterface extends CGFinterface {
         // add a group of controls (and open/expand by defult)
         this.gui.add(this.scene, 'displayAxis').name("Display Axis");
         this.gui.add(this.scene, 'scaleFactor', 0.1, 10.0).name('Scale');
-
         this.initKeys();
+
+        this.hasElements = false;
 
         return true;
     }
@@ -78,6 +79,17 @@ export class MyInterface extends CGFinterface {
         gameFolder.add(this.scene.gameOrchestrator, 'movie').name('Game Movie');
         // gameFolder.add(this.scene.gameOrchestrator, 'cameraAnimation').name('Rotate Camera');
         // gameFolder.add(this.scene.gameOrchestrator, 'quitGame').name('Quit Game');
+    }
+
+    addInterfaceElements(){
+        if(this.hasElements)
+            return;
+        this.addCameras();
+        this.addLights();
+        this.addShaders();
+        this.addGameInterface();
+        this.gui.add(this.scene, 'selectedTheme', {'Ucránia' : 0, 'idk' : 1}).name('Theme').onChange(this.scene.changeTheme.bind(this.scene));
+        this.hasElements = true;
     }
 
     /**

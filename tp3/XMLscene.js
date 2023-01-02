@@ -49,6 +49,13 @@ export class XMLscene extends CGFscene {
         this.cameraAnimation = false;
         this.angle = 0;
 
+        this.themes = {
+            0 : "demo.xml",
+            1 : "room.xml"
+        }
+
+        this.selectedTheme = 0;
+
         this.setPickEnabled(true);
         this.gameOrchestrator = new MyGameOrchestrator(this);
     }
@@ -141,6 +148,12 @@ export class XMLscene extends CGFscene {
         this.setSpecular(0.2, 0.4, 0.8, 1.0);
         this.setShininess(10.0);
     }
+
+    changeTheme(){
+        this.sceneInited = false;
+        this.graph.reinit(this.themes[this.selectedTheme]);
+    }
+
     /** Handler called when the graph is finally loaded. 
      * As loading is asynchronous, this may be called already after the application has started the run loop
      */
@@ -151,13 +164,12 @@ export class XMLscene extends CGFscene {
 
         this.setGlobalAmbientLight(this.graph.ambient[0], this.graph.ambient[1], this.graph.ambient[2], this.graph.ambient[3]);
 
-        this.interface.addCameras();
-        this.interface.addLights();
-        this.interface.addShaders();
-        this.interface.addGameInterface();
+        this.interface.addInterfaceElements();
 
         this.initLights();
         this.initsceneCameras();
+
+
         this.setUpdatePeriod(100);
 
 
